@@ -1,0 +1,21 @@
+citHeader("When using rugarch in publications, please cite:")
+
+## R >= 2.8.0 passes package metadata to citation().
+if(!exists("meta") || is.null(meta)) meta <- packageDescription("rugarch")
+
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s.", meta$Version)
+
+citEntry(entry="Manual",
+         title = "rugarch: Univariate GARCH models.",
+         author = personList(as.person("Alexios Ghalanos")),
+         year         = year,
+         note         = note,
+         textVersion = 
+         paste("Alexios Ghalanos",
+               sprintf("(%s).", year),
+               "rugarch: Univariate GARCH models.",
+	       note),
+	 header = "To cite the rugarch package, please use:"
+)
+

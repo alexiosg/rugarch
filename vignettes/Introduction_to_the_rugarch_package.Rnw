@@ -1,0 +1,36 @@
+%\VignetteIndexEntry{Introduction to the rugarch package}
+%\VignetteDepends{parallel}
+%\VignetteKeywords{GARCH}
+%\VignettePackage{rugarch}
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[round]{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{anysize}
+\usepackage{amsfonts}
+\usepackage{lscape}
+\usepackage{ctable}
+\usepackage{subfig}
+\usepackage{hyperref}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+\setlength{\textwidth}{16cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\textheight}{24cm}
+\setlength{\headheight}{2cm}
+\newtheorem{proof}{Proof}
+\usepackage{Sweave}
+\bibliographystyle{plainnat}
+\begin{document}
+\title{Introduction to the rugarch package.\\
+(Version 1.3-1)}
+\author{Alexios Ghalanos}
+\date{\today}
+\maketitle
+\tableofcontents
+\newpage
+\input{rugarch.tex}
+\clearpage
+\bibliography{rugarchbib}
+\end{document}
