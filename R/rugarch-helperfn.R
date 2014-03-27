@@ -33,7 +33,7 @@ TinY = 1.0e-8
 	arglist$returnType = "llh"
 	fit = list()
 	if(is.null(hess)){
-		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(), arglist = arglist)
+		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist)
 		#fit$hessian = .hessian2sided(f, ipars[estidx, 1], arglist = arglist)
 	} else{
 		fit$hessian = hess
@@ -81,7 +81,7 @@ TinY = 1.0e-8
 			arglist$returnType="LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef[-fixed]/fit$se.coef
@@ -119,7 +119,7 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef/fit$se.coef
@@ -164,7 +164,7 @@ TinY = 1.0e-8
 	arglist$returnType = "llh"
 	fit = vector(mode = "list")
 	if(is.null(hess)){
-		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(), arglist=arglist)
+		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist=arglist)
 		# fit$hessian = .hessian2sided(f, ipars[estidx, 1], data = data, returnType = "llh", garchenv = garchenv)
 		# fit$hessian = .hessian2sidedcpp(f, ipars[estidx, 1], arglist = arglist)
 		E = eigen(fit$hessian)$values
@@ -247,7 +247,7 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef[-fixed]/fit$se.coef
@@ -298,7 +298,7 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef/fit$se.coef
