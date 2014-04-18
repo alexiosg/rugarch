@@ -1,0 +1,9 @@
+src/distributions.o
+src/filters.o
+src/fracdiff.o
+src/fracimport.o
+src/garchmodels.o
+src/garchsim.o
+src/gig.o
+src/nig.o
+src/rugarch.so
