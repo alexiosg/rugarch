@@ -887,8 +887,8 @@ LR.cc.test = function (p, actual, VaR, conf.level = 0.95)
 	pi0 = T01/T0
 	pi1 = T11/T1
 	pe = (T01 + T11)/(T0 + T1)
-	stat.ind = -2 * .Log((1 - pe)^(T00 + T10) * pe^(T01 + T11)) + 
-			2 * .Log((1 - pi0)^T00 * pi0^T01 * (1 - pi1)^T10 * pi1^T11)
+	# stat.ind = -2 * log((1 - pe)^(T00 + T10) * pe^(T01 + T11)) + 2 * log((1 - pi0)^T00 * pi0^T01 * (1 - pi1)^T10 * pi1^T11)
+	stat.ind = -2 *( (T00 + T10)*log(1 - pe) + (T01 + T11)*log(pe)) + 2 * (T00*log(1 - pi0)+T01*log(pi0)+T10*log(1 - pi1)+T11*log(pi1))
 	stat.uc = .LR.uc(p = p, TN = TN, N = N)
 	stat.cc = stat.uc + stat.ind
 	return(list(stat.cc = stat.cc, stat.uc = stat.uc, N = N, 
@@ -897,7 +897,7 @@ LR.cc.test = function (p, actual, VaR, conf.level = 0.95)
 
 .LR.uc = function (p, TN, N) 
 {
-	stat.uc = -2 * .Log((1 - p)^(TN - N) * p^N) + 2 * .Log((1 - N/TN)^(TN - N) * (N/TN)^N)
+	stat.uc = -2 *( (TN - N)*log(1 - p)+ N*log(p) ) + 2 * ( (TN - N)*log(1 - N/TN)+N*log(N/TN) )
 	return(stat.uc)
 }
 
