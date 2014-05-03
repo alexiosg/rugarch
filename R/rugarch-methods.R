@@ -727,7 +727,7 @@ setGeneric("setfixed<-", function(object, value){standardGeneric("setfixed<-")})
 	pars = unlist(value)
 	names(pars) = parnames = tolower(names(pars))
 	# included parameters in model
-	modelnames = rownames(ipars[which(ipars[,4]==1 | ipars[,2]==1), ])
+	modelnames = rownames(ipars[which(ipars[,4]==1 | ipars[,2]==1), ,drop=FALSE])
 	inc = NULL
 	for(i in seq_along(parnames)){
 		if(is.na(match(parnames[i], modelnames))){
@@ -774,7 +774,7 @@ setGeneric("setstart<-", function(object, value){standardGeneric("setstart<-")})
 	pars = unlist(value)
 	names(pars) = parnames = tolower(names(pars))
 	# included parameters in model
-	modelnames = rownames(ipars[which(ipars[,4]==1 | ipars[,2]==1), ])
+	modelnames = rownames(ipars[which(ipars[,4]==1 | ipars[,2]==1), , drop=FALSE])
 	inc = NULL
 	for(i in seq_along(parnames)){
 		if(is.na(match(parnames[i], modelnames))){
