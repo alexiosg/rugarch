@@ -1774,7 +1774,9 @@ setMethod("coef", signature(object = "uGARCHfit"), .ugarchfitcoef)
 
 .ugarchfiltercoef = function(object)
 {
-	object@model$pars[object@model$pars[,2]==1, 1]
+	cf = object@model$pars[object@model$pars[,2]==1, 1]
+	names(cf) = rownames(object@model$pars[object@model$pars[,2]==1, 1,drop=FALSE])
+	return(cf)
 }
 
 setMethod("coef", signature(object = "uGARCHfilter"), .ugarchfiltercoef)

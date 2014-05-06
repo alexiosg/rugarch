@@ -103,7 +103,7 @@
 			if(fit.control$fixed.se==0) {
 				# if all parameters are fixed an no standard erros are to
 				# be calculated then we return a ugarchfilter object
-				cat("\nugarchfit-->warning: all parameters fixed...returning ugarchfilter object instead\n")
+				warning("\nugarchfit-->warning: all parameters fixed...returning ugarchfilter object instead\n")
 				return(ugarchfilter(data = xts(origdata, origindex), spec = spec, out.sample = out.sample))
 			} else{
 				# if all parameters are fixed but we require standard errors, we
