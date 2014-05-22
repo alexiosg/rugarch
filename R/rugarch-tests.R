@@ -234,7 +234,7 @@
 	# must remove fixed parameters
 	dist = object@model$modeldesc$distribution
 	cdfv = pdist(dist, q = sort(z), lambda = ipars[idx["ghlambda",1],1], skew = ipars[idx["skew",1],1], 
-			ipars[idx["shape",1],1])
+			shape = ipars[idx["shape",1],1])
 	j = length(groups)
 	gofmat = matrix(NA, ncol = 3, nrow = j)
 	gofmat[,1] = groups
