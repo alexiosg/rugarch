@@ -1,4 +1,5 @@
 ./vignettes/Introduction_to_the_rugarch_package.tex
 ./vignettes/rugarch.tex
 ./inst/rugarch.tests
-./git
+./.git
+.gitignore

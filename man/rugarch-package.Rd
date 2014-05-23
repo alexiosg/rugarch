@@ -22,15 +22,16 @@ feature rich distributions are used for modelling innovations and documented in
 the vignette.\cr
 This package is part of what used to be the rgarch package, which was split 
 into univariate (rugarch) and multivariate (rmgarch) models for easier 
-maintenance and use, both of which are now hosted on google code.
+maintenance and use, both of which are now hosted on CRAN (stable) and 
+bitbucket (development).
 }
 \details{
 \tabular{ll}{
 Package: \tab rugarch\cr
 Type: \tab Package\cr
 Title: \tab Univariate GARCH models\cr
-Version: \tab 1.3-2\cr
-Date: \tab 2014-03-13\cr
+Version: \tab 1.3-3\cr
+Date: \tab 2014-05-24\cr
 Author: \tab Alexios Ghalanos <alexios@4dscape.com>\cr
 Maintainer: \tab Alexios Ghalanos <alexios@4dscape.com>\cr
 Depends: \tab R (>= 2.10), methods\cr
@@ -111,7 +112,7 @@ simulated object (and their multi- function equivalents).
  author       = {Alexios Ghalanos},
  title        = {{rugarch}: Univariate GARCH models.},
  year         = {2014},
- note         = {R package version 1.3-2.},}}
+ note         = {R package version 1.3-3.},}}
 \emph{}
 }
 \section{License}{
