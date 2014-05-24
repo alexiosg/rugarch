@@ -198,7 +198,7 @@
 	res = as.numeric(residuals(object))
 	z2 = z^2
 	n = length(z)
-	zminus = as.integer(z<0)
+	zminus = as.integer(res<0)
 	zplus = 1-zminus
 	czminus = zminus*res
 	czplus = zplus*res

@@ -1108,9 +1108,10 @@ standardized residuals (to capture possible misspecification of the GARCH model)
 by regressing the squared standardized residuals on lagged negative and positive
 shocks as follows:
 \begin{equation}\label{signbias}
-\hat z_t^2 = {c_0} + {c_1}{I_{{{\hat z}_{t - 1}} < 0}} + {c_2}{I_{{{\hat z}_{t - 1}} < 0}}{\hat z_{t - 1}} + {c_3}{I_{{{\hat z}_{t - 1}} \geqslant 0}}{\hat z_{t - 1}} + {u_t}
+\hat z_t^2 = {c_0} + {c_1}{I_{{{\hat \varepsilon}_{t - 1}} < 0}} +
+{c_2}{I_{{{\hat \varepsilon}_{t - 1}} < 0}}{\hat \varepsilon_{t - 1}} + {c_3}{I_{{{\hat \varepsilon}_{t - 1}} \geqslant 0}}{\hat \varepsilon_{t - 1}} + {u_t}
 \end{equation}
-where $I$ is the indicator function and $\hat z_t$ the estimated standardized residuals
+where $I$ is the indicator function and $\hat \varepsilon_t$ the estimated residuals
 from the GARCH process. The Null Hypotheses are $H_0:c_i=0$ (for $i=1,2,3$), and that
 jointly $H_0:c_1=c_2=c_3=0$. As can be inferred from the summary of the previous
 fit, there is significant Negative and Positive reaction to shocks. Using
