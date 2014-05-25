@@ -11,8 +11,8 @@ such as threshold models to capture the asymmetry in the news impact, as well
 as distributions other than the normal to account for the skewness and excess
 kurtosis observed in practice. In a further extension, \cite{Hansen1994}
 generalized the \verb@GARCH@ models to capture time variation in the full density
-parameters, with the Autoregressive Conditional Density Model\footnote{This is in the
-works and will be released as a companion package.}, relaxing the assumption that the
+parameters, with the Autoregressive Conditional Density Model\footnote{The \textbf{racd} package
+is now available from my bitbucket repository.}, relaxing the assumption that the
 conditional distribution of the standardized innovations is independent of the
 conditioning information.
 
@@ -942,7 +942,7 @@ one being the augmented Lagrange solver solnp of \cite{Ye1997} implemented in R 
 \cite{Ghalanos2011}.
 The main functionality, namely the GARCH dynamics and conditional likelihood calculations are
 done in C for speed. For reference, there is a benchmark routine called \verb@ugarchbench@
-which provides a comparison of rugarch against 2 published GARCH models with analytic
+which provides a comparison of \verb@rugarch@ against 2 published GARCH models with analytic
 standard errors, and a small scale comparison with a commercial GARCH implementation.
 The fitted object is of class \verb@uGARCHfit@ which can be passed to a variety
 of other methods such as show (summary), plot, ugarchsim, ugarchforecast etc.

@@ -2,6 +2,7 @@
 	* DESCRIPTION (Version): New version is 1.3-3.
 	* Fix to Vlaar and Palm GoF test in case of shaped distribution (shape parameter
 	did not get passed to cdf function during the transformation).
+	* Fixes to vignettes.
 
 2014-04-26  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-2.
