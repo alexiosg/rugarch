@@ -426,8 +426,8 @@ setMethod("show",
 			dates = object@model$dates
 			series = sim$seriesSim
 			resids = sim$residSim
-			m = dim(sigma)[2]
-			N = dim(sigma)[1]
+			m = dim(series)[2]
+			N = dim(series)[1]
 			cat(paste("\nHorizon: ",N))
 			cat(paste("\nSimulations: ",m,"\n",sep=""))
 			rx1 = apply(series, 2, FUN=function(x) mean(x))
