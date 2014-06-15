@@ -2338,7 +2338,7 @@ setMethod("newsimpact", signature(object = "uGARCHfilter"), .newsimpact)
 	lrvar = rep(as.numeric(uncvariance(object))^(1/2), length(zz))
 	ans = omega + alpha[1]*(lrvar^lambda)*(abs(zz/lrvar - eta2[1]) - eta1[1]*(zz/lrvar - eta2[1]))^kdelta + beta[1]*(lrvar^lambda)
 	yexpr = expression(sigma[t]^2)
-	xexpr = expression(z[t-1])
+	xexpr = expression(epsilon[t-1])
 	return(list(zy = ans^(2/lambda), zx = zz, yexpr = yexpr, xexpr = xexpr))
 }
 
