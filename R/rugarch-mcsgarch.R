@@ -1557,13 +1557,13 @@
 # x = residuals
 .diurnal_series_aligned = function(x, v, idx1, idx2)
 {
-	s = sapply(idx1, function(i) median((x[i]^2)/v[i]))
+	s = sapply(idx1, function(i) mean((x[i]^2)/v[i]))
 	sx = as.numeric(unlist(sapply(idx2, function(x) na.omit(s*x))))
 	return(sx)
 }
 
 .diurnal_series = function(x, v, idx1)
 {
-	s = sapply(idx1, function(i) median(x[i]^2/v[i]))
+	s = sapply(idx1, function(i) mean(x[i]^2/v[i]))
 	return(s)
 }
