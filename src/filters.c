@@ -88,7 +88,7 @@ void aparchfilter(int *model, double *pars, int *idx, double *vexdata, double *r
 void egarchfilter(int *model, double *pars, int *idx, double meanz, double *z, double *vexdata, int T, int i, double *h)
 {
 	// lower bounds of variance to protect against special case
-	double lbeh = h[0]/10000;
+	//double lbeh = h[0]/10000;
 	int j, ind;
 	h[i] = h[i] +  pars[idx[6]];
 	if( model[14]>0 )
@@ -107,13 +107,12 @@ void egarchfilter(int *model, double *pars, int *idx, double meanz, double *z, d
 	{
 		h[i] = h[i] +  pars[idx[8]+j]*log( h[i-(j+1)] );
 	}
-
 	h[i] = exp( h[i] );
-	if(h[i]<=lbeh){
-		h[i]=lbeh;
+	if(h[i]<=1.0E-20){
+		h[i]=1.0E-20;
 	}
-	if(h[i]>=1E20){
-		h[i] = 1E20;
+	if(h[i]>=1.0E20){
+		h[i] = 1.0E20;
 	}
 }
 
