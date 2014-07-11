@@ -10,7 +10,9 @@ Method for fitting an ARFIMA models.
 }
 \usage{
 arfimafit(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-fit.control = list(fixed.se = 0, scale = 0), ...)
+fit.control = list(fixed.se = 0, scale = 0), numderiv.control = list(grad.eps=1e-4, 
+grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7), hess.eps=1e-4, hess.d=0.1, 
+hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2), ...)
 }
 \arguments{
 \item{data}{ A univariate data object. Can be a numeric vector, matrix, 
@@ -26,6 +28,10 @@ fixed.se argument controls whether standard errors should be calculated for
 those parameters which were fixed (through the fixed.pars argument of the 
 \code{\link{arfimaspec} function). The scale parameter controls whether the
 data should be scaled before being submitted to the optimizer.}}
+\item{numderiv.control}{Control arguments passed to the numerical routines for the
+calculation of the standard errors. See the documentation in the numDeriv package
+for further details. The arguments which start with \sQuote{hess} are passed to
+the hessian routine while those with \sQuote{grad} to the jacobian routine.}
 \item{...}{ . }
 }
 \value{

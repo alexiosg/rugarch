@@ -10,7 +10,10 @@ Method for fitting a variety of univariate GARCH models.
 }
 \usage{
 ugarchfit(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), ...)
+fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, 
+grad.zero.tol=sqrt(.Machine$double.eps/7e-7), hess.eps=1e-4, hess.d=0.1, 
+hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2),...)
 }
 \arguments{
 \item{data}{
@@ -38,6 +41,10 @@ uses all the values for the unconditional variance calculation, an integer
 greater than or equal to 1 denoting the number of data points to use for the 
 calculation, or a positive numeric value less than one which determines the 
 weighting for use in an exponential smoothing backcast.}
+\item{numderiv.control}{Control arguments passed to the numerical routines for the
+calculation of the standard errors. See the documentation in the numDeriv package
+for further details. The arguments which start with \sQuote{hess} are passed to
+the hessian routine while those with \sQuote{grad} to the jacobian routine.}
 \item{...}{ For the multiplicative component sGARCH model (mcsGARCH), the
 additional argument \sQuote{DailyVar} is required and should be an xts object of 
 the daily forecasted variance to use with the intraday data.}

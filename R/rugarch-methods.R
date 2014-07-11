@@ -853,27 +853,37 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 #----------------------------------------------------------------------------------
 
 .ugarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), ...)
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2),...)
 {
+	default.numd = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+			hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2)
+	idx1 = na.omit(match(names(numderiv.control), names(default.numd)))
+	idx2 = na.omit(match(names(default.numd), names(numderiv.control)))
+	if(length(idx1)>0){
+		default.numd[idx1] = numderiv.control[idx2]
+	}
+	
 	return( switch(spec@model$modeldesc$vmodel,
 					sGARCH = .sgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					iGARCH = .igarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					eGARCH = .egarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					gjrGARCH = .gjrgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					apARCH = .aparchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					fGARCH = .fgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					csGARCH = .csgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					mcsGARCH = .mcsgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control, ...),
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd, ...),
 					realGARCH = .realgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver, 
-							solver.control = solver.control, fit.control = fit.control, ...)) )
+							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd, ...)) )
 }
 
 .ugarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all', ...)
@@ -1031,7 +1041,9 @@ setMethod("ugarchfilter", signature(spec = "uGARCHspec"), .ugarchfilter)
 # univariate fit method
 #----------------------------------------------------------------------------------
 ugarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), ...)
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2), ...)
 {
 	UseMethod("ugarchfit")
 }

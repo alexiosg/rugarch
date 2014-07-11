@@ -19,9 +19,21 @@
 # SECTION sGARCH fit
 #---------------------------------------------------------------------------------
 .arfimafit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(fixed.se = 0, scale = 0))
+		fit.control = list(fixed.se = 0, scale = 0), 
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
 	tic = Sys.time()
+	
+	default.numd = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+			hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2)
+	idx1 = na.omit(match(names(numderiv.control), names(default.numd)))
+	idx2 = na.omit(match(names(default.numd), names(numderiv.control)))
+	if(length(idx1)>0){
+		default.numd[idx1] = numderiv.control[idx2]
+	}
+	numderiv.control = default.numd
+	
 	if(is.null(solver.control$trace)) trace = 0 else trace = solver.control$trace
 	
 	if(is.null(fit.control$stationarity)) fit.control$stationarity = TRUE
@@ -175,7 +187,7 @@
 		arglist$data = data
 		fit = .makearfimafitmodel(f = .arfimaLLH, T = T, m = m, timer = timer, 
 				convergence = convergence, message = sol$message, hess, 
-				arglist = arglist)
+				arglist = arglist, numderiv.control = numderiv.control)
 		model$modelinc[7] = modelinc[7]
 		model$modeldata$data = origdata
 		model$modeldata$index = origindex

@@ -24,7 +24,7 @@
 	
 	# Compute the stepsize (h)
 	# h = eps^(1/3)*apply(as.data.frame(x), 1,FUN = function(z) max(abs(z), 1e-4))
-	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z)*1e-4, 1e-9))
+	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
 	xh = x+h
 	h = xh-x
 	if(length(h) == 1) ee = matrix(h, ncol = 1, nrow = 1) else ee = as.matrix(diag(h))
@@ -65,7 +65,7 @@
 	
 	# Compute the stepsize (h)
 	# h = eps^(1/3)*apply(as.data.frame(x), 1,FUN = function(z) max(abs(z), 1e-4))
-	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z)*1e-4, 1e-9))
+	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
 	xh = x+h
 	h = xh-x
 	if(length(h) == 1) ee = matrix(h, ncol = 1, nrow = 1) else ee = as.matrix(diag(h))
@@ -110,7 +110,7 @@
 	# Compute the stepsize (h)
 	#h = eps^(1/3)*apply(as.data.frame(x), 1,FUN = function(z) max(abs(z), 1e-2))
 	# h = eps^(1/3) * sapply(x, FUN = function(z) max(abs(z), 1e-4))
-	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z)*1e-4, 1e-9))
+	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
 	xh = x+h
 	h = xh-x
 	if(length(h) == 1) ee = matrix(h, ncol = 1, nrow = 1) else ee = as.matrix(diag(h))
@@ -151,7 +151,7 @@ robustvcv = function(fun, pars, nlag = 0, hess, n, ...)
 {
 	k = length(pars)
 	#h = apply(as.data.frame(pars), 1, FUN = function(x) max(abs(x*eps^(1/3)), 1e-7))
-	h = apply(as.data.frame(pars), 1,FUN = function(z) max(abs(z)*1e-4, 1e-9))
+	h = apply(as.data.frame(pars), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
 	hplus =  pars+h
 	hminus = pars-h
 	hparsminus = hparsplus = matrix(pars, ncol = k, nrow = k, byrow = T)

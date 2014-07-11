@@ -20,7 +20,9 @@ TinY = 1.0e-8
 
 ##################################################################################
 # Helper Functions
-.makearfimafitmodel = function(f, T, m, timer, convergence, message, hess, arglist)
+.makearfimafitmodel = function(f, T, m, timer, convergence, message, hess, arglist, 
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
 	# Need to turn off stationarity check:
 	fit.control = arglist$fit.control
@@ -33,7 +35,9 @@ TinY = 1.0e-8
 	arglist$returnType = "llh"
 	fit = list()
 	if(is.null(hess)){
-		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist)
+		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$hess.eps, 
+						d= numderiv.control$hess.d, zero.tol=numderiv.control$hess.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+						show.details=FALSE), arglist=arglist)
 		#fit$hessian = .hessian2sided(f, ipars[estidx, 1], arglist = arglist)
 	} else{
 		fit$hessian = hess
@@ -81,7 +85,9 @@ TinY = 1.0e-8
 			arglist$returnType="LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef[-fixed]/fit$se.coef
@@ -119,7 +125,9 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef/fit$se.coef
@@ -151,7 +159,9 @@ TinY = 1.0e-8
 }
 
 
-.makefitmodel = function(garchmodel, f, T, m, timer, convergence, message, hess, arglist)
+.makefitmodel = function(garchmodel, f, T, m, timer, convergence, message, hess, arglist, 
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
 	# Turn Stationarity Off for numerical derivative calculation
 	fit.control = arglist$fit.control
@@ -164,7 +174,9 @@ TinY = 1.0e-8
 	arglist$returnType = "llh"
 	fit = vector(mode = "list")
 	if(is.null(hess)){
-		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist=arglist)
+		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$hess.eps, 
+						d= numderiv.control$hess.d, zero.tol=numderiv.control$hess.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+						show.details=FALSE), arglist=arglist)		
 		# fit$hessian = .hessian2sided(f, ipars[estidx, 1], data = data, returnType = "llh", garchenv = garchenv)
 		# fit$hessian = .hessian2sidedcpp(f, ipars[estidx, 1], arglist = arglist)
 		E = eigen(fit$hessian)$values
@@ -247,7 +259,9 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef[-fixed]/fit$se.coef
@@ -298,7 +312,9 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(zero.tol=.Machine$double.eps), arglist = arglist) 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
 			fit$tval = fit$coef/fit$se.coef

@@ -19,7 +19,9 @@
 # SECTION gjrGARCH fit
 #---------------------------------------------------------------------------------
 .gjrgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'))
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
 	tic = Sys.time()
 	if(is.null(solver.control$trace)) trace = 0 else trace = solver.control$trace
@@ -196,7 +198,7 @@
 		arglist$data = data
 		fit = .makefitmodel(garchmodel = "gjrGARCH", f = .gjrgarchLLH, T = T, 
 				m = m, timer = timer, convergence = convergence, message = sol$message, 
-				hess, arglist = arglist)
+				hess, arglist = arglist, numderiv.control = numderiv.control)
 		model$modelinc[7] = modelinc[7]
 		model$modeldata$data = origdata
 		model$modeldata$index = origindex

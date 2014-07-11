@@ -21,6 +21,8 @@
 
 .realgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
 		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
+				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2),
 		realizedVol = NULL)
 {
 	tic = Sys.time()
@@ -226,7 +228,7 @@
 		arglist$data = data
 		fit = .makefitmodel(garchmodel = "realGARCH", f = .realgarchLLH, T = T, m = m, 
 				timer = timer, convergence = convergence, message = sol$message, 
-				hess, arglist = arglist)
+				hess, arglist = arglist, numderiv.control = numderiv.control)
 		model$modeldata$realizedVol = realizedVol
 		model$modelinc[7] = modelinc[7]
 		model$modeldata$data = origdata
