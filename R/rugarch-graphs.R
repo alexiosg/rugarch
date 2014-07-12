@@ -315,14 +315,18 @@
 	root$realma = rezma
 	root$imagma = imzma
 	amp = list()
-	amp$ar = apply(cbind(root$realar, root$imagar), 1, FUN = function(x) sqrt(x[1]^2 + x[2]^2))
-	amp$ma = apply(cbind(root$realma, root$imagma), 1, FUN = function(x) sqrt(x[1]^2 + x[2]^2))
 	atan = list()
-	atan$ar = apply(cbind(amp$ar, root$realar),1 , FUN = function(x) atan2(x[1], x[2]) )
-	atan$ma = apply(cbind(amp$ma, root$realma),1 , FUN = function(x) atan2(x[1], x[2]) )
 	degree = list()
-	degree$ar = atan$ar * 57.29577951
-	degree$ma = atan$ma * 57.29577951
+	if(!is.null(zar)){
+		amp$ar = apply(cbind(root$realar, root$imagar), 1, FUN = function(x) sqrt(x[1]^2 + x[2]^2))
+		atan$ar = apply(cbind(amp$ar, root$realar),1 , FUN = function(x) atan2(x[1], x[2]) )
+		degree$ar = atan$ar * 57.29577951
+	}
+	if(!is.null(zma)){
+		amp$ma = apply(cbind(root$realma, root$imagma), 1, FUN = function(x) sqrt(x[1]^2 + x[2]^2))
+		atan$ma = apply(cbind(amp$ma, root$realma),1 , FUN = function(x) atan2(x[1], x[2]) )
+		degree$ma = atan$ma * 57.29577951
+	}
 	res = list(root = root, amp = amp, atan = atan, deg = degree)
 	return(res)
 }
@@ -338,15 +342,26 @@
 	ma.im = x$root$imagma
 	
 	slimit = 1/max(abs(c(ar.rr, ma.rr)), 1.5, abs(c(ar.im, ma.im)))
-	plot(1/arroot, xlim = c( - 1, 1),
-			ylim = c( - 1, 1), xlab = "", ylab = "", pch = 23, ...)
-	points(1/maroot, pch = 21, ...)
-	x = (2*pi/360)*(0:360)
-	lines(sin(x), cos(x), col = "darkgrey")
-	abline(h = 0, col = "darkgrey")
-	abline(v = 0, col = "darkgrey")
-	title("Inverse Roots and Unit Circle\n", 
-			xlab = "Real Part", ylab = "Imaginary Part")
+	if(!is.null(arroot)){
+		plot(1/arroot, xlim = c( - 1, 1), ylim = c( - 1, 1), xlab = "", ylab = "", pch = 23, ...)
+		if(!is.null(maroot)) points(1/maroot, pch = 21, ...)
+		x = (2*pi/360)*(0:360)
+		lines(sin(x), cos(x), col = "darkgrey")
+		abline(h = 0, col = "darkgrey")
+		abline(v = 0, col = "darkgrey")
+		title("Inverse Roots and Unit Circle\n", 
+				xlab = "Real Part", ylab = "Imaginary Part")
+	} else{
+		if(!is.null(maroot)){
+			plot(1/maroot, xlim = c( - 1, 1), ylim = c( - 1, 1), xlab = "", ylab = "", pch = 23, ...)
+			x = (2*pi/360)*(0:360)
+			lines(sin(x), cos(x), col = "darkgrey")
+			abline(h = 0, col = "darkgrey")
+			abline(v = 0, col = "darkgrey")
+			title("Inverse Roots and Unit Circle\n", 
+					xlab = "Real Part", ylab = "Imaginary Part")
+		}
+	}
 	invisible(x)
 }
 
@@ -359,8 +374,8 @@
 	maroot = x$root$ma
 	ma.rr = x$root$realma
 	ma.im = x$root$imagma	
-	points(1/arroot, pch = 23,  ...)
-	points(1/maroot, pch = 21, ...)
+	if(!is.null(arroot)) points(1/arroot, pch = 23,  ...)
+	if(!is.null(maroot)) points(1/maroot, pch = 21, ...)
 	invisible(x)
 }
 
