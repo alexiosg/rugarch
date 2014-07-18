@@ -136,12 +136,14 @@ void c_dghst(double *x, double *mu, double *sigma, double *skew, double *shape, 
 
 double rsghst(const double betabar, const double nu)
 {
+	// Note: for values of nu<5 it is likely that sd(r) will have a very large variance
+	// Existence of moment conditions (vs lower parameter bounds) are defined in the paper.
 	double *param;
 	param = paramghskt(betabar, nu);
 	double beta = param[1];
 	double delta = param[2];
 	double mu = param[3];
-	double y = 1/rgamma(nu/2, 2/(delta*delta));
+	double y = 1.0/rgamma(nu/2.0, 2.0/(delta*delta));
 	double sigma = sqrt(y);
 	double z = rnorm(0,1);
 	double ans =  mu + beta * sigma*sigma + sigma * z;
