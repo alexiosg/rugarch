@@ -15,7 +15,7 @@
 ##
 #################################################################################
 
-
+# master branch
 .rollfdensity = function(spec, data, n.ahead = 1, forecast.length = 500, 
 		n.start = NULL, refit.every = 25, refit.window = c("recursive", "moving"), 
 		window.size = NULL, solver = "hybrid", fit.control = list(), solver.control = list(),
