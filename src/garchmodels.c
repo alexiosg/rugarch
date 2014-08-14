@@ -129,7 +129,7 @@ void gjrgarchfilterC(int *model, double *pars, int *idx, double *hEst, double *x
 		hm = sqrt(fabs(h[i]));
 		arfimaxfilter(model, pars, idx, x, res, mexdata, zrf, constm, condm, hm, *m, i, *T);
 		e[i] = res[i] * res[i];
-		nres[i] = res[i] < 0.0 ? e[i] : 0.0;
+		nres[i] = (res[i] < 0.0) ? e[i] : 0.0;
 		z[i] = res[i]/sqrt(fabs(h[i]));
 		LHT[i] = log(garchdistribution(z[i], sqrt(fabs(h[i])), pars[idx[15]], pars[idx[16]], pars[idx[17]], model[20]));
 		lk = lk - LHT[i];
