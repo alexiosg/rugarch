@@ -1143,6 +1143,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 						PACKAGE = "rugarch"), silent = TRUE)
 		if(inherits(ans1, "try-error")) stop("\nugarchpath-->error: error in calling C function....\n")
 		sigmaSim[,i] = ans1$h[(n.start + m + 1):(n+m)]^(1/2)
+		realizedSim[,i] = ans1$r[(n.start + m + 1):(n+m)]
 		residSim[,i] = ans1$res[(n.start + m + 1):(n+m)]
 		if(modelinc[6]>0){
 			mxreg = matrix( ipars[idx["mxreg",1]:idx["mxreg",2], 1], ncol = modelinc[6] )
