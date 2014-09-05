@@ -104,14 +104,8 @@
 		distr.opt[[i]]$sd = ifelse(pars[i]==0, 0.1, sqrt(pars[i]^2)*2)
 	}
 	if(doparallel){
-		require(parallel)
-		if(pkg=="multicore"){
-			cl = makeForkCluster(nnodes = as.integer(cores))
-			clusterEvalQ(cl, library(rugarch))
-		} else{
-			cl = makePSOCKcluster(as.integer(cores))
-			clusterEvalQ(cl, library(rugarch))
-		}
+		cl = makePSOCKcluster(as.integer(cores))
+		clusterEvalQ(cl, library(rugarch))
 		# set parallel mode on (pmode=1) to tell the likelihood function not to use
 		# environment assignment
 		arglist$pmode = 1
