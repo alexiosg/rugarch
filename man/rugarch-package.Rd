@@ -30,8 +30,8 @@ bitbucket (development).
 Package: \tab rugarch\cr
 Type: \tab Package\cr
 Title: \tab Univariate GARCH models\cr
-Version: \tab 1.3-4\cr
-Date: \tab 2014-07-11\cr
+Version: \tab 1.3-5\cr
+Date: \tab 2014-12-29\cr
 Author: \tab Alexios Ghalanos <alexios@4dscape.com>\cr
 Maintainer: \tab Alexios Ghalanos <alexios@4dscape.com>\cr
 Depends: \tab R (>= 2.10), methods\cr
@@ -112,7 +112,7 @@ simulated object (and their multi- function equivalents).
  author       = {Alexios Ghalanos},
  title        = {{rugarch}: Univariate GARCH models.},
  year         = {2014},
- note         = {R package version 1.3-4.},}}
+ note         = {R package version 1.3-5.},}}
 \emph{}
 }
 \section{License}{

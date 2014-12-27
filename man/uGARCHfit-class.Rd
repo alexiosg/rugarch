@@ -5,6 +5,9 @@
 \alias{fitted,uGARCHfit-method}
 \alias{vcov,uGARCHfit-method}
 \alias{coef,uGARCHfit-method}
+\alias{confinterval,uGARCHfit-method}
+\alias{confinterval,ANY-method}
+\alias{confinterval}
 \alias{infocriteria,uGARCHfit-method}
 \alias{infocriteria,ANY-method}
 \alias{infocriteria}
@@ -76,6 +79,11 @@ Class \code{\linkS4class{rGARCH}}, by class \code{\linkS4class{GARCHfit}}, dista
 \describe{
 \item{coef}{\code{signature(object = "uGARCHfit")}: 
 Extracts the coefficients. }
+\item{cofinterval}{\code{signature(object = "uGARCHfit")}: 
+Similar to the stats S3 method \code{\link{confint}}, extracts coefficient 
+confidence intervals taking additional optional arguments \code{parm} and 
+\code{level}, as well as \code{robust} (default: FALSE) indicating whether
+to use the robust covariance matrix for the calculations.}
 \item{vcov}{\code{signature(object = "uGARCHfit")}: 
 Extracts the covariance matrix of the parameters. Additional logical option of 
 \sQuote{robust} indicates whether to extract the robust based covariance matrix. }

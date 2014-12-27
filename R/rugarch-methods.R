@@ -1,6 +1,6 @@
 #################################################################################
 ##
-##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2013.
+##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2014.
 ##   This file is part of the R package rugarch.
 ##
 ##   The R package rugarch is free software: you can redistribute it and/or modify
@@ -3885,5 +3885,28 @@ setMethod("convergence", signature(object = "uGARCHroll"),  definition = .conver
 setMethod("vcov", signature(object = "uGARCHfit"),  definition = .vcov)
 
 
+#-------------------------------------------------------------------------------------
+confinterval = function(object, ...){
+	UseMethod("confinterval")
+}
 
+.confinterval.garch <- function(object, parm, level = 0.95, robust=FALSE, ...)
+{
+	cf <- coef(object)
+	pnames <- names(cf)
+	if(missing(parm)) parm <- pnames
+	else if(is.numeric(parm)) parm <- pnames[parm]
+	a <- (1 - level)/2
+	a <- c(a, 1 - a)
+	pct = paste(format(100 * a, trim = TRUE, scientific = FALSE, digits = 3), "%")	
+	fac <- qnorm(a)
+	ci <- array(NA, dim = c(length(parm), 2L),
+			dimnames = list(parm, pct))
+	vc = vcov(object)
+	colnames(vc) = rownames(vc) <- pnames
+	ses <- sqrt(diag(vcov(object, robust)))[parm]
+	ci[] <- cf[parm] + ses %o% fac
+	return(ci)
+}
 
+setMethod("confinterval", signature(object = "uGARCHfit"),  definition = .confinterval.garch)
