@@ -2,6 +2,7 @@
 	* DESCRIPTION (Version): New version is 1.3-5.
 	* Added confinterval method (same as stats S3 confint) at user's 
 	request.
+	* Fix to iGARCH simulation (thanks to Andy Tang).
 
 2014-11-08  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-4.
