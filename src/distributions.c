@@ -1,6 +1,6 @@
 /*################################################################################
 ##
-##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2014.
+##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2015.
 ##   This file is part of the R package rugarch.
 ##
 ##   The R package rugarch is free software: you can redistribute it and/or modify

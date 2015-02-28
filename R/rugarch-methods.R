@@ -1,6 +1,6 @@
 #################################################################################
 ##
-##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2014.
+##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2015.
 ##   This file is part of the R package rugarch.
 ##
 ##   The R package rugarch is free software: you can redistribute it and/or modify
@@ -3886,14 +3886,11 @@ setMethod("vcov", signature(object = "uGARCHfit"),  definition = .vcov)
 
 
 #-------------------------------------------------------------------------------------
-confinterval = function(object, ...){
-	UseMethod("confinterval")
-}
-
-.confinterval.garch <- function(object, parm, level = 0.95, robust=FALSE, ...)
+.confint.garch <- function(object, parm, level = 0.95, robust=FALSE, ...)
 {
+	# extract the names of the estimated parameters
+	pnames = rownames(object@model$pars[which(object@model$pars[,"Estimate"]==1),])
 	cf <- coef(object)
-	pnames <- names(cf)
 	if(missing(parm)) parm <- pnames
 	else if(is.numeric(parm)) parm <- pnames[parm]
 	a <- (1 - level)/2
@@ -3905,10 +3902,10 @@ confinterval = function(object, ...){
 	vc = vcov(object)
 	colnames(vc) = rownames(vc) <- pnames
 	ses <- sqrt(diag(vcov(object, robust)))
-  names(ses) = pnames
-  ses = ses[parm]
+  	names(ses) = pnames
+  	ses = ses[parm]
 	ci[] <- cf[parm] + ses %o% fac
 	return(ci)
 }
 
-setMethod("confinterval", signature(object = "uGARCHfit"),  definition = .confinterval.garch)
+setMethod("confint", signature(object = "uGARCHfit"),  definition = .confint.garch)
