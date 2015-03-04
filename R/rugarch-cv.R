@@ -128,7 +128,7 @@ arfimacv = function(data, indexin, indexout, ar.max = 2, ma.max = 2, criterion =
 						fit = try(arfimafit(spec = spec, data = data[din], solver = solver, 
 										solver.control = solver.control, 
 										fit.control = fit.control), silent = TRUE)
-						while(inherits(fit, 'try-error') | convergence(fit)==1 | all(is.na(fit@fit$matcoef[,2]))){
+						while(inherits(fit, 'try-error') || (convergence(fit)==1 | all(is.na(fit@fit$matcoef[,2])))){
 							fit = try(arfimafit(spec = spec, data = data[din], solver = "gosolnp", 
 											solver.control = solver.control, 
 											fit.control = fit.control), silent = TRUE)
@@ -190,7 +190,7 @@ arfimacv = function(data, indexin, indexout, ar.max = 2, ma.max = 2, criterion =
 					fit = try(arfimafit(spec = spec, data = data[din], solver = solver, 
 									solver.control = solver.control, 
 									fit.control = fit.control), silent = TRUE)
-					while(inherits(fit, 'try-error') | convergence(fit)==1 | all(is.na(fit@fit$matcoef[,2]))){
+					while(inherits(fit, 'try-error') || (convergence(fit)==1 | all(is.na(fit@fit$matcoef[,2])))){
 						fit = try(arfimafit(spec = spec, data = data[din], solver = "gosolnp", 
 										solver.control = solver.control, 
 										fit.control = fit.control), silent = TRUE)

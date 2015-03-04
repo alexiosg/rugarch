@@ -8,6 +8,7 @@
 \alias{infocriteria,ARFIMAfit-method}
 \alias{likelihood,ARFIMAfit-method}
 \alias{residuals,ARFIMAfit-method}
+\alias{getspec,ARFIMAfit-method}
 \alias{reduce,ARFIMAfit-method}
 \alias{show,ARFIMAfit-method}
 \alias{uncmean,ARFIMAfit-method}
@@ -61,6 +62,8 @@ Class \code{"\linkS4class{rGARCH}"}, by class "ARFIMA", distance 2.
 	than 0.1 (default), and re-estimates the model. Additional arguments are passed
 	to \code{\link{arfimafit}}.An additional option \dQuote{use.robust} (default TRUE) 
 	asks whether to use the robust calculated p-values.}
+	\item{getspec}{\code{signature(object = "ARFIMAfit")}: 
+	Extracts and returns the ARFIMA specification from a fitted object.}
 	}
 }
 \author{Alexios Ghalanos}
