@@ -2151,8 +2151,9 @@ reduce = function(object, pvalue = 0.1, ...)
 	UseMethod("reduce")
 }
 
-.reduce = function(object, pvalue = 0.1, ...){
-	cf = object@fit$robust.matcoef
+.reduce = function(object, pvalue = 0.1, use.robust=TRUE, ...){
+	# does not yet contain a check for the case of all parameters eliminated
+	if(use.robust) cf = object@fit$robust.matcoef else cf = object@fit$matcoef
 	idx = which(cf[,4]>pvalue)
 	if(length(idx)>0){
 		pars = cf[idx,1]
@@ -2164,7 +2165,11 @@ reduce = function(object, pvalue = 0.1, ...)
 		setstart(spec)<-as.list(cf[-idx,1])
 		dat = xts(object@model$modeldata$data, object@model$modeldata$index)
 		ns = object@model$n.start
-		fit = ugarchfit(spec, dat, out.sample = ns, ...)
+		if(class(object)=="uGARCHfit"){
+			fit = ugarchfit(spec, dat, out.sample = ns, ...)
+		} else{
+			fit = arfimafit(spec, dat, out.sample = ns, ...)
+		}
 		return(fit)
 	} else{
 		return(object)
@@ -2172,6 +2177,8 @@ reduce = function(object, pvalue = 0.1, ...)
 }
 
 setMethod("reduce", signature(object = "uGARCHfit"), .reduce)
+setMethod("reduce", signature(object = "ARFIMAfit"), .reduce)
+
 #----------------------------------------------------------------------------------
 # quantile S4 method
 .ugarchquantile = function(x, probs=c(0.01, 0.05))

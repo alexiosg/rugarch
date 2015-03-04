@@ -3,6 +3,8 @@
 	* Added confint S4 method (same as stats S3 confint) at user's 
 	request (replaces previous confinterval naming).
 	* Fix to iGARCH simulation (thanks to Andy Tang).
+	* Added the reduce method to ARFIMAfit class 
+	(was previously only available for uGARCHfit class).
 
 2014-11-08  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-4.

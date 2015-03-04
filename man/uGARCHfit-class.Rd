@@ -155,7 +155,8 @@ data and estimated density.}
 Zeros parameters (fixing to zero in rugarch is equivalent to eliminating them 
 in estimation) with p-values (optional argument \dQuote{pvalue}) greater 
 than 0.1 (default), and re-estimates the model. Additional arguments are passed
-to \code{\link{ugarchfit}}.}
+to \code{\link{ugarchfit}}.An additional option \dQuote{use.robust} (default TRUE) 
+asks whether to use the robust calculated p-values.}
 \item{plot}{\code{signature(x = "uGARCHfit", y = "missing")}: 
 Fit plots. }
 \item{show}{\code{signature(object = "uGARCHfit")}: 
