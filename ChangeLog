@@ -7,8 +7,6 @@
     * Added the reduce method to ARFIMAfit class
     (was previously only available for uGARCHfit class).
 
-	
-
 2014-11-08  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-4.
 	* Added a numderiv.control argument to the ugarchfit and arfimafit
