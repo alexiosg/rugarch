@@ -1805,6 +1805,55 @@ Finally, it is understood that these tests are applied to out-of-sample forecast
 and NOT insample, for which no correction to the tests have been made to account
 for parameter uncertainty.
 
+\subsection{The Model Confidence Set Test}
+The Model Confidence Set (\emph{MCS}) procedure of \citeasnoun{Hansen2011} (henceforth \emph{HLN}) provides 
+for a ranking of models given some penalized measure on their relative loss function difference. Define a 
+set $M^0$ as the original model comparison set with $i$ models and $t$ the time index, and let $L_{i,t}\left(.\right)$ be 
+some user specified loss function. The ranking of the models is then based on the relative difference of the 
+pairwise loss function, $d_{ij,t}$:
+\begin{equation}\label{mcs1}
+{d_{ij,t}} = {L_{i,t}} - {L_{j,t}}{\text{  }}\forall i,j \in {M^0},
+\end{equation}
+where it is assumed that ${\mu _{ij}} \equiv E\left[ {{d_{ij,t}}} \right]$ is finite and does not depend on $t$, and 
+that $i$ is preferred to $j$ if $\mu_{ij}\le 0$. The set of models which can then be described as superior is defined as:
+\begin{equation}\label{mcs2}
+{M^*} \equiv \left\{ {i \in {M^0}:{\mu _{ij}} \leqslant 0{\text{  }}\forall j \in {M^0}} \right\}.
+\end{equation}
+The determination of $M^*$ is done through a sequence of significance tests with models found to be significantly inferior 
+eliminated from the set. The null hypothesis takes the form:
+\begin{equation}\label{mcs3}
+{H_{0,M}}:{\mu _{ij}} = 0{\text{ }}\forall i,j \in M
+\end{equation}
+with $M \in M^0$, and tested using an equivalence test $\delta_M$. In case of rejection of the null, an elimination 
+rule $e_M$ is then used to identify the model to be removed from the set and the procedure repeated until all inferior 
+models are eliminated. Given a significance level $a$, the models which are not eliminated are deemed the model confidence 
+set $\hat M_{1 - a}^*$ with the key theorem of the test, given a set of assumptions on $\delta_M$ and $e_M$, being 
+that $\lim_{n \to +\infty}P\left( {{M^*} \subset \hat M_{1 - a}^*} \right) \geqslant 1 - a$. The actual studentized measure 
+used to compare models is defined as:
+\begin{equation}\label{msc4}
+\frac{{{{\hat d}_i}}}
+{{\sqrt {\operatorname{var} \left( {{{\hat d}_i}} \right)} }}
+\end{equation}
+with $\hat d_i$ derived as:
+\begin{equation}\label{mcs5}
+\begin{gathered}
+  {{\hat d}_{ij}} \equiv \frac{1}
+{N}\sum\limits_{t = 1}^N {{d_{ij,t}}}  \hfill \\
+  {{\hat d}_i} \equiv \frac{1}
+{{m - 1}}\sum\limits_{j \in M} {{{\hat d}_{ij}}}  \hfill \\
+\end{gathered}
+\end{equation}
+where $\hat d_{ij}$ measures the relative performance between models, and $\hat d_i$ the measures the relative performance of 
+model $i$ to the average of all the models in $M$, and the variance of $\hat d_i$, $var(\hat d_i)$ may be derived by use of 
+the bootstrap. The statistic then used to eliminate inferior models is the range statistic\footnote{Other options 
+are available such as the semi-quadratic statistic which is also returned by
+the package function.} and defined as:
+\begin{equation}\label{mcs6}
+{T_R} = \mathop {\max }\limits_{i,j \in M} \frac{{\left| {{{\hat d}_i}} \right|}}
+{{\sqrt {\operatorname{var} \left( {{{\hat d}_i}} \right)} }}.
+\end{equation}
+The asymptotic distribution of $T_R$, and hence the p-values reported, is obtained via the bootstrap procedure, the validity 
+of which is established in HLN. 
 
 \section{Future Development}\label{section:fut}
 Any future extensions will likely be 'add-on' packages released in the bitbucket

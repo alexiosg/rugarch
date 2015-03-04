@@ -910,7 +910,7 @@ LR.cc.test = function (p, actual, VaR, conf.level = 0.95)
 ###############################################################################
 # MCS Test of Hansen, Lunde and Nason
 # Partially transalted from Kevin Sheppard's mcs matlab function
-mcs = function(losses, alpha, nboot = 100, nblock = 1, boot = c("stationary", "block"))
+mcsTest = function(losses, alpha, nboot = 100, nblock = 1, boot = c("stationary", "block"))
 {
 	n = NROW(losses)
 	m = NCOL(losses)
@@ -924,7 +924,6 @@ mcs = function(losses, alpha, nboot = 100, nblock = 1, boot = c("stationary", "b
 			dijbarstar[j,,i] = tmp - tmp[j]
 		}
 	}
-	
 	tmp = array(NA, dim = c(m, m, nboot))
 	for(i in 1:nboot) tmp[,,i] = dijbar
 	xtmp = ((dijbarstar - tmp)^2)
