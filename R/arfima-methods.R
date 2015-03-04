@@ -1078,3 +1078,5 @@ setMethod("vcov", signature(object = "ARFIMAfit"),  definition = .vcov)
 
 setMethod("fpm", signature(object = "ARFIMAforecast"),  definition = .fpm1)
 setMethod("fpm", signature(object = "ARFIMAroll"),  definition = .fpm2)
+
+setMethod("reduce", signature(object = "ARFIMAfit"), .reduce)

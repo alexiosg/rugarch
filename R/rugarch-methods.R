@@ -2177,8 +2177,6 @@ reduce = function(object, pvalue = 0.1, ...)
 }
 
 setMethod("reduce", signature(object = "uGARCHfit"), .reduce)
-setMethod("reduce", signature(object = "ARFIMAfit"), .reduce)
-
 #----------------------------------------------------------------------------------
 # quantile S4 method
 .ugarchquantile = function(x, probs=c(0.01, 0.05))
