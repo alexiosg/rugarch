@@ -8,6 +8,7 @@
 \alias{infocriteria,ARFIMAfit-method}
 \alias{likelihood,ARFIMAfit-method}
 \alias{residuals,ARFIMAfit-method}
+\alias{reduce,ARFIMAfit-method}
 \alias{show,ARFIMAfit-method}
 \alias{uncmean,ARFIMAfit-method}
 \alias{convergence,ARFIMAfit-method}
@@ -54,6 +55,12 @@ Class \code{"\linkS4class{rGARCH}"}, by class "ARFIMA", distance 2.
 	\item{convergence}{\code{signature(object = "ARFIMAfit")}: 
 	Returns the solver convergence code for the fitted object (zero denotes
 	convergence). }
+	\item{reduce}{\code{signature(object = "ARFIMAfit")}: 
+	Zeros parameters (fixing to zero in rugarch is equivalent to eliminating them 
+	in estimation) with p-values (optional argument \dQuote{pvalue}) greater 
+	than 0.1 (default), and re-estimates the model. Additional arguments are passed
+	to \code{\link{arfimafit}}.An additional option \dQuote{use.robust} (default TRUE) 
+	asks whether to use the robust calculated p-values.}
 	}
 }
 \author{Alexios Ghalanos}
