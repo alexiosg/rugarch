@@ -1,5 +1,10 @@
 2015-03-04  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-5.
+	* Fix to plots (thanks to Eric Zivot for bug). No longer
+	using xts for internal plots, but instead (date, series) format.
+
+2015-03-04  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.3-5.
 	* Exported and documented the mcsTest.
 	* Added confint S4 method (same as stats S3 confint) at user's 
     request (replaces previous confinterval naming).

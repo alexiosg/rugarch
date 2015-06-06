@@ -89,11 +89,10 @@
 	xseries = x@model$modeldata$data[insample]
 	xsigma  = x@fit$sigma
 	ci = 2
-	plot(xts(xseries, xdates), type = "l",  col = "steelblue", ylab = "Returns", xlab="Time", 
-			main = "Series with 2 Conditional SD Superimposed", cex.main = 0.8, 
-			minor.ticks = FALSE, auto.grid = FALSE)
-	lines(xts(+ci* xsigma, xdates) , col = "tomato1")
-	lines(xts(-ci* xsigma, xdates), col = "tomato1")
+	plot(xdates, xseries, type = "l",  col = "steelblue", ylab = "Returns", xlab="Time", 
+			main = "Series with 2 Conditional SD Superimposed", cex.main = 0.8)
+	lines(xdates, +ci* xsigma , col = "tomato1")
+	lines(xdates, -ci* xsigma, col = "tomato1")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -123,11 +122,10 @@
 	cat("\nplease wait...calculating quantiles...\n")
 	q01 	= fitted(x) + sigma(x)* qdist(distribution, z1, 0, 1, lambda = ghlambda, skew, shape)
 	q99 	= fitted(x) + sigma(x)* qdist(distribution, z2, 0, 1, lambda = ghlambda, skew, shape)
-	plot(xts(xseries, xdates), type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
-			main = "Series with with 1% VaR Limits", cex.main = 0.8, minor.ticks = FALSE, 
-			auto.grid = FALSE)
-	lines(xts(q01, xdates), col = "tomato1")
-	lines(xts(q99, xdates), col = "green")
+	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
+			main = "Series with with 1% VaR Limits", cex.main = 0.8)
+	lines(xdates, q01, col = "tomato1")
+	lines(xdates, q99, col = "green")
 	mtext(paste("GARCH model :", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -145,10 +143,9 @@
 	xseries = abs(x@model$modeldata$data[insample])
 	xdates  = x@model$modeldata$index[insample]
 	xsigma 	= x@fit$sigma
-	plot(xts(xseries, xdates), type = "l", col = "lightgrey", ylab = "Volatility", 
-			xlab="Time", main = "Conditional SD (vs |returns|)", cex.main = 0.8, minor.ticks = FALSE, 
-			auto.grid = FALSE)
-	lines(xts(xsigma, xdates), col = "steelblue")
+	plot(xdates, xseries, type = "l", col = "lightgrey", ylab = "Volatility", 
+			xlab="Time", main = "Conditional SD (vs |returns|)", cex.main = 0.8)
+	lines(xdates, xsigma, col = "steelblue")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -472,11 +469,10 @@
 	xdates  = x@model$modeldata$index[insample]
 	xsigma  = x@filter$sigma
 	ci = 2
-	plot(xts(xseries, xdates), type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
-			main = "Series with 2 Conditional SD Superimposed", cex.main = 0.8, 
-			minor.ticks = FALSE, auto.grid = FALSE)
-	lines(xts(+ci* xsigma, xdates) , col = "tomato1")
-	lines(xts(-ci* xsigma, xdates), col = "tomato1")
+	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
+			main = "Series with 2 Conditional SD Superimposed", cex.main = 0.8)
+	lines(xdates, +ci* xsigma, col = "tomato1")
+	lines(xdates, -ci* xsigma, col = "tomato1")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -503,11 +499,10 @@
 	if(distribution == "ghst") ghlambda = -shape/2 else ghlambda = pars[idx["ghlambda",1]]
 	q01 	= qdist(distribution, 0.01, mu = xcmu, sigma = xsigma, lambda = ghlambda, skew = skew, shape = shape)
 	q99 	= qdist(distribution, 0.99, mu = xcmu, sigma = xsigma, lambda = ghlambda, skew = skew, shape = shape)
-	plot(xts(xseries, xdates), type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
-			main = "Series with with 1% VaR Limits", cex.main = 0.8, minor.ticks = FALSE, 
-			auto.grid = FALSE)
-	lines(xts(q01, xdates), col = "tomato1")
-	lines(xts(q99, xdates), col = "green")
+	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
+			main = "Series with with 1% VaR Limits", cex.main = 0.8)
+	lines(xdates, q01, col = "tomato1")
+	lines(xdates, q99, col = "green")
 	mtext(paste("GARCH model :", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -525,10 +520,9 @@
 	xseries = abs(x@model$modeldata$data[insample])
 	xdates  = x@model$modeldata$index[insample]
 	xsigma 	= x@filter$sigma
-	plot(xts(xseries, xdates), type = "l", col = "lightgrey", ylab = "Volatility", 
-			xlab="Time", main = "Conditional Sigma (vs |returns|)", cex.main = 0.8, minor.ticks = FALSE, 
-			auto.grid = FALSE)
-	lines(xts(xsigma, xdates), col = "steelblue")
+	plot(xdates, xseries, type = "l", col = "lightgrey", ylab = "Volatility", 
+			xlab="Time", main = "Conditional Sigma (vs |returns|)", cex.main = 0.8)
+	lines(xdates, xsigma, col = "steelblue")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -1042,16 +1036,15 @@
 	xforseries = c(series, forseries)
 	series = c(series, rep(NA, n))
 	ylim=c(0.95*min(xforseries,na.rm=TRUE), 1.05*max(xforseries,na.rm=TRUE))
-	plot(xts(xforseries, c(xdates, fdates)), type="l", col="steelblue", 
+	plot(c(xdates, fdates), xforseries, type="l", col="steelblue", 
 			main = paste("Forecast Series\n w/th unconditional 1-Sigma bands", sep = "") ,
-			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, 
-			minor.ticks = FALSE, auto.grid = FALSE, cex.axis = 0.8, cex.lab = 0.9)
+			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, FALSE, cex.axis = 0.8, cex.lab = 0.9)
 	abline(h = 0, col = "grey", lty = 3)
 	Zup = forseries+1*forsigma
 	Zdn = forseries-1*forsigma
 	for(i in 2:n) rect(fdates[i-1], Zdn[i-1], fdates[i], Zup[i], col = colors()[142], border=NA)
-	lines(xts(series, c(xdates, fdates)), col="steelblue")
-	lines(xts(forseries, fdates), col="tomato1")
+	lines(c(xdates, fdates), series, col="steelblue")
+	lines(fdates, forseries, col="tomato1")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel=="fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -1086,17 +1079,17 @@
 	fdata = c(rep(NA, (ns - nr)), fdata[-length(fdata)])
 	
 	ylim=c(0.95*min(xminus,na.rm=TRUE), 1.2*max(xplus,na.rm=TRUE))
-	plot(xts(xdata,xdates), type="l", col="black", 
+	plot(xdates, xdata, type="l", col="black", 
 			main = paste("Rolling Forecast vs Actual Series\n w/th conditional 2-Sigma bands", sep = "") ,
 			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, 
-			minor.ticks = FALSE,  major.ticks = FALSE, auto.grid = FALSE, cex.axis = 0.8, cex.lab = 0.9)
+			cex.axis = 0.8, cex.lab = 0.9)
 	#for(i in 6:(nr+25)) rect(xdates[i-5], xminus[i-5], xdates[i], xplus[i], col = colors()[411], border=NA)
 	for(i in 26:(nr+25)) rect(xdates[i-1], fminus[i-1], xdates[i], fplus[i], col = colors()[142], border=NA)
-	lines(xts(xdata, xdates), col = "steelblue")
-	lines(xts(xplus, xdates), col = "lightgrey", lwd = 0.5)
-	lines(xts(xminus,xdates), col = "lightgrey", lwd = 0.5)
+	lines(xdates, xdata, col = "steelblue")
+	lines(xdates, xplus, col = "lightgrey", lwd = 0.5)
+	lines(xdates, xminus, col = "lightgrey", lwd = 0.5)
 	abline(h = 0, col = "grey", lty = 3)
-	lines(xts(fdata,xdates),  col = "tomato1", lwd = 2.5)
+	lines(xdates, fdata, col = "tomato1", lwd = 2.5)
 	#lines(xts(fplus,xdates),  col = "brown", lwd = 0.5)
 	#lines(xts(fminus,xdates),  col = "brown", lwd = 0.5)
 	
@@ -1127,13 +1120,13 @@
 	forsigma = c(sigma, forsigma)
 	sigma = c(sigma, rep(NA,n))
 	ylim=c(0.95*min(forsigma,na.rm=TRUE),1.05*max(forsigma,na.rm=TRUE))
-	plot(xts(forsigma, c(xdates,fdates)), type = "l", col = "black", 
+	plot(c(xdates,fdates), forsigma, type = "l", col = "black", 
 			main = paste("Forecast Unconditional Sigma\n (n.roll = ", n.roll,")", sep = "") , 
 			ylab = "Sigma", xlab = "Time/Horizon", ylim = ylim, cex.main = 0.7, 
-			minor.ticks = FALSE, auto.grid = FALSE, cex.axis = 0.8, cex.lab = 0.9)
+			cex.axis = 0.8, cex.lab = 0.9)
 	abline(h = 0, col = "grey", lty = 3)
-	lines(xts(forsigma, c(xdates,fdates)), col = "tomato1")
-	lines(xts(sigma, c(xdates,fdates)), col = "steelblue")
+	lines(c(xdates,fdates), forsigma, , col = "tomato1")
+	lines(c(xdates,fdates), sigma, col = "steelblue")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -1164,12 +1157,12 @@
 	xdates = x@model$modeldata$index[((N+1)-min(N, 25)):(N+nr)]
 	ns = length(xdata)	
 	ylim=c(0.95*min(abs(xdata),na.rm=TRUE), 1.2*max(abs(xdata),na.rm=TRUE))
-	plot(xts(abs(xdata), xdates), type="l", col="lightgrey", 
+	plot(xdates, abs(xdata), type="l", col="lightgrey", 
 			main = paste("Forecast Rolling Sigma vs |Series|", sep = "") ,
 			ylab="Sigma",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, 
-			minor.ticks = FALSE, auto.grid = FALSE, cex.axis = 0.8, cex.lab = 0.9)
-	lines(xts(xsigma, xdates), col = "steelblue")
-	lines(xts(fsigma, fdates), col = "tomato1", lwd = 0.5)
+			cex.axis = 0.8, cex.lab = 0.9)
+	lines(xdates, xsigma, col = "steelblue")
+	lines(fdates, fsigma, col = "tomato1", lwd = 0.5)
 	abline(h = 0, col = "grey", lty = 3)	
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel=="fGARCH"){
@@ -1390,11 +1383,10 @@
 .plot.garchroll.2 = function(x, VaR.alpha = 0.01, density.support = c(-0.15, 0.15), ...)
 {
 	density = x@forecast$density
-	plot(as.xts(abs(density[,6,drop=FALSE])), type="l", col = "grey", 
+	plot(as.Date(rownames(density)), abs(density[,6]), type="l", col = "grey", 
 			main = paste("Sigma Forecast vs |Series|", sep = ""), 
-			ylab = "", xlab  = "", cex.main = 0.7,  auto.grid = FALSE, 
-			minor.ticks = FALSE, cex.axis = 0.8, cex.lab=0.9)
-	lines(as.xts(abs(density[,2,drop=FALSE])), col = "steelblue", lwd = 1.5)
+			ylab = "", xlab  = "", cex.main = 0.7,  cex.axis = 0.8, cex.lab=0.9)
+	lines(as.Date(rownames(density)), abs(density[,2]), col = "steelblue", lwd = 1.5)
 	grid()
 	invisible(x)
 }
@@ -1403,11 +1395,10 @@
 .plot.garchroll.3 = function(x, VaR.alpha = 0.01, density.support = c(-0.15, 0.15), ...)
 {
 	density = x@forecast$density
-	plot(as.xts(density[,6,drop=FALSE]), type="l", col = "grey", 
+	plot(as.Date(rownames(density)), density[,6], type="l", col = "grey", 
 			main = paste("Series Forecast vs Realized", sep = ""), 
-			ylab = "", xlab  = "", cex.main = 0.7,  auto.grid = FALSE, 
-			minor.ticks = FALSE, cex.axis = 0.8, cex.lab=0.9)
-	lines(as.xts(abs(density[,1,drop=FALSE])), col = "tomato1", lwd = 1.5)
+			ylab = "", xlab  = "", cex.main = 0.7, cex.axis = 0.8, cex.lab=0.9)
+	lines(as.Date(rownames(density)), abs(density[,1]), col = "tomato1", lwd = 1.5)
 	grid()
 	invisible(x)
 }
@@ -1445,11 +1436,10 @@
 	np = .divisortable(m)
 	par(mfrow = c(np[1], np[2]))
 	for(i in 1:m){
-		plot(xts(Z[,i], as.POSIXct(dt)), type="l", ylim = c(min(Zdn[,i]), max(Zup[,i])), 
-				ylab = "value" , xlab = "", main = "", minor.ticks=FALSE, 
-				ann = FALSE, auto.grid = FALSE)
-		lines(xts(Zdn[,i], as.POSIXct(dt)), col=2)
-		lines(xts(Zup[,i], as.POSIXct(dt)), col=2)
+		plot(as.Date(dt), Z[,i], type="l", ylim = c(min(Zdn[,i]), max(Zup[,i])), 
+				ylab = "value" , xlab = "", main = "",  ann = FALSE)
+		lines(as.Date(dt), Zdn[,i], col=2)
+		lines(as.Date(dt), Zup[,i], col=2)
 		title(cnames[i], line = 0.4, cex = 0.9)
 		grid()
 	}
@@ -2199,7 +2189,7 @@ VaRplot = function(alpha, actual, VaR, title = paste("Daily Returns and Value-at
 		grid()
 	} else{
 		plot(actual, type = "n", main = title, ylab = ylab, xlab = xlab, 
-				ylim = c(min(actual, VaR), max(actual, VaR)), ann = FALSE, minor.tick = FALSE, auto.grid = FALSE,
+				ylim = c(min(actual, VaR), max(actual, VaR)), ann = FALSE, 
 				cex.main = 0.8, cex.lab = 0.9, cex.axis = 0.8)
 		abline(h = 0, col = "grey", lty = 2)
 		points(actual, pch = 18, col = "lightgrey")
