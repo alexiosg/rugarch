@@ -2120,3 +2120,35 @@ dkurtosis = function(distribution = "norm", skew = 1, shape = 5, lambda = -0.5)
 	}
 	return( ans )
 }
+######################################################################################
+# MGF
+#mgf.sgh = function(u, rho, zeta, lambda)
+#{
+#	pars=.paramGH(rho, zeta, lambda)
+#	alpha = unname(pars["alpha"])
+#	beta = unname(pars["beta"])
+#	delta = unname(pars["delta"])
+#	mu = unname(pars["mu"])
+#	d1 = alpha^2-beta^2
+#	d2 = (alpha^2-(beta+u)^2)
+#	mg = exp(u*mu)*( d1/d2 )^(lambda/2) * BesselK(lambda, delta*sqrt(d2))/BesselK(lambda, delta*sqrt(d1))
+#	return(mg)
+#}
+#DD <- function(expr, name, order = 1) {
+#	if(order < 1) stop("'order' must be >= 1")
+#	if(order == 1) D(expr, name)
+#	else DD(D(expr, name), name, order - 1)
+#}
+#mgf.sgh.expression = function(u, rho, zeta, lambda)
+#{
+#	pars=.paramGH(rho, zeta, lambda)
+#	alpha = unname(pars["alpha"])
+#	beta = unname(pars["beta"])
+#	delta = unname(pars["delta"])
+#	mu = unname(pars["mu"])
+#	d1 = alpha^2-beta^2
+#	d2 = (alpha^2-(beta+u)^2)
+#	mg = paste("~exp(u*",mu,")*(", d1,"/(",alpha^2,"-(",beta,"+u)^2)^(",lambda/2,"))*besselK(",lambda,", ",delta,"*sqrt(",alpha^2,"-(",beta,"+u)^2))/besselK(",lambda,",",delta*sqrt(d1),")",sep="")
+#
+#	return(expression(mg))
+#}

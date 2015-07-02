@@ -158,7 +158,7 @@ rugarch.test1b = function(cluster=NULL){
 rugarch.test1c = function(cluster=NULL){
 	# unconditional forecasting
 	tic = Sys.time()
-	
+	require(xts)
 	data(sp500ret)	
 	fit = vector(mode = "list", length = 9)
 	dist = c("norm", "snorm", "std", "sstd", "ged", "sged", "nig", "ghyp", "jsu")
@@ -226,15 +226,14 @@ rugarch.test1c = function(cluster=NULL){
 	df = generatefwd(tail(dx, 1), length.out = 100+1, by = forc[[1]]@model$modeldata$period)[-1]		
 	dd = c(dx, df)
 	clrs = rainbow(9, alpha = 1, start = 0.4, end = 0.95)
-	plot(xts::xts(c(tail(sp500ret[,1], 50), nforc[,1]), dd), type = "l", ylim = c(-0.02, 0.02), col = "lightgrey",
-			ylab = "", xlab = "", main = "100-ahead Unconditional Forecasts", 
-			minor.ticks=FALSE, auto.grid=FALSE)
+	plot(xts(c(tail(sp500ret[,1], 50), nforc[,1]), dd), col = "lightgrey", ylim=c(-0.02, 0.02),
+			ylab = "", xlab = "", main = "100-ahead Unconditional Forecasts")
+	addLegend("topright", dist, col = clrs, fill = clrs, on=1)
 	for(i in 1:9){
 		tmp = c(tail(sp500ret[,1], 50), rep(NA, 100))
 		tmp[51:150] = nforc[1:100,i]
-		lines(xts::xts(c(rep(NA, 50), tmp[-(1:50)]),dd), col = clrs[i])
+		lines(xts(c(rep(NA, 50), tmp[-(1:50)]),dd), col = clrs[i], on=1)
 	}
-	legend("topright", legend = dist, col = clrs, fill = clrs, bty = "n")
 	dev.off()
 	toc = Sys.time()-tic
 	cat("Elapsed:", toc, "\n")
@@ -277,19 +276,18 @@ rugarch.test1d = function(cluster=NULL){
 	}
 	
 	postscript("test1d.eps", width = 16, height = 5)
-	par(mfrow = c(1,2))
 	dd = as.POSIXct(tail(rownames(sp500ret), 1250)) 
 	clrs = rainbow(9, alpha = 1, start = 0.4, end = 0.95)
-	plot(xts::xts(tail(sp500ret[,1], 1250), dd), type = "l", ylim = c(-0.02, 0.02), 
+	plot(xts(tail(sp500ret[,1], 1250), dd), type = "l", ylim = c(-0.02, 0.02), 
 			col = "lightgrey", ylab = "", xlab = "", 
 			main = "Rolling 1-ahead Forecasts\nvs Actual", minor.ticks=FALSE, 
 			auto.grid=FALSE)
+	addLegend("topleft", dist, col = clrs, fill = clrs, on=1)
 	for(i in 1:9){
 		tmp = tail(sp500ret[,1], 1250)
 		tmp[251:1250] = rollforc[1:1000,i]
-		lines(xts::xts(c(rep(NA, 250), tmp[-(1:250)]), dd), col = clrs[i])
+		lines(xts(c(rep(NA, 250), tmp[-(1:250)]), dd), col = clrs[i], on=1)
 	}
-	legend("topleft", legend = dist, col = clrs, fill = clrs, bty = "n")
 	
 	# plot deviation measures and range
 	tmp = vector(mode = "list", length = 9)

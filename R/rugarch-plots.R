@@ -833,7 +833,7 @@
 	N2 = dim(simsigma)[1]
 	T = x@model$modeldata$T
 	insample = 1:T
-	xdates = x@model$modeldata$dates[insample]
+	xdates = x@model$modeldata$index[insample]
 	fwddates = .generatefwd(xdates, N = N2, dformat="%Y-%m-%d", periodicity="days")
 	sigma = x@model$modeldata$sigma
 	Ns = length(sigma)
@@ -866,7 +866,7 @@
 	simseries = matrix(x@simulation$seriesSim[,m.sim],ncol=1)
 	N2 = dim(simseries)[1]
 	simseries = as.numeric(simseries[,1])
-	xdates = x@model$modeldata$dates
+	xdates = x@model$modeldata$index
 	Ns = x@model$modeldata$T
 	insample = 1:Ns
 	fwddates = .generatefwd(xdates[insample], N = N2, dformat = "%Y-%m-%d", periodicity = "days")
@@ -1036,9 +1036,9 @@
 	xforseries = c(series, forseries)
 	series = c(series, rep(NA, n))
 	ylim=c(0.95*min(xforseries,na.rm=TRUE), 1.05*max(xforseries,na.rm=TRUE))
-	plot(c(xdates, fdates), xforseries, type="l", col="steelblue", 
+	plot(c(xdates, fdates), as.numeric(xforseries), type="l", col="steelblue", 
 			main = paste("Forecast Series\n w/th unconditional 1-Sigma bands", sep = "") ,
-			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, FALSE, cex.axis = 0.8, cex.lab = 0.9)
+			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, cex.axis = 0.8, cex.lab = 0.9)
 	abline(h = 0, col = "grey", lty = 3)
 	Zup = forseries+1*forsigma
 	Zdn = forseries-1*forsigma
@@ -2188,14 +2188,14 @@ VaRplot = function(alpha, actual, VaR, title = paste("Daily Returns and Value-at
 				pch = c(18,3,-1), lty=c(0,0,1), lwd=c(0,0,2), bty = "n")
 		grid()
 	} else{
-		plot(actual, type = "n", main = title, ylab = ylab, xlab = xlab, 
+		plot(index(actual), as.numeric(actual), type = "n", main = title, ylab = ylab, xlab = xlab, 
 				ylim = c(min(actual, VaR), max(actual, VaR)), ann = FALSE, 
 				cex.main = 0.8, cex.lab = 0.9, cex.axis = 0.8)
 		abline(h = 0, col = "grey", lty = 2)
-		points(actual, pch = 18, col = "lightgrey")
+		points(index(actual), as.numeric(actual), pch = 18, col = "lightgrey")
 		sel  =  which(actual<VaR)
-		points(actual[sel], pch = 18, col = "red")
-		lines(VaR, lwd = 2, col = "black")
+		points(index(actual)[sel],as.numeric(actual[sel]), pch = 18, col = "red")
+		lines(index(actual), as.numeric(VaR), lwd = 2, col = "black")
 		legend("topleft", max(actual),c("returns","return < VaR","VaR"),
 				col=c("lightgrey", "red","black"), cex=0.75,
 				pch = c(18,18,-1), lty=c(0,0,1), lwd=c(0,0,2), bty = "n")

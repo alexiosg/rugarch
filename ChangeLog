@@ -1,7 +1,10 @@
-2015-03-04  Alexios Ghalanos <alexios@4dscape.com>
-	* DESCRIPTION (Version): New version is 1.3-5.
+2015-07-02  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.3-6.
 	* Fix to plots (thanks to Eric Zivot for bug). No longer
 	using xts for internal plots, but instead (date, series) format.
+	This will probably change once I have time to start re-coding 
+	the plots to use functionality of the new xts plotting functions.
+	* Fixes to pass new CRAN change of only attaching the base package.
 
 2015-03-04  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-5.

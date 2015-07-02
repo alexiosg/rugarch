@@ -13,7 +13,6 @@ during regular European trading hours and 0 otherwise.\cr
 }
 \usage{data(dmbp)}
 \format{A data.frame containing 2x1974 observations.}
-\source{JBES Data Archive \url{ftp://www.amstat.org/jbes/View/}}
 \references{
 Bollerslev, T. and Ghysels, E. 1996, Periodic Autoregressive Conditional 
 Heteroscedasticity , \emph{Journal of Business and Economic Statistics}, \bold{14},
