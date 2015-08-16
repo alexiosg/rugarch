@@ -29,7 +29,9 @@ ugarchbench = function( benchmark = c("commercial", "published") )
 	#Example: GARCH w/th Bollerslev-Ghysels Benchmark
 	# load the Deutschemark-Sterling Benchmark Returns Data
 	# Log Relative Error Test measures the number of digits of accuracy of rugarch versus benchmark
-	data("dmbp")
+	newv<-new.env(hash = TRUE, parent = parent.frame(), size = 29L)
+	data("dmbp", envir=newv)
+	dmbp<-get("dmbp", envir = newv)
 	dmbp = as.matrix(dmbp)
 	spec = ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
 			mean.model = list(armaOrder = c(0,0), include.mean = TRUE), 
@@ -87,7 +89,9 @@ ugarchbench = function( benchmark = c("commercial", "published") )
 }
 .commbench = function()
 {
-	data("dji30ret")
+	newv<-new.env(hash = TRUE, parent = parent.frame(), size = 29L)
+	data("dji30ret", envir=newv)
+	dji30ret<-get("dji30ret", envir = newv)	
 	dji30ret = as.matrix(dji30ret)
 	ctrl = list(rho = 1, delta = 1e-9, outer.iter = 100, inner.iter = 650, tol = 1e-9, trace = 0)
 	benchmark = vector(mode="list")
