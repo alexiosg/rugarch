@@ -68,6 +68,8 @@ users workspace with methods for \dQuote{r} (sampling, e.g. rnorm) and \dQuote{d
 (density e.g. dnorm). It must take a single fit object as its second argument.
 Alternatively, custom.dist can take any name in the name slot (e.g.\dQuote{sample}) 
 and a matrix in the fit slot with dimensions equal to m.sim (columns) and n.sim (rows).
+It is understood that what is supplied are the standardized (0,1) innovations and
+not the unstandardized residuals.
 The usefulness of this becomes apparent when one is considering the copula-GARCH 
 approach or the bootstrap method.\cr
 }

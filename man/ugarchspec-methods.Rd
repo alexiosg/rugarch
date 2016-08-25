@@ -151,6 +151,9 @@ component parameters which are fixed to have a lag-1 autoregressive structure.):
      \item transitory component GARCH term: \code{beta1}\cr
    }
 }
+The terms defined above are better explained in the vignette which provides each model's specification
+and exact representation. For instance, in the eGARCH model, both alpha and gamma jointly determine the
+assymetry, and relate to the magnitude and sign of the standardized innovations.
 }
 \author{Alexios Ghalanos}
 \examples{
