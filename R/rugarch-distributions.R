@@ -1254,7 +1254,7 @@ qsnig = function(p, mu = 0, sigma = 1, skew = 0, shape = 1)
 	if(n[5]!=maxn) shape = rep(shape[1], maxn)
 	ans = double(maxn)	
 	for(i in 1:maxn){
-		ans[i] = mu[i] + sigma[i]*.qsnigC(p, rho = skew[i], zeta = shape[i])
+		ans[i] = mu[i] + sigma[i]*.qsnigC(p[i], rho = skew[i], zeta = shape[i])
 	}
 	return( ans )
 }
