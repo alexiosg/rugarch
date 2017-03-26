@@ -1,4 +1,4 @@
-useDynLib(rugarch)
+useDynLib(rugarch,.registration = TRUE)
 import(methods)
 importFrom("graphics", "plot", "lines","abline", "axis", "barplot", "box", "contour", "frame", "grid", "hist", "image", "layout", "legend", "mtext", "par", "persp", "points", "rect", "title")
 importFrom("grDevices", "colors", "dev.cur", "dev.interactive", "dev.new", "dev.next", "hsv", "rainbow", "topo.colors")
