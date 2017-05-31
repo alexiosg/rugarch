@@ -9,3 +9,5 @@ src/garchsim.o
 src/gig.o
 src/nig.o
 src/rugarch.dll
+.Rproj.user
+rugarch.Rproj
