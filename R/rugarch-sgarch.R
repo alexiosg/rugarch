@@ -261,7 +261,7 @@
 	fit.control = arglist$fit.control
 	m = model$maxOrder
 	N = c(m,T)
-	mexdata = model$modeldata$mexdata[1:T,, drop = FALSE]
+	mexdata = coredata(model$modeldata$mexdata[1:T,, drop = FALSE])
 	vexdata = model$modeldata$vexdata[1:T,, drop = FALSE]
 	distribution = model$modeldesc$distribution
 	modelinc = model$modelinc

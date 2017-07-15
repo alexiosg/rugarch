@@ -26,6 +26,7 @@
 		h = as.double(h)
 	}
 	data = as.double(data)
+	mexdata = coredata(mexdata)
 	# flatten exogenous matrix
 	if(model[6]>0){
 		xmxreg = matrix( pars[idx[6,1]:idx[6,2]], ncol = model[6] )
