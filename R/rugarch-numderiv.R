@@ -97,36 +97,6 @@
 	return(H)
 }
 
-# makes no difference in timings
-.hessian2sidedcppOLD = function(f, x, ...)
-{
-	n = length(x)
-	arglist = list(...)$arglist
-	fx = function(y){
-		ans = f(y, arglist)
-		ifelse(!is.numeric(ans) | !is.finite(ans) | length(ans)==0, 1e10, ans)
-	}
-	eps = .Machine$double.eps
-	# Compute the stepsize (h)
-	#h = eps^(1/3)*apply(as.data.frame(x), 1,FUN = function(z) max(abs(z), 1e-2))
-	# h = eps^(1/3) * sapply(x, FUN = function(z) max(abs(z), 1e-4))
-	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
-	xh = x+h
-	h = xh-x
-	if(length(h) == 1) ee = matrix(h, ncol = 1, nrow = 1) else ee = as.matrix(diag(h))
-	# Compute forward and backward steps
-	gp = vector(mode = "numeric", length = n)
-	gp = apply(ee, 2, FUN = function(z) f(x+z, ...))
-	gm = vector(mode="numeric",length=n)
-	gm = apply(ee, 2, FUN = function(z) f(x-z, ...))
-	H = h%*%t(h)
-	# Hm = H
-	# Hp = H
-	sol = .Call("hessian2sided", fun = as.function(fx), x = as.numeric(x), H = as.matrix(H), 
-			deps = as.matrix(ee), gminus = as.numeric(gm), gplus = as.numeric(gp), PACKAGE = "rugarch")
-	return(sol)
-}
-
 # The following functions are based on on Kevin Sheppard's MFE toolbox
 #---------------------------------------------------------------------
 neweywestcv = function(data, nlag = NULL, center = TRUE)
