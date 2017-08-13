@@ -1,15 +1,19 @@
 2015-07-02  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.3-8.
+	* Patch provided by Josh Ulrich for native routine registration
+
+2015-07-02  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-6.
 	* Fix to plots (thanks to Eric Zivot for bug). No longer
 	using xts for internal plots, but instead (date, series) format.
-	This will probably change once I have time to start re-coding 
+	This will probably change once I have time to start re-coding
 	the plots to use functionality of the new xts plotting functions.
 	* Fixes to pass new CRAN change of only attaching the base package.
 
 2015-03-04  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-5.
 	* Exported and documented the mcsTest.
-	* Added confint S4 method (same as stats S3 confint) at user's 
+	* Added confint S4 method (same as stats S3 confint) at user's
     request (replaces previous confinterval naming).
     * Fix to iGARCH simulation (thanks to Andy Tang).
     * Added the reduce method to ARFIMAfit class
@@ -21,7 +25,7 @@
 	* DESCRIPTION (Version): New version is 1.3-4.
 	* Added a numderiv.control argument to the ugarchfit and arfimafit
 	functions to provide finer control on the estimation of the standard
-	errors using numerical derivatives based on the hessian and jacobian 
+	errors using numerical derivatives based on the hessian and jacobian
 	functions in the numDeriv package.
 	* Tweaked the standard error calculation for the robust method.
 	* Added parallel in Depends to avoid warning on CRAN.
@@ -44,7 +48,7 @@
 2014-02-21  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-1.
 	* Patched to work with recent changes to Rcpp.
-	* Changed the Q-statistics and ARCH-LM test (in the show/summary) 
+	* Changed the Q-statistics and ARCH-LM test (in the show/summary)
 	to the weighted statistics of Fisher and Gallagher (2012).
 
 2014-01-01  Alexios Ghalanos <alexios@4dscape.com>
@@ -52,37 +56,37 @@
 	* Reversed log(0) fix in VaRTest function (produced wrong answer).
 	* Added realized GARCH (realGARCH) model of Hansen, Huang and Shek (2011),
 	with almost complete methods.
-	* Added new library in Imports (expm). Matrix power (%^%) required for the 
+	* Added new library in Imports (expm). Matrix power (%^%) required for the
 	multi-period realGARCH forecast).
 	* Expanded multi-methods to deal with realGARCH and mcsGARCH model.
-	
-	
+
+
 2013-11-28  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-9.
 	* Fixed the stationarity condition of the E-GARCH model for the case when p>1,
 	and changed default lower bound on beta to be -1.
-	* Fix to the likelihood summation to take into account the first value of the 
+	* Fix to the likelihood summation to take into account the first value of the
 	standardized residual (was previously set to zero except for the fGARCH model).
-	
+
 
 2013-08-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-8.
 	* small correction to quantile function for ugarchsim/ugarchpath (resulted
-	in error when called as there was a stray comma in the matrix size 
+	in error when called as there was a stray comma in the matrix size
 	setup). Fix also to quantile method for roll (resulted in error when called).
 	* correction to calculation of hessian after previous version removal of Rcpp
 	code introduced an old bug.
-	* Added SkewHyperbolic import for the use of the quantile and distribution 
+	* Added SkewHyperbolic import for the use of the quantile and distribution
 	functions in R.
 
 2013-07-07  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-7.
 	* removed Rcpp hessian calculation code (caused memory leak), and reverted
 	to pure R code. Timings indicate little to no increase in timing.
-	
+
 2013-06-22  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-6.
-	* Change defaults for switching between C and Cpp code for simulation, for 
+	* Change defaults for switching between C and Cpp code for simulation, for
 	faster execution (with implications for rmgarch simulation methods).
 	* Small correction in censoring calculation of the VaR Duration Test
 	[thanks to David Ardia].
@@ -90,20 +94,20 @@
 2013-05-26  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-5.
 	* Major cleanup of distribution code (C source and R). Most R distribution
-	functions linked to underlying C code for speedup (affects distfit and 
+	functions linked to underlying C code for speedup (affects distfit and
 	related methods). Also reversed automatic vectorization of dpqr	functions
 	via vectorize function (created too much overhead), and implemented custom
 	solution.
 	* Fix to rgig C code.
-	* Standardized residuals plot now makes use of residuals method to be 
+	* Standardized residuals plot now makes use of residuals method to be
 	consistent with other methods (previously used 'z' value from likelihood
 	which has zeros in the initial startup values).
 
 2013-04-24  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-4.
-	* Small fix to ugarchsim for csGARCH model. The option for using startMethod 
+	* Small fix to ugarchsim for csGARCH model. The option for using startMethod
 	'unconditional' did not apply to the permanent component of variance and used
-	instead the sample based value which led to a small discrepancy between the 
+	instead the sample based value which led to a small discrepancy between the
 	results run against an equivalent ugarchpath formulation [ thanks to P.B ].
 	* Small fix to uGARCHdistribution bivariate plots when no ARMA was used.
 	* Re-wrote the C code likelihood for the NIG to use the simplified version
@@ -113,52 +117,52 @@
 	when using variance targeting).
 	* Fix to lower/upper bounds of constant (mu) parameter of arfimafit to catch
 	cases where the mean is zero.
-	
+
 
 2013-04-12  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-3.
-	* Changed calculation of diurnal component of mcsGARCH to use the median 
+	* Changed calculation of diurnal component of mcsGARCH to use the median
 	instead of the mean for robustness purposes given the type and size of data
-	used. Small fix in forecast function for mcsGARCH when completely out of 
+	used. Small fix in forecast function for mcsGARCH when completely out of
 	sample forecast requested (resulted in an error).
-	* makevars and makevars.win written using portable (backticks) representation 
+	* makevars and makevars.win written using portable (backticks) representation
 	and therefore removed GNU make requirement from DESCRIPTION.
 
 2013-04-06  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-2.
 	* Version number bump for upload to CRAN for R-3.0.0.
-	* Small fix to fpm (failed for some timezones-related to as.POSIXct use and 
+	* Small fix to fpm (failed for some timezones-related to as.POSIXct use and
 	internal represenation of time/dates).
-	* Small fix to mcsGARCH model again related to timezones and use of 
+	* Small fix to mcsGARCH model again related to timezones and use of
 	as.POSIXct function.
 	* Updated some of the tests in the rugarch.tests folder (and moved folder to
-	main directory). Added the folder to the .Rinstignore file to avoid 
+	main directory). Added the folder to the .Rinstignore file to avoid
 	installation [suggestion of B.R.].
-	* Moved 'Requires' packages to 'Imports' in DESCRIPTION file and 
-	more extensive use of importFrom in NAMESPACE [suggestion of B.R.]. 
+	* Moved 'Requires' packages to 'Imports' in DESCRIPTION file and
+	more extensive use of importFrom in NAMESPACE [suggestion of B.R.].
 
 2013-03-22  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-6.
-	* Added the multiplicative component GARCH (mcsGARCH) model of Engle and 
+	* Added the multiplicative component GARCH (mcsGARCH) model of Engle and
 	Sokalska (2012) for intraday GARCH modelling (takes into account the
 	intraday seasonality component of the absolute returns). Requires regularly
-	sampled intraday data (e.g. 1min, 5min etc). Vignette updated with model 
+	sampled intraday data (e.g. 1min, 5min etc). Vignette updated with model
 	details.
- 	
+
 2013-02-22  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-5.
-	* Added a "quantile" and "pit" method for certain objects to return the 
+	* Added a "quantile" and "pit" method for certain objects to return the
 	conditional quantiles and probability integral transform (cdf transformation).
 	* Added the skdomain function/plot to graph the skewness-kurtosis authorized
 	domain of the skewed and shaped distributions.
-	* Added a "reduce" method to automatically zero (and exclude) non-significant 
+	* Added a "reduce" method to automatically zero (and exclude) non-significant
 	parameters and re-estimate a model.
 
 2013-02-04  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-4.
-	* Added/Exported a couple of Date/Time utility functions (move and generatefwd) 
+	* Added/Exported a couple of Date/Time utility functions (move and generatefwd)
 	for working with the returned forecast objects. Examples are in the help file.
-	* Small fix to fixed parameter return vector in post-estimation (when both 
+	* Small fix to fixed parameter return vector in post-estimation (when both
 	fixed parameters and variance targeting used, the coef method did not output
 	the omega value creating problems for other methods which depended on this).
 	* Small fix to GMMTest when skew and shape are time varying (does not affect
@@ -168,14 +172,14 @@
 
 2013-01-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-3.
-	* Methods 'sigma' and 'fitted' are now uniformly implemented for most uGARCH 
-	classes for extracting the conditional sigma and mean from all objects. The 
-	as.data.frame method is now deprecated. In particular, for the uGARCHforecast 
-	object, these methods now return the n.ahead by (n.roll+1) matrix of 
-	conditional forecasts where the column names are the T[0] time index prior 
-	to the forecast, and the row names labelled as T+1, T+2, to T+n.ahead. The 
-	as.data.frame still remains for some objects which do not return regular 
-	exclusive time series objects (e.g. uGARCHdistribution, uGARCHroll, and 
+	* Methods 'sigma' and 'fitted' are now uniformly implemented for most uGARCH
+	classes for extracting the conditional sigma and mean from all objects. The
+	as.data.frame method is now deprecated. In particular, for the uGARCHforecast
+	object, these methods now return the n.ahead by (n.roll+1) matrix of
+	conditional forecasts where the column names are the T[0] time index prior
+	to the forecast, and the row names labelled as T+1, T+2, to T+n.ahead. The
+	as.data.frame still remains for some objects which do not return regular
+	exclusive time series objects (e.g. uGARCHdistribution, uGARCHroll, and
 	uGARCHboot).
 	* xts is now the only supported data "format" accepted by the package. Numeric,
 	data.frame and matrix data which does not have a proper time based index is
@@ -183,9 +187,9 @@
 	number of days since 1970-01-01 (the warning is turned off at present).
 	* Removed some functions, namely ForwardDates and WeekDayDummy, since the move
 	to xts makes them obsolete.
-	* Removed the as.array and as.list extractor functions in the multi-function 
+	* Removed the as.array and as.list extractor functions in the multi-function
 	object classes (replaced by sigma and fitted).
-	* Consolidated code on methods (using mostly 'switch' functionality), to 
+	* Consolidated code on methods (using mostly 'switch' functionality), to
 	eliminate some of the code redundancy.
 	* Added VaRplot function for plotting the VaR exceedances.
 	* Added VaRloss function for calculating and returning the VaR loss used in
@@ -195,20 +199,20 @@
 	(preq) in the ugarchpath method as an additional argument via the dots(...).
 	The vignette now includes a step by step recipe of how the full bootstrap is
 	constructed.
-	* Turned off warning about NaN's in post-estimation numerical derivative 
+	* Turned off warning about NaN's in post-estimation numerical derivative
 	calculation and added a note in the ugarchfit-methods explaining its purpose
 	and how it relates to the optimal solution.
 	* ugarchroll now also flags as a non-converged estimation windows one where
 	the Hessian cannot be inverted (indicating a local solution).
 
-	
+
 2013-01-24  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-2.
 	* Distribution functions re-written to take advantage of vectorization (some
 	of them were not vectorized), and where deemed appropriate, parallel evaluation
 	(for non-analytic quantile/distribution functions e.g. qghst). This is needed
-	in particular for another package in development. Functions ddist, qdist, 
-	pdist, rdist, dskewness and dkurtosis now take advantage of location and 
+	in particular for another package in development. Functions ddist, qdist,
+	pdist, rdist, dskewness and dkurtosis now take advantage of location and
 	scaling property of standardized NIG/GH distributions for faster evaluation.
 	* rugarch-distributions.R file housekeeping. Elimination of redundant code.
 	* Some cleanup to plots (now return old par setup on exit).
@@ -219,9 +223,9 @@
 2013-01-18  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-1.
 	* Version numbering bump.
-	* Analytic skewness and kurtosis expressions for Johnson's SU 
+	* Analytic skewness and kurtosis expressions for Johnson's SU
 	distribution.
-	* distplot function provides skewness-kurtosis plots (surfaces) for 
+	* distplot function provides skewness-kurtosis plots (surfaces) for
 	skew-shape combinations of different distributions.
 	* Corrected some typos in documentation/vignette [thanks to D.E].
 
@@ -231,7 +235,7 @@
 	failed)
 	* Change initialization of arfima process for values < armaOrder to a
 	constant.
-	* Added extra M(1,2) and M(2,1) to the Hong and Li test (HLTest) report 
+	* Added extra M(1,2) and M(2,1) to the Hong and Li test (HLTest) report
 	which are related to ARCH in mean and leverage effects respectively.
 	* Fix in some methods in the presence of variance targeting.
 	* Fix to some simulation methods when using external regressors in variance
@@ -242,24 +246,24 @@
 	* DESCRIPTION (Version): New version is 1.0-14.
 	* Removed use of custom function environments in the estimation. Passing
 	instead an argument list between functions (resolves various problems for
-	non-shared environments e.g. use of snow and certain solvers). 
+	non-shared environments e.g. use of snow and certain solvers).
 	* Parallel estimation now done entirely using the parallel package, given a
 	user supplied cluster object.
-	* ugarchroll and arfimaroll completely re-written and some functionality 
-	changed (see help files). as.uGARCHforecast and as.ARFIMAforecast methods 
-	removed, and access methods on the rolling objects simplified, as the object 
+	* ugarchroll and arfimaroll completely re-written and some functionality
+	changed (see help files). as.uGARCHforecast and as.ARFIMAforecast methods
+	removed, and access methods on the rolling objects simplified, as the object
 	returns a much cleaner output. Additionally, a new method called resume will
 	allow the resumption of rolling objects which had non-converged windows using
 	different solver and control option combinations. All methods on objects
 	with non-converged windows will now stop and warn. A new option window.size
 	allows to control the amount of data used for the moving window estimation.
-	* ugarchspec now warns on misspelled options in the specification. Exact 
+	* ugarchspec now warns on misspelled options in the specification. Exact
 	(not partial) matching is done on the options in the variance and mean model
 	lists [thanks to Pat Burns].
-	* variance.targeting option in GARCH specification now allows either logical 
-	or numeric value (in which case that is used instead of the unconditional 
+	* variance.targeting option in GARCH specification now allows either logical
+	or numeric value (in which case that is used instead of the unconditional
 	variance of the conditional mean residuals) [user request].
-	* fit.control takes an extra option, 'rec.init' for the type of method used 
+	* fit.control takes an extra option, 'rec.init' for the type of method used
 	to initialize the GARCH recursion ("all" for all data, integer value >1 for
 	using the first n points, or positive numeric value <=1 for exponential
 	backcast method)
@@ -271,7 +275,7 @@
 	* Fix to arfima simulation initialization requirement (n.start>=MA order).
 	* Minor code fixes
 	* vignette updated
-	
+
 2012-10-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-13.
 	* Fix to hybrid solver default trace argument
@@ -284,13 +288,13 @@
 	* Ability to set upper and lower bounds via setbounds<- function on
 	a  uGARCHspec object.
 	* GARCH starting parameters functions cleanup/compacting.
-	* Some fixes to show method for very high dimensional models. Also, some 
+	* Some fixes to show method for very high dimensional models. Also, some
 	changes to Box Test summary and Information Criteria.
 	* Fix to arfimadistribution function.
 
 2012-09-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-12.
-	* Added a hybrid strategy optimization method to sequentially try a list of 
+	* Added a hybrid strategy optimization method to sequentially try a list of
 	alternative solvers in case of non-convergence.
 	* Added optional logical argument 'standardize' (default: FALSE)
 	to residuals method to return the standardized residuals for both the
@@ -301,27 +305,27 @@
 	* Added the Component GARCH model of Lee and Engle (1999)
 	with a complete set of methods.
 	* ugarchroll now only allows n.ahead=1 (alternative was too complicated).
-	* Change to ugarchboot to allow simulated external regressors input 
+	* Change to ugarchboot to allow simulated external regressors input
 	separately from the forecast of the external regressors.
-	
+
 2012-06-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-10.
 	* Fix in ugarchboot (full method) for higher GARCH and ARMA orders.
 	* Numerous fixes to methods involving variance targeting.
-	* Fix to egarchsim when n.sim<100 and m.sim>100 (c++ code -- brackets in 
+	* Fix to egarchsim when n.sim<100 and m.sim>100 (c++ code -- brackets in
 	wrong place!)
 	* Fix to ugarchroll using multicore, and correct f01density slot.
 
 2012-05-23  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-9.
-	* Added autoarfima function to select best arfima model based on information 
-	criterion using optionally complete enumeration of the combination space for 
+	* Added autoarfima function to select best arfima model based on information
+	criterion using optionally complete enumeration of the combination space for
 	the max AR and MA orders chosen.
-	* Fix to some .C calls to eliminate Null being passed (affected only filter 
+	* Fix to some .C calls to eliminate Null being passed (affected only filter
 	method).
-	* Fix avoid error in uncertainty functions for arfima and garch 
+	* Fix avoid error in uncertainty functions for arfima and garch
 	(ugarchdistribution and arfimadistribution) when using spec rather than fit.
-	* Bounds for AR and MA increased to [-4,4] for models with orders higher 
+	* Bounds for AR and MA increased to [-4,4] for models with orders higher
 	than 1.
 	* Fix in ugarchroll to include external.regressors in forecast
 
@@ -335,7 +339,7 @@
 	and HLTest.
 	* Renamed BerkowitzLR to BerkowitzTest.
 	* Updated Vignette with details on changes.
-	* Fixed a bug when spec had include.mean = FALSE but fitting routine 
+	* Fixed a bug when spec had include.mean = FALSE but fitting routine
 	was still subtracting the mean.
 
 2011-12-16  Alexios Ghalanos <alexios@4dscape.com>
@@ -358,14 +362,14 @@
 
 2011-10-12  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-4.
-	* Added tail.test option to BerkowitzLR test. This is a likelihood ratio 
-	test based on censored normal for testing fit of the tail using the 
+	* Added tail.test option to BerkowitzLR test. This is a likelihood ratio
+	test based on censored normal for testing fit of the tail using the
 	probability integral transform (PIT).
 	* Added an example to the DACtest function (in documentation).
-	* Fixed a bug in rolling forecast when calling ghyp functions with variable 
-	length lambda (changes to qdensity and scaledist to handle vector inputs of 
+	* Fixed a bug in rolling forecast when calling ghyp functions with variable
+	length lambda (changes to qdensity and scaledist to handle vector inputs of
 	lambda).
-	
+
 2011-09-28  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-3.
 	* Fix to starting and fixed parameters for AR coefficient.
@@ -384,23 +388,23 @@
 	* DESCRIPTION (Version): New version is 1.0-1.
 	* Some minor changes to reduce warnings on CRAN check.
 	* packageStartupMessage used for .onLoad
-	* Export of GARCHfilter, uGARCHfilter, GARCHroll and uGARCHroll classes 
+	* Export of GARCHfilter, uGARCHfilter, GARCHroll and uGARCHroll classes
 	(forgot them on original release!).
-	* Optional use of multicore will still generate warnings (since not 
+	* Optional use of multicore will still generate warnings (since not
 	available for Windows).
 	* Vignette pdf is pre-built (Rnw simply links to the pdf).
-		
+
 2011-08-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0.
-	* rugarch represents an almost complete re-write of the univariate GARCH 
-	models of the rgarch package which is now being split into seperate 
-	univariate (rugarch) and multivariate (rmgarch) packages for easier 
+	* rugarch represents an almost complete re-write of the univariate GARCH
+	models of the rgarch package which is now being split into seperate
+	univariate (rugarch) and multivariate (rmgarch) packages for easier
 	maintenance.
 	* Completed Vignette.
-	* Numerous corrections, elimination of redundant code, and some new 
+	* Numerous corrections, elimination of redundant code, and some new
 	functionality has been added.
 	* ARFIMA simulation corrections and multiple checks.
-	* rugarch.tests folder now contains an almost comprehensive set of examples 
-	and tests which can be run via a wrapper function found in the runtests.R 
+	* rugarch.tests folder now contains an almost comprehensive set of examples
+	and tests which can be run via a wrapper function found in the runtests.R
 	file.
 	* First upload to CRAN.

@@ -22,14 +22,14 @@
 #---------------------------------------------------------------------------------
 # [mu ar ma arfima im mxreg omega alpha beta gamma gamma11 gamma21 delta lambda vxreg skew shape dlamda aux aux aux aux]
 
-.mcsgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+.mcsgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2), DailyVar)
 {
 	tic = Sys.time()
 	if(is.null(solver.control$trace)) trace = 0 else trace = solver.control$trace
-	
+
 	if(is.null(fit.control$stationarity)) fit.control$stationarity = TRUE
 	if(is.null(fit.control$fixed.se)) fit.control$fixed.se = FALSE
 	if(is.null(fit.control$scale)){
@@ -50,7 +50,7 @@
 	# if we have arch-in-mean turn off scaling
 	if(spec@model$modelinc[5] > 0) fit.control$scale = FALSE
 	# if there are fixed pars we do no allow scaling as there would be no way of mixing scaled
-	# amd non scaled parameters	
+	# amd non scaled parameters
 	if(sum(spec@model$pars[,2]) > 0) fit.control$scale = FALSE
 	if(is.null(DailyVar)){
 		stop("\nugarchfit-->error: you must supply the daily forecast variance (DailyVar) for the msGARCH model\n")
@@ -90,7 +90,7 @@
 	idx2 = .stime(data)
 	# unique intraday time is kept to be used for forecasting and simulation.
 
-	# arglist replaces the use of custom environments (resolves the problem of 
+	# arglist replaces the use of custom environments (resolves the problem of
 	# non-shared environment in parallel estimation, particularly windows)
 	garchenv = new.env(hash = TRUE)
 	arglist = list()
@@ -143,7 +143,7 @@
 	arglist$tmph  = tmp$tmph
 	# we now split out any fixed parameters
 	estidx = as.logical( ipars[,4] )
-	arglist$estidx = estidx	
+	arglist$estidx = estidx
 	arglist$fit.control = fit.control
 	npars = sum(estidx)
 	if(any(ipars[,2]==1)){
@@ -194,9 +194,9 @@
 		if(modelinc[1] > 0) parscale["mu"] = abs(mean(as.numeric(zdata)))
 		if(modelinc[7] > 0) parscale["omega"] = var(as.numeric(zdata))
 		arglist$returnType = "llh"
-		solution = .garchsolver(solver, pars = ipars[estidx, 1], fun = .mcsgarchLLH, 
-				Ifn, ILB, IUB, gr = NULL, hessian = NULL, parscale = parscale, 
-				control = solver.control, LB = ipars[estidx, 5], 
+		solution = .garchsolver(solver, pars = ipars[estidx, 1], fun = .mcsgarchLLH,
+				Ifn, ILB, IUB, gr = NULL, hessian = NULL, parscale = parscale,
+				control = solver.control, LB = ipars[estidx, 5],
 				UB = ipars[estidx, 6], ux = NULL, ci = NULL, mu = NULL, arglist)
 		sol = solution$sol
 		hess = solution$hess
@@ -242,11 +242,11 @@
 			ipars[ipars[,2]==1, 2] = 0
 			arglist$ipars = ipars
 			estidx = as.logical( ipars[,4] )
-			arglist$estidx = estidx	
+			arglist$estidx = estidx
 		}
 		arglist$data = data
-		fit = .makefitmodel(garchmodel = "mcsGARCH", f = .mcsgarchLLH, T = T, m = m, 
-				timer = timer, convergence = convergence, message = sol$message, 
+		fit = .makefitmodel(garchmodel = "mcsGARCH", f = .mcsgarchLLH, T = T, m = m,
+				timer = timer, convergence = convergence, message = sol$message,
 				hess, arglist = arglist, numderiv.control = numderiv.control)
 		model$modelinc[7] = modelinc[7]
 		model$modeldata$data = origdata
@@ -274,7 +274,7 @@
 		# DailyVar will be of length T+out.sample (since it does not depend on any endogenous
 		# variables and we can safely store the full values)
 		model$DailyVar = DVar
-		# DiurnalVar will be of length T (because it depends on residuals)		
+		# DiurnalVar will be of length T (because it depends on residuals)
 		model$DiurnalVar = xts(.diurnal_series_aligned(xts(fit$residuals, index), DVar[1:T], idx1, idx2), origindex[1:T])
 		# adjust sigma (q = component volatility i.e. on deasonalized data)
 		fit$q = fit$sigma
@@ -314,8 +314,8 @@
 	ipars[estidx, 1] = pars
 	trace = arglist$trace
 	T = length(data)
-	dscale = arglist$dscale	
-	recinit = arglist$recinit	
+	dscale = arglist$dscale
+	recinit = arglist$recinit
 	fit.control = arglist$fit.control
 	m = model$maxOrder
 	N = c(m,T)
@@ -348,7 +348,7 @@
 	hEst = mvar
 	# variance targeting
 	if(modelinc[7]>0){
-		ipars[idx["omega",1],1] = max(eps, ipars[idx["omega",1],1]) 
+		ipars[idx["omega",1],1] = max(eps, ipars[idx["omega",1],1])
 	} else{
 		mvar2 = ifelse(!is.na(modelinc[22]), modelinc[22]/dscale, mvar)
 		ipars[idx["omega",1],1] = mvar2 * (1 - persist) - mv
@@ -370,13 +370,13 @@
 	}
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
 	# modelinc (1:21) since 22 is either NA or numeric and no longer needed (paased to ipars if used)
-	ans = try( .C("mcsgarchfilterC", model = as.integer(modelinc[1:21]), 
-					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-					hEst = as.double(hEst), res = as.double(eres), 
-					e = as.double(eres*eres), s = as.double(dseries), 
-					v = as.double(arglist$DV), vexdata = vexdata, m = as.integer(m), 
-					T = as.integer(T), h = double(T), z = double(T), llh = double(1), 
-					LHT = double(T), 
+	ans = try( .C("mcsgarchfilterC", model = as.integer(modelinc[1:21]),
+					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+					hEst = as.double(hEst), res = as.double(eres),
+					e = as.double(eres*eres), s = as.double(dseries),
+					v = as.double(arglist$DV), vexdata = vexdata, m = as.integer(m),
+					T = as.integer(T), h = double(T), z = double(T), llh = double(1),
+					LHT = double(T),
 					PACKAGE = "rugarch"), silent = TRUE )
 	if(inherits(ans, "try-error")){
 		if(arglist$pmode!=1){
@@ -390,13 +390,13 @@
 	} else{
 		if(arglist$pmode!=1){
 			assign("rugarch_csol", 0, envir = garchenv)
-		}	
+		}
 	}
 	z = ans$z
 	h = ans$h
 	epsx = res
 	llh = ans$llh
-	
+
 	if(is.finite(llh) && !is.na(llh) && !is.nan(llh)){
 		if(arglist$pmode!=1) assign("rugarch_llh", llh, envir = garchenv)
 	} else {
@@ -408,7 +408,7 @@
 	ans = switch(returnType,
 			llh = llh,
 			LHT = LHT,
-			all = list(llh = llh, h = h, epsx = epsx, z = z, kappa = kappa, 
+			all = list(llh = llh, h = h, epsx = epsx, z = z, kappa = kappa,
 					LHT = LHT, persistence = persist, dseries = dseries))
 	return(ans)
 }
@@ -443,7 +443,7 @@
 	# can't unlist a POSIXct object...need to manually concatentate (can't use 'c' with recursive option either)
 	dTT = Tb[[1]]
 	if(length(Tb)>1) for(i in 2:length(Tb)) dTT = c(dTT, Tb[[i]])
-	DVar = xts(as.numeric(unlist(DVar)), dTT)	
+	DVar = xts(as.numeric(unlist(DVar)), dTT)
 	xdata = .extractdata(data)
 	data = xdata$data
 	index = xdata$index
@@ -462,8 +462,8 @@
 	idx1 = .unique_time(data[1:Nx])
 	idx2 = .stime(data)
 	# unique intraday time is kept to be used for forecasting and simulation.
-	
-	
+
+
 	model = spec@model
 	ipars = model$pars
 	pars = unlist(model$fixed.pars)
@@ -495,7 +495,7 @@
 	rx = .arfimaxfilter(modelinc[1:21], ipars[,1], idx, mexdata = mexdata, h = 0, data = as.numeric(data), N = N)
 	res = rx$res
 	zrf = rx$zrf
-	
+
 	# 1. Create the diurnal series (bins)
 	# 2. Adjust res by denominator
 	dseries = .diurnal_series_aligned(res, as.numeric(DV), idx1, idx2)
@@ -509,7 +509,7 @@
 	} else{
 		mvar = ifelse(recinit$type==1, mean(eres[1:recinit$n]*eres[1:recinit$n]), backcastv(eres, T, recinit$n))
 	}
-	
+
 	hEst = mvar
 	if(modelinc[15]>0) {
 		mv = sum(apply(matrix(vexdata, ncol = modelinc[15]), 2, "mean")*ipars[idx["vxreg",1]:idx["vxreg",2],1])
@@ -517,24 +517,24 @@
 		mv = 0
 	}
 	if(modelinc[7]>0){
-		ipars[idx["omega",1],1] = max(eps, ipars[idx["omega",1],1]) 
+		ipars[idx["omega",1],1] = max(eps, ipars[idx["omega",1],1])
 	} else{
 		mvar2 = ifelse(!is.na(modelinc[22]), modelinc[22], mvar)
-		ipars[idx["omega",1],1] = mvar2 * (1 - persist) - mv		
+		ipars[idx["omega",1],1] = mvar2 * (1 - persist) - mv
 	}
-	
+
 	if(modelinc[6]>0) mexdata = as.double(as.vector(mexdata)) else mexdata = double(1)
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
-	
-	ans = try( .C("mcsgarchfilterC", model = as.integer(modelinc[1:21]), 
-					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-					hEst = as.double(hEst), res = as.double(eres), 
-					e = as.double(eres*eres), s = as.double(dseries), 
-					v = as.double(DV), vexdata = vexdata, m = as.integer(m), 
-					T = as.integer(T), h = double(T), z = double(T), llh = double(1), 
-					LHT = double(T), 
+
+	ans = try( .C("mcsgarchfilterC", model = as.integer(modelinc[1:21]),
+					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+					hEst = as.double(hEst), res = as.double(eres),
+					e = as.double(eres*eres), s = as.double(dseries),
+					v = as.double(DV), vexdata = vexdata, m = as.integer(m),
+					T = as.integer(T), h = double(T), z = double(T), llh = double(1),
+					LHT = double(T),
 					PACKAGE = "rugarch"), silent = TRUE )
-	
+
 	filter = list()
 	filter$residuals = res
 	filter$LLH = -ans$llh
@@ -559,7 +559,7 @@
 	filter$q = sqrt(ans$h)
 	filter$sigma = filter$q * sqrt(DVar[1:T]*model$DiurnalVar[1:T])
 	filter$z = filter$residuals/filter$sigma
-	
+
 	sol = new("uGARCHfilter",
 			filter = filter,
 			model = model)
@@ -587,10 +587,10 @@
 
 ## mcs GARCH has a lot of extra processing because of the time/date issues
 # involved
-# All pre-processed values must conform to the n.ahead by n.roll matrix, 
+# All pre-processed values must conform to the n.ahead by n.roll matrix,
 # but unlike other GARCH models, we now need to know what n.ahead is, in terms
 # of time/date
-.mcsgarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0, 
+.mcsgarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
 		external.forecasts = list(mregfor = NULL, vregfor = NULL), DailyVar, ...)
 {
 	fit    = fitORspec
@@ -605,7 +605,7 @@
 	lastDate = format(tail(index(inDailyVar), 1), "%Y-%m-%d")
 	dtime = fit@model$dtime
 	dvalues = fit@model$dvalues
-	
+
 	# prepare the diurnal, daily vols
 	if(fit@model$n.start>0){
 		if( (n.ahead+n.roll)<=fit@model$n.start ){
@@ -616,9 +616,9 @@
 		} else{
 			# mixed in and out sample
 			needT = (n.ahead+n.roll) - fit@model$n.start
-			outD = ftseq(T0 = as.POSIXct(tail(index, 1)), 
-					length.out = needT, by = period, 
-					interval = fit@model$dtime, 
+			outD = ftseq(T0 = as.POSIXct(tail(index, 1)),
+					length.out = needT, by = period,
+					interval = fit@model$dtime,
 					exclude.weekends = TRUE)
 			Dmatch = match(format(outD, "%H:%M:%S"), dtime)
 			D2 = xts(dvalues[Dmatch], outD)
@@ -649,9 +649,9 @@
 		}
 	} else{
 		# completely out of the sample
-		outD = ftseq(T0 = as.POSIXct(tail(index, 1)), 
-				length.out = n.ahead+n.roll, by = period, 
-				interval = fit@model$dtime, 
+		outD = ftseq(T0 = as.POSIXct(tail(index, 1)),
+				length.out = n.ahead+n.roll, by = period,
+				interval = fit@model$dtime,
 				exclude.weekends = TRUE)
 		Dmatch = match(format(outD, "%H:%M:%S"), dtime)
 		D2 = xts(dvalues[Dmatch], outD)
@@ -693,16 +693,16 @@
 	xreg = .forcregressors(model, external.forecasts$mregfor, external.forecasts$vregfor, n.ahead, Nor, out.sample = ns, n.roll)
 	mxf = xreg$mxf
 	vxf = xreg$vxf
-	
+
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
-	fspec = ugarchspec(variance.model = list(model = "mcsGARCH", 
-					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL, 
-					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]), 
+	fspec = ugarchspec(variance.model = list(model = "mcsGARCH",
+					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL,
+					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]),
 			mean.model = list(armaOrder = c(modelinc[2], modelinc[3]),
-					include.mean = modelinc[1], 
-					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4], 
-					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]), 
+					include.mean = modelinc[1],
+					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4],
+					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
 	DailyV = .intraday2daily(DVar[1:(N + fcreq)])
@@ -731,19 +731,19 @@
 		h = c(sigmafilter[1:(N+i-1)], rep(0, n.ahead))
 		q = c(qfilter[1:(N+i-1)], rep(0, n.ahead))
 		res = c(resfilter[1:(N+i-1)], rep(0, n.ahead))
-		eres = c(eresfilter[1:(N+i-1)], rep(0, n.ahead))	
+		eres = c(eresfilter[1:(N+i-1)], rep(0, n.ahead))
 		x = c(data[1:(N+i-1)], rep(0, n.ahead))
 		z = c(zfilter[1:(N+i-1)], rep(0, n.ahead))
 		# forecast of externals is provided outside the system
 		mxfi = mxf[1:(N+i-1+n.ahead), , drop = FALSE]
 		vxfi = vxf[1:(N+i-1+n.ahead), , drop = FALSE]
-		ans = .nmcsgarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, q, h, eres, res, z, DVar, DiurnalVar, 
+		ans = .nmcsgarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, q, h, eres, res, z, DVar, DiurnalVar,
 				data = x, N = np, n.ahead)
 		sigmaFor[,i] = ans$h
 		qFor[,i] = ans$q
 		seriesFor[,i] = ans$x
 	}
-	
+
 	fcst = list()
 	fcst$n.ahead = n.ahead
 	fcst$N = N+ns
@@ -760,7 +760,7 @@
 	return(ans)
 }
 
-.nmcsgarchforecast = function(ipars, modelinc, idx, mu, omega, mxfi, vxfi, q, h, 
+.nmcsgarchforecast = function(ipars, modelinc, idx, mu, omega, mxfi, vxfi, q, h,
 		eres, res, z, DVar, DiurnalVar, data, N, n.ahead)
 {
 	if(modelinc[15]>0){
@@ -777,7 +777,7 @@
 				if (i-j > 0){
 					# Equation 8 of Engle/Sokalska
 					s = q[N + i - j]^2
-				} else{ 
+				} else{
 					s = eres[N + i - j]^2
 				}
 				q[N+i] = q[N+i] + ipars[idx["alpha",1]+j-1,1] * s
@@ -786,7 +786,7 @@
 		q[N+i] = sqrt(q[N+i])
 		h[N+i] = q[N+i]*sqrt(as.numeric(DVar)[N+i]*as.numeric(DiurnalVar)[N+i])
 	}
-	
+
 	if(modelinc[4]>0){
 		xres = arfimaf(ipars, modelinc[1:21], idx, mu, mxfi, h, res, z, data, N, n.ahead)
 	} else{
@@ -797,7 +797,7 @@
 
 #---------------------------------------------------------------------------------
 # 2nd dispatch method for forecast
-.mcsgarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0, 
+.mcsgarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
 		external.forecasts = list(mregfor = NULL, vregfor = NULL), ...)
 {
 	stop("\nugarchforecast with specification object not available for mcsGARCH model")
@@ -807,9 +807,9 @@
 #---------------------------------------------------------------------------------
 # DailyVar is the simulated daily variance as an n by m xts object, where n by m
 # contains the days within n.sim by m.sim.
-.mcsgarchsim = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod = 
-				c("unconditional","sample"), presigma = NA, prereturns = NA, 
-		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), 
+.mcsgarchsim = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod =
+				c("unconditional","sample"), presigma = NA, prereturns = NA,
+		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA),
 		mexsimdata = NULL, vexsimdata = NULL, DailyVar, ...)
 {
 	if(fit@model$modelinc[4]>0){
@@ -820,7 +820,7 @@
 	}
 	# 1. Create Diurnal Var (n.sim)
 	T = fit@model$modeldata$T
-	
+
 	T0 = fit@model$modeldata$index[T]
 	dtime = fit@model$dtime
 	dvalues = fit@model$dvalues
@@ -830,7 +830,7 @@
 	# 2. Transform DailyVar into intraday (n.sim by m.sim)
 	if(missing(DailyVar)) stop("\nDailyVar cannot be missing for the mcsGARCH model.")
 	if(!is(DailyVar, "xts")) stop("\nDailyVar must be an xts object of daily variance simulations for the n.sim period")
-	
+
 	DailyVarOld = .intraday2daily(fit@model$DailyVar)
 	Unique1 =  unique(format(index(DiurnalVar), "%Y-%m-%d"))
 	Unique2 =  unique(format(index(DailyVarOld), "%Y-%m-%d"))
@@ -885,7 +885,7 @@
 	idx = model$pidx
 	ipars = fit@fit$ipars
 	# check if necessary the external regressor forecasts provided first
-	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)	
+	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
 	vexsim = xreg$vexsimlist
 	if(N < n.start){
@@ -894,19 +894,19 @@
 	}
 	# Random Samples from the Distribution
 	if(length(sseed) == 1){
-		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1], 
+		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1],
 				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1], n = n * m.sim, seed = sseed[1])
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	} else{
-		zmatrix = data.frame(dist = rep(model$modeldesc$distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim), 
-				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim), 
+		zmatrix = data.frame(dist = rep(model$modeldesc$distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim),
+				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim),
 				n = rep(n, m.sim), seed = sseed)
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	}
 	if(startMethod == "unconditional"){
 		z = rbind(matrix(0, nrow = m, ncol = m.sim), z)
 	} else{
-		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z) 
+		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z)
 	}
 	if(!is.na(preresiduals[1])){
 		preresiduals = as.vector(preresiduals)
@@ -927,7 +927,7 @@
 			prereturns = tail(data, m)
 		}
 	}
-	
+
 	if(!is.null(list(...)$preq)){
 		preq = tail(list(...)$preq^2, m)
 	} else{
@@ -939,7 +939,7 @@
 	h = c(preq, rep(0, n))
 	x = c(prereturns, rep(0, n))
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2], 1], ncol = m.sim, nrow = n + m)
-	
+
 	# outpus matrices
 	qSim = sigmaSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
@@ -948,7 +948,7 @@
 	# eres
 
 	for(i in 1:m.sim){
-		ans1 = try(.C("mcsgarchsimC", model = as.integer(modelinc[1:21]), pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
+		ans1 = try(.C("mcsgarchsimC", model = as.integer(modelinc[1:21]), pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
 						h = as.double(h), z = as.double(z[,i]), eres = as.double(eres), e = as.double(eres*eres),
 						vexdata = as.double(vexsim[[i]]), T = as.integer(n+m), m = as.integer(m), PACKAGE = "rugarch"), silent = TRUE)
 		if(inherits(ans1, "try-error")) stop("\nugarchsim-->error: error in calling C function....\n")
@@ -995,8 +995,8 @@
 # SECTION sGARCH path
 #---------------------------------------------------------------------------------
 .mcsgarchpath = function(spec, n.sim = 1000, n.start = 0, m.sim = 1,
-		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA, 
-		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL, 
+		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA,
+		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,
 		vexsimdata = NULL, ...)
 {
 	stop("\nugarchpath method not available for mcsGARCH model")
@@ -1005,8 +1005,8 @@
 # special purpose rolling method for the mcsGARCH model
 ################################################################################
 
-.rollfdensity.mcs = function(spec, data, n.ahead = 1, forecast.length = 500, 
-		n.start = NULL, refit.every = 25, refit.window = c("recursive", "moving"), 
+.rollfdensity.mcs = function(spec, data, n.ahead = 1, forecast.length = 500,
+		n.start = NULL, refit.every = 25, refit.window = c("recursive", "moving"),
 		window.size = NULL, solver = "hybrid", fit.control = list(), solver.control = list(),
 		calculate.VaR = TRUE, VaR.alpha = c(0.01, 0.05), cluster = NULL,
 		keep.coef = TRUE, DailyVar, ...)
@@ -1039,7 +1039,7 @@
 	M = length(UIndex)
 	matchD = all.equal(UIndex, DailyVarIndex)
 	if(!matchD) stop("\nugarchroll-->error: DailyVar dates do not match the data dates (unique days).\n")
-	
+
 	refit.window = refit.window[1]
 	datanames = names(data)
 	xdata = .extractdata(data)
@@ -1100,11 +1100,11 @@
 	if(any(distribution==c("snorm","sstd","sged","jsu","nig","ghyp","ghst"))) skewed = TRUE else skewed = FALSE
 	if(any(distribution==c("std","sstd","ged","sged","jsu","nig","ghyp","ghst"))) shaped = TRUE else shaped = FALSE
 	if(any(distribution==c("ghyp"))) ghyp = TRUE else ghyp = FALSE
-	
+
 	if( !is.null(cluster) ){
 		clusterEvalQ(cl = cluster, library(rugarch))
-		clusterExport(cluster, c("data", "index", "s","refit.every", 
-						"keep.coef", "shaped", "skewed", "ghyp", 
+		clusterExport(cluster, c("data", "index", "s","refit.every",
+						"keep.coef", "shaped", "skewed", "ghyp",
 						"rollind", "spec", "out.sample", "mex", "vex",
 						"solver", "solver.control", "fit.control", "DailyV"), envir = environment())
 		if(mex) clusterExport(cluster, c("mexdata"), envir = environment())
@@ -1112,8 +1112,8 @@
 		tmp = parLapply(cl = cluster, 1:m, fun = function(i){
 					if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 					if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-					fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-									solver = solver, solver.control = solver.control, 
+					fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+									solver = solver, solver.control = solver.control,
 									fit.control = fit.control, DailyVar = DailyV[[i]]), silent=TRUE)
 					# 3 cases: General Error, Failure to Converge, Failure to invert Hessian (bad solution)
 					if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
@@ -1122,36 +1122,7 @@
 						if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 						if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
 						# since the forecast is in the out.sample we don't need to supply DailyVar
-						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
-								external.forecasts = list(mregfor = fmex, vregfor = fvex))
-						sig = as.numeric( sigma(f) )
-						ret = as.numeric( fitted(f) )
-						if(shaped) shp = rep(coef(fit)["shape"], out.sample[i]) else shp = rep(0, out.sample[i])
-						if(skewed) skw = rep(coef(fit)["skew"], out.sample[i]) else skw = rep(0, out.sample[i])
-						if(ghyp) shpgig = rep(coef(fit)["ghlambda"], out.sample[i]) else shpgig = rep(0, out.sample[i])
-						rlz = tail(data[rollind[[i]]], out.sample[i])
-						# use xts for indexing the forecasts
-						y = as.data.frame(cbind(ret, sig, skw, shp, shpgig, rlz))
-						rownames(y) = tail(as.character(index[rollind[[i]]]), out.sample[i])						
-						colnames(y) = c("Mu", "Sigma", "Skew", "Shape", "Shape(GIG)", "Realized")
-						if(keep.coef) cf = fit@fit$robust.matcoef else cf = NA
-						ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar, 
-								DailyVar = f@model$DailyVar, converge = TRUE)
-					}
-					return(ans)})
-	} else{
-		tmp = lapply(as.list(1:m), FUN = function(i){
-					if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
-					if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-					fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-									solver = solver, solver.control = solver.control, 
-									fit.control = fit.control, DailyVar = DailyV[[i]]), silent=TRUE)
-					if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
-						ans = list(y = NA, cf = NA, q = NA, DiurnalVar = NA, DailyVar = NA, converge = FALSE)
-					} else{
-						if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
-						if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 								external.forecasts = list(mregfor = fmex, vregfor = fvex))
 						sig = as.numeric( sigma(f) )
 						ret = as.numeric( fitted(f) )
@@ -1164,7 +1135,36 @@
 						rownames(y) = tail(as.character(index[rollind[[i]]]), out.sample[i])
 						colnames(y) = c("Mu", "Sigma", "Skew", "Shape", "Shape(GIG)", "Realized")
 						if(keep.coef) cf = fit@fit$robust.matcoef else cf = NA
-						ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar, 
+						ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar,
+								DailyVar = f@model$DailyVar, converge = TRUE)
+					}
+					return(ans)})
+	} else{
+		tmp = lapply(as.list(1:m), FUN = function(i){
+					if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
+					if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
+					fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+									solver = solver, solver.control = solver.control,
+									fit.control = fit.control, DailyVar = DailyV[[i]]), silent=TRUE)
+					if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
+						ans = list(y = NA, cf = NA, q = NA, DiurnalVar = NA, DailyVar = NA, converge = FALSE)
+					} else{
+						if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
+						if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
+						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
+								external.forecasts = list(mregfor = fmex, vregfor = fvex))
+						sig = as.numeric( sigma(f) )
+						ret = as.numeric( fitted(f) )
+						if(shaped) shp = rep(coef(fit)["shape"], out.sample[i]) else shp = rep(0, out.sample[i])
+						if(skewed) skw = rep(coef(fit)["skew"], out.sample[i]) else skw = rep(0, out.sample[i])
+						if(ghyp) shpgig = rep(coef(fit)["ghlambda"], out.sample[i]) else shpgig = rep(0, out.sample[i])
+						rlz = tail(data[rollind[[i]]], out.sample[i])
+						# use xts for indexing the forecasts
+						y = as.data.frame(cbind(ret, sig, skw, shp, shpgig, rlz))
+						rownames(y) = tail(as.character(index[rollind[[i]]]), out.sample[i])
+						colnames(y) = c("Mu", "Sigma", "Skew", "Shape", "Shape(GIG)", "Realized")
+						if(keep.coef) cf = fit@fit$robust.matcoef else cf = NA
+						ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar,
 								DailyVar = f@model$DailyVar, converge = TRUE)
 					}
 					return(ans)})
@@ -1180,7 +1180,7 @@
 		model$period = period
 		model$datanames = datanames
 		model$n.ahead = n.ahead
-		model$forecast.length = forecast.length 
+		model$forecast.length = forecast.length
 		model$n.start = n.start
 		model$n.refits = m
 		model$refit.every = refit.every
@@ -1215,8 +1215,8 @@
 			if(is.null(VaR.alpha)) VaR.alpha = c(0.01, 0.05)
 			VaR.matrix = matrix(NA, ncol = length(VaR.alpha)+1, nrow = NROW(forc))
 			for(i in 1:length(VaR.alpha)){
-				VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2], 
-						skew = forc[,3], shape = forc[,4], lambda = forc[,5], 
+				VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2],
+						skew = forc[,3], shape = forc[,4], lambda = forc[,5],
 						distribution = spec@model$modeldesc$distribution)
 			}
 			VaR.matrix[,length(VaR.alpha)+1] = forc[,6]
@@ -1232,7 +1232,7 @@
 		model$index = index
 		model$period = period
 		model$n.ahead = n.ahead
-		model$forecast.length = forecast.length 
+		model$forecast.length = forecast.length
 		model$n.start = n.start
 		model$refit.every = refit.every
 		model$n.refits = m
@@ -1255,7 +1255,7 @@
 	return( ans )
 }
 
-.resumeroll.mcs = function(object, solver = "hybrid", fit.control = list(), 
+.resumeroll.mcs = function(object, solver = "hybrid", fit.control = list(),
 		solver.control = list(), cluster = NULL)
 {
 	if(!is.null(object@model$noncidx)){
@@ -1344,8 +1344,8 @@
 		if( !is.null(cluster) ){
 			clusterEvalQ(cl = cluster, library(rugarch))
 			clusterExport(cluster, c("data", "index","s","refit.every",
-							"keep.coef", "shaped", "skewed", "ghyp", 
-							"rollind", "spec", "out.sample", "mex", "vex", 
+							"keep.coef", "shaped", "skewed", "ghyp",
+							"rollind", "spec", "out.sample", "mex", "vex",
 							"noncidx", "solver", "solver.control", "fit.control", "DailyV"),
 					envir = environment())
 			if(mex) clusterExport(cluster, c("mexdata"), envir = environment())
@@ -1353,15 +1353,15 @@
 			tmp = parLapply(cl = cluster, as.list(noncidx), fun = function(i){
 						if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 						if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-						fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-										solver=solver, solver.control = solver.control, 
+						fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+										solver=solver, solver.control = solver.control,
 										fit.control = fit.control, DailyVar = DailyV[[i]]), silent=TRUE)
 						if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
 							ans = list(y = NA, cf = NA, q = NA, DiurnalVar = NA, DailyVar = NA, converge = FALSE)
 						} else{
 							if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 							if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 									external.forecasts = list(mregfor = fmex, vregfor = fvex))
 							sig = as.numeric( sigma(f) )
 							ret = as.numeric( fitted(f) )
@@ -1374,7 +1374,7 @@
 							rownames(y) = tail(as.character(index[rollind[[i]]]), out.sample[i])
 							colnames(y) = c("Mu", "Sigma", "Skew", "Shape", "Shape(GIG)", "Realized")
 							if(keep.coef) cf = fit@fit$robust.matcoef else cf = NA
-							ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar, 
+							ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar,
 									DailyVar = f@model$DailyVar, converge = TRUE)
 						}
 						return(ans)})
@@ -1382,15 +1382,15 @@
 			tmp = lapply(as.list(noncidx), FUN = function(i){
 						if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 						if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-						fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-										solver=solver, solver.control = solver.control, 
+						fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+										solver=solver, solver.control = solver.control,
 										fit.control = fit.control), silent=TRUE)
 						if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
 							ans = list(y = NA, cf = NA, q = NA, DiurnalVar = NA, DailyVar = NA, converge = FALSE)
 						} else{
 							if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 							if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 									external.forecasts = list(mregfor = fmex, vregfor = fvex))
 							sig = as.numeric( sigma(f) )
 							ret = as.numeric( fitted(f) )
@@ -1403,11 +1403,11 @@
 							rownames(y) = tail(as.character(index[rollind[[i]]]), out.sample[i])
 							colnames(y) = c("Mu", "Sigma", "Skew", "Shape", "Shape(GIG)", "Realized")
 							if(keep.coef) cf = fit@fit$robust.matcoef else cf = NA
-							ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar, 
+							ans = list(y = y, cf = cf, q = f@forecast$qFor, DiurnalVar = f@model$DiurnalVar,
 									DailyVar = f@model$DailyVar, converge = TRUE)
 						}
 						return(ans)})
-		}		
+		}
 		forecast = object@forecast
 		conv = sapply(tmp, FUN = function(x) x$converge)
 		for(i in 1:length(noncidx)){
@@ -1422,7 +1422,7 @@
 			model$index = index
 			model$period = period
 			model$n.ahead = n.ahead
-			model$forecast.length = forecast.length 
+			model$forecast.length = forecast.length
 			model$n.start = n.start
 			model$refit.every = refit.every
 			model$n.refits = m
@@ -1441,7 +1441,7 @@
 			ans = new("uGARCHroll",
 					model = model,
 					forecast = forecast)
-			return( ans )			
+			return( ans )
 		} else{
 			noncidx = NULL
 			forc = forecast[[1]]$y
@@ -1457,8 +1457,8 @@
 				if(is.null(VaR.alpha)) VaR.alpha = c(0.01, 0.05)
 				VaR.matrix = matrix(NA, ncol = length(VaR.alpha)+1, nrow = NROW(forc))
 				for(i in 1:length(VaR.alpha)){
-					VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2], 
-							skew = forc[,3], shape = forc[,4], lambda = forc[,5], 
+					VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2],
+							skew = forc[,3], shape = forc[,4], lambda = forc[,5],
 							distribution = spec@model$modeldesc$distribution)
 				}
 				VaR.matrix[,length(VaR.alpha)+1] = forc[,6]
@@ -1474,7 +1474,7 @@
 			model$index = index
 			model$period = period
 			model$n.ahead = n.ahead
-			model$forecast.length = forecast.length 
+			model$forecast.length = forecast.length
 			model$n.start = n.start
 			model$refit.every = refit.every
 			model$n.refits = m

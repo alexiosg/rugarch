@@ -20,14 +20,14 @@
 #---------------------------------------------------------------------------------
 # [mu ar ma arfima im mxreg omega alpha beta gamma gamma11 gamma21 delta lambda vxreg skew shape dlamda aux aux aux aux]
 
-.csgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+.csgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
 	tic = Sys.time()
 	if(is.null(solver.control$trace)) trace = 0 else trace = solver.control$trace
-	
+
 	if(is.null(fit.control$stationarity)) fit.control$stationarity = TRUE
 	if(is.null(fit.control$fixed.se)) fit.control$fixed.se = FALSE
 	if(is.null(fit.control$scale)) fit.control$scale = FALSE
@@ -39,14 +39,14 @@
 		for(i in 1:length(idx)) enx = c(enx, names(fit.control)[idx[i]])
 		warning(paste(c("unidentified option(s) in fit.control:\n", enx), sep="", collapse=" "), call. = FALSE, domain = NULL)
 	}
-	
+
 	# if we have external regressors in variance turn off scaling
 	if(spec@model$modelinc[15] > 0) fit.control$scale = FALSE
 	# if we have arch-in-mena turn off scaling
 	if(spec@model$modelinc[5] > 0) fit.control$scale = FALSE
-	
+
 	# if there are fixed pars we do no allow scaling as there would be no way of mixing scaled
-	# amd non scaled parameters	
+	# amd non scaled parameters
 	if(sum(spec@model$pars[,2]) > 0) fit.control$scale = FALSE
 	xdata = .extractdata(data)
 	if(!is.numeric(out.sample)) stop("\nugarchfit-->error: out.sample must be numeric\n")
@@ -59,7 +59,7 @@
 	origdata = xdata$data
 	origindex = xdata$index
 	period = xdata$period
-	# arglist replaces the use of custom environments (resolves the problem of 
+	# arglist replaces the use of custom environments (resolves the problem of
 	# non-shared environment in parallel estimation, particularly windows)
 	garchenv = new.env(hash = TRUE)
 	arglist = list()
@@ -74,7 +74,7 @@
 	} else{
 		mexdata = NULL
 	}
-	
+
 	if(modelinc[15] > 0){
 		vexdata = model$modeldata$vexdata[1:(n-n.start), ,drop = FALSE]
 	} else{
@@ -100,7 +100,7 @@
 	arglist$tmph  = tmp$tmph
 	# we now split out any fixed parameters
 	estidx = as.logical( ipars[,4] )
-	arglist$estidx = estidx	
+	arglist$estidx = estidx
 	arglist$fit.control = fit.control
 	npars = sum(estidx)
 	if(any(ipars[,2]==1)){
@@ -150,10 +150,10 @@
 		if(modelinc[1] > 0) parscale["mu"] = abs(mean(zdata))
 		if(modelinc[7] > 0) parscale["omega"] = var(zdata)
 		arglist$returnType = "llh"
-		solution = .garchsolver(solver, pars = ipars[estidx, 1], fun = .csgarchLLH, 
-				Ifn, ILB, IUB, gr = NULL, hessian = NULL, parscale = parscale, 
-				control = solver.control, LB = ipars[estidx, 5], 
-				UB = ipars[estidx, 6], ux = NULL, ci = NULL, mu = NULL, 
+		solution = .garchsolver(solver, pars = ipars[estidx, 1], fun = .csgarchLLH,
+				Ifn, ILB, IUB, gr = NULL, hessian = NULL, parscale = parscale,
+				control = solver.control, LB = ipars[estidx, 5],
+				UB = ipars[estidx, 6], ux = NULL, ci = NULL, mu = NULL,
 				arglist)
 		sol = solution$sol
 		hess = solution$hess
@@ -190,11 +190,11 @@
 			ipars[ipars[,2]==1, 2] = 0
 			arglist$ipars = ipars
 			estidx = as.logical( ipars[,4] )
-			arglist$estidx = estidx	
+			arglist$estidx = estidx
 		}
 		arglist$data = data
-		fit = .makefitmodel(garchmodel = "csGARCH", f = .csgarchLLH, T = T, m = m, 
-				timer = timer, convergence = convergence, message = sol$message, 
+		fit = .makefitmodel(garchmodel = "csGARCH", f = .csgarchLLH, T = T, m = m,
+				timer = timer, convergence = convergence, message = sol$message,
 				hess, arglist = arglist, numderiv.control = numderiv.control)
 		model$modelinc[7] = modelinc[7]
 		model$modeldata$data = origdata
@@ -242,13 +242,13 @@
 	ipars[estidx, 1] = pars
 	trace = arglist$trace
 	T = length(data)
-	dscale = arglist$dscale	
-	recinit = arglist$recinit	
+	dscale = arglist$dscale
+	recinit = arglist$recinit
 	fit.control = arglist$fit.control
 	m = model$maxOrder
 	N = c(m,T)
-	mexdata = model$modeldata$mexdata[1:T,, drop = FALSE]
-	vexdata = model$modeldata$vexdata[1:T,, drop = FALSE]
+	mexdata = coredata(model$modeldata$mexdata[1:T,, drop = FALSE])
+	vexdata = coredata(model$modeldata$vexdata[1:T,, drop = FALSE])
 	distribution = model$modeldesc$distribution
 	modelinc = model$modelinc
 	# distribution number
@@ -258,9 +258,9 @@
 	rx = .arfimaxfilter(modelinc[1:21], ipars[,1], idx, mexdata = mexdata, h = hm, data = data, N = N)
 	res = rx$res
 	zrf = rx$zrf
-	res[is.na(res) | !is.finite(res) | is.nan(res)] = 0	
+	res[is.na(res) | !is.finite(res) | is.nan(res)] = 0
 	persist = (sum(ipars[idx["alpha",1]:idx["alpha",2],1]) + sum(ipars[idx["beta",1]:idx["beta",2],1]))
-	
+
 	if(fit.control$stationarity == 1 && modelinc[15] == 0){
 		xcond = .csgarchcon(pars, arglist)
 		if(any(xcond<0)){
@@ -271,7 +271,7 @@
 			}
 		}
 	}
-	
+
 	# unconditional sigma value
 	mvar = ifelse(recinit$type==1, mean(res[1:recinit$n]*res[1:recinit$n]), backcastv(res, T, recinit$n))
 	if(modelinc[15]>0) {
@@ -285,15 +285,15 @@
 	if(is.na(hEst) | !is.finite(hEst) | is.nan(hEst)) hEst = var(data) * (1 - persist)
 	if(modelinc[6]>0) mexdata = as.double(as.vector(mexdata)) else mexdata = double(1)
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
-	
-	ans = try( .C("csgarchfilterC", model = as.integer(modelinc[1:21]), 
-					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-					hEst = as.double(hEst), x = as.double(data), res = as.double(res), 
-					e = double(T), mexdata = mexdata, vexdata = vexdata, 
-					zrf = as.double(zrf), constm = double(T), condm = double(T), 
-					m = as.integer(m), T = as.integer(T), h = double(T), 
-					q = double(T), z = double(T), llh = double(1), 
-					LHT = double(T), PACKAGE = "rugarch"), silent = TRUE )	
+
+	ans = try( .C("csgarchfilterC", model = as.integer(modelinc[1:21]),
+					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+					hEst = as.double(hEst), x = as.double(data), res = as.double(res),
+					e = double(T), mexdata = mexdata, vexdata = vexdata,
+					zrf = as.double(zrf), constm = double(T), condm = double(T),
+					m = as.integer(m), T = as.integer(T), h = double(T),
+					q = double(T), z = double(T), llh = double(1),
+					LHT = double(T), PACKAGE = "rugarch"), silent = TRUE )
 	if(inherits(ans, "try-error")){
 		if(arglist$pmode!=1){
 			assign("rugarch_csol", 1, envir = garchenv)
@@ -306,21 +306,21 @@
 	} else{
 		if(arglist$pmode!=1){
 			assign("rugarch_csol", 0, envir = garchenv)
-		}	
+		}
 	}
 	z = ans$z
 	h = ans$h
 	q = ans$q
 	epsx = ans$res
 	llh = ans$llh
-	
+
 	if(is.finite(llh) && !is.na(llh) && !is.nan(llh)){
 		if(arglist$pmode!=1) assign("rugarch_llh", llh, envir = garchenv)
 	} else {
 		if(arglist$pmode!=1) llh = (get("rugarch_llh", garchenv) + 0.1*(abs(get("rugarch_llh", garchenv)))) else llh = 1e10
 	}
-	
-	
+
+
 	# LHT = raw scores
 	#LHT = -ans$LHT[(m):T]
 	LHT = -ans$LHT
@@ -382,12 +382,12 @@
 	distribution = model$modeldesc$distribution
 	dist = model$modeldesc$distno
 	#kappa = 1
-	#persist = (sum(ipars[idx["alpha",1]:idx["alpha",2],1]) + sum(ipars[idx["beta",1]:idx["beta",2],1]))	
-	
+	#persist = (sum(ipars[idx["alpha",1]:idx["alpha",2],1]) + sum(ipars[idx["beta",1]:idx["beta",2],1]))
+
 	rx = .arfimaxfilter(modelinc[1:21], ipars[,1], idx, mexdata = mexdata, h = 0, data = data, N = N)
 	res = rx$res
 	zrf = rx$zrf
-	
+
 	if(!is.null(n.old)){
 		rx2 = .arfimaxfilter(modelinc[1:21], ipars[,1], idx, mexdata = mexdata[1:Nx, , drop = FALSE], h = 0, data = origdata[1:Nx], N = c(m, Nx))
 		res2 = rx2$res
@@ -402,20 +402,20 @@
 	} else{
 		mv = 0
 	}
-	ipars[idx["omega",1],1] = max(eps, ipars[idx["omega",1],1]) 
-	
+	ipars[idx["omega",1],1] = max(eps, ipars[idx["omega",1],1])
+
 	if(modelinc[6]>0) mexdata = as.double(as.vector(mexdata)) else mexdata = double(1)
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
-	
-	ans = try( .C("csgarchfilterC", model = as.integer(modelinc[1:21]), 
-					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-					hEst = as.double(hEst), x = as.double(data), res = as.double(res), 
-					e = double(T), mexdata = mexdata, vexdata = vexdata, 
-					zrf = as.double(zrf), constm = double(T), condm = double(T), 
-					m = as.integer(m), T = as.integer(T), h = double(T), 
-					qx = double(T), z = double(T), llh = double(1), 
+
+	ans = try( .C("csgarchfilterC", model = as.integer(modelinc[1:21]),
+					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+					hEst = as.double(hEst), x = as.double(data), res = as.double(res),
+					e = double(T), mexdata = mexdata, vexdata = vexdata,
+					zrf = as.double(zrf), constm = double(T), condm = double(T),
+					m = as.integer(m), T = as.integer(T), h = double(T),
+					qx = double(T), z = double(T), llh = double(1),
 					LHT = double(T), PACKAGE = "rugarch"), silent = TRUE )
-	
+
 	persist = persistence(spec)
 	filter = list()
 	filter$z = ans$z
@@ -431,7 +431,7 @@
 	model$modeldata$index = origindex
 	model$modeldata$period = period
 	model$n.start = out.sample
-	
+
 	sol = new("uGARCHfilter",
 			filter = filter,
 			model = model)
@@ -457,7 +457,7 @@
 # the forecast. This requires that during the fit process the out.sample option
 # was used and that (n.roll) < out.sample (otherwise we revert to the unconditional
 # expectation formula for the long run sigma.
-.csgarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0, 
+.csgarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
 		external.forecasts = list(mregfor = NULL, vregfor = NULL), ...)
 {
 	fit    = fitORspec
@@ -478,16 +478,16 @@
 	xreg = .forcregressors(model, external.forecasts$mregfor, external.forecasts$vregfor, n.ahead, Nor, out.sample = ns, n.roll)
 	mxf = xreg$mxf
 	vxf = xreg$vxf
-	
+
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
-	fspec = ugarchspec(variance.model = list(model = "csGARCH", 
-					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL, 
-					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]), 
+	fspec = ugarchspec(variance.model = list(model = "csGARCH",
+					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL,
+					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]),
 			mean.model = list(armaOrder = c(modelinc[2], modelinc[3]),
-					include.mean = modelinc[1], 
-					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4], 
-					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]), 
+					include.mean = modelinc[1],
+					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4],
+					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
 	flt = .csgarchfilter(data = tmp, spec = fspec, n.old = N)
@@ -523,7 +523,7 @@
 		seriesFor[,i] = ans$x
 		qFor[,i] = ans$q
 	}
-	
+
 	fcst = list()
 	fcst$n.ahead = n.ahead
 	fcst$N = N+ns
@@ -556,7 +556,7 @@
 				for (j in 1:modelinc[8]){
 					if (i-j > 0){
 						s = h[N + i - j]^2
-					} else{ 
+					} else{
 						s = epsx[N + i - j]^2
 					}
 					h[N+i] = h[N+i] + ipars[idx["alpha",1]+j-1,1] * (s - q[N + i - j])
@@ -566,7 +566,7 @@
 				h[N+i] = h[N+i] + sum(ipars[idx["beta",1]:idx["beta",2],1]*(h[N+i-(1:modelinc[9])]^2 - q[N+i-(1:modelinc[9])]))
 			}
 		} else{
-			q[N+i] = ( (1-ipars[idx["eta1",1],1]^i)/(1-ipars[idx["eta1",1],1]) ) * (ipars[idx["omega",1],1] + vxt[N+i]) + 
+			q[N+i] = ( (1-ipars[idx["eta1",1],1]^i)/(1-ipars[idx["eta1",1],1]) ) * (ipars[idx["omega",1],1] + vxt[N+i]) +
 					(ipars[idx["eta1",1],1]^i)*q[N]
 			if(modelinc[9]>0){
 				beta = sum(ipars[idx["beta",1]:idx["beta",2],1])
@@ -582,7 +582,7 @@
 		}
 		h[N+i] = sqrt(h[N+i])
 	}
-	
+
 	if(modelinc[4]>0){
 		res = arfimaf(ipars, modelinc[1:21], idx, mu, mxfi, h, epsx, z, data, N, n.ahead)
 	} else{
@@ -594,7 +594,7 @@
 
 #---------------------------------------------------------------------------------
 # 2nd dispatch method for forecast
-.csgarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0, 
+.csgarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
 		external.forecasts = list(mregfor = NULL, vregfor = NULL), ...)
 {
 	# first we filter the data to get the results:
@@ -610,7 +610,7 @@
 	ns = out.sample
 	if( n.roll > ns ) stop("\nugarchforecast-->error: n.roll must not be greater than out.sample!")
 	N = Nor - ns
-	
+
 	model = spec@model
 	ipars = model$pars
 	pars = unlist(model$fixed.pars)
@@ -632,20 +632,20 @@
 	model$modeldata$data = data
 	model$modeldata$index = index
 	model$modeldata$period = period
-	
+
 	# check if necessary the external regressor forecasts provided first
 	xreg = .forcregressors(model, external.forecasts$mregfor, external.forecasts$vregfor, n.ahead, Nor, out.sample = ns, n.roll)
 	mxf = xreg$mxf
 	vxf = xreg$vxf
-	
+
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
-	fspec = ugarchspec(variance.model = list(model = "csGARCH", 
-					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL, 
-					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]), 
+	fspec = ugarchspec(variance.model = list(model = "csGARCH",
+					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL,
+					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]),
 			mean.model = list(armaOrder = c(modelinc[2], modelinc[3]),
-					include.mean = modelinc[1], 
-					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4], 
+					include.mean = modelinc[1],
+					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4],
 					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
@@ -696,26 +696,26 @@
 	ans = new("uGARCHforecast",
 			forecast = fcst,
 			model = model)
-	return(ans)	
+	return(ans)
 }
 
 #---------------------------------------------------------------------------------
 # SECTION sGARCH simulate
 #---------------------------------------------------------------------------------
-.csgarchsim = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod = 
-				c("unconditional","sample"), presigma = NA, prereturns = NA, 
-		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), 
+.csgarchsim = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod =
+				c("unconditional","sample"), presigma = NA, prereturns = NA,
+		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA),
 		mexsimdata = NULL, vexsimdata = NULL, ...)
 {
 	if( (n.sim+n.start) < 1000 && m.sim > 100 ){
-		ans = .csgarchsim2(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim, 
-				startMethod = startMethod, presigma = presigma, prereturns = prereturns, 
-				preresiduals = preresiduals, rseed = rseed, custom.dist = custom.dist, 
+		ans = .csgarchsim2(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+				startMethod = startMethod, presigma = presigma, prereturns = prereturns,
+				preresiduals = preresiduals, rseed = rseed, custom.dist = custom.dist,
 				mexsimdata = mexsimdata, vexsimdata = vexsimdata, ...)
 	} else{
-		ans = .csgarchsim1(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim, 
-				startMethod = startMethod, presigma = presigma, prereturns = prereturns, 
-				preresiduals = preresiduals, rseed = rseed, custom.dist = custom.dist, 
+		ans = .csgarchsim1(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+				startMethod = startMethod, presigma = presigma, prereturns = prereturns,
+				preresiduals = preresiduals, rseed = rseed, custom.dist = custom.dist,
 				mexsimdata = mexsimdata, vexsimdata = vexsimdata, ...)
 	}
 	return( ans )
@@ -756,12 +756,12 @@
 	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
 	vexsim = xreg$vexsimlist
-	
+
 	if(N < n.start){
 		startmethod[1] = "unconditional"
 		warning("\nugarchsim-->warning: n.start greater than length of data...using unconditional start method...\n")
 	}
-	
+
 # Random Samples from the Distribution
 	if(length(sseed) == 1){
 		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1],
@@ -778,7 +778,7 @@
 	} else{
 		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z)
 	}
-	
+
 # create the presample information
 	if(!is.na(presigma[1])){
 		presigma = as.vector(presigma)
@@ -819,21 +819,21 @@
 			preq = tail(fit@fit$q, m)
 		}
 	}
-	
-	
+
+
 # input vectors/matrices
 	h = c(presigma^2, rep(0, n))
 	q = c(preq, rep(0, n))
 	x = c(prereturns, rep(0, n))
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2], 1], ncol = m.sim, nrow = n + m)
-	
+
 # outpus matrices
 	sigmaSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	qSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	residSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	z[is.na(z) | is.nan(z) | !is.finite(z)] = 0
-	
+
 	for(i in 1:m.sim){
 		if(is.na(preresiduals[1])){
 			if(startMethod[1] == "unconditional"){
@@ -843,7 +843,7 @@
 			}
 		}
 		res = c(preres, rep(0, n))
-		
+
 		ans1 = try(.C("csgarchsimC", model = as.integer(modelinc[1:21]),
 						pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
 						h = as.double(h), q = as.double(q), z = as.double(z[,i]),
@@ -869,7 +869,7 @@
 			}
 		}
 		if(modelinc[5]>0) constm[,i] = constm[,i] + ipars[idx["archm",1]:idx["archm",2], 1]*(sqrt(ans1$h)^modelinc[5])
-		
+
 		if(modelinc[4]>0){
 			fres = c(ans1$res[(m+1):(n+m)], if(modelinc[3]>0) rep(0, modelinc[3]) else NULL)
 			ans2 = .arfimaxsim(modelinc[1:21], ipars, idx, constm[1:n, i], fres, T = n)
@@ -887,9 +887,9 @@
 			seed = as.integer(sseed))
 	return(sol)
 }
-.csgarchsim2 = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod = 
-				c("unconditional","sample"), presigma = NA, prereturns = NA, 
-		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), 
+.csgarchsim2 = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod =
+				c("unconditional","sample"), presigma = NA, prereturns = NA,
+		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA),
 		mexsimdata = NULL, vexsimdata = NULL, ...)
 {
 	if(fit@model$modelinc[4]>0){
@@ -921,29 +921,29 @@
 	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
 	vexsim = xreg$vexsimlist
-	
+
 	if(N < n.start){
 		startmethod[1] = "unconditional"
 		warning("\nugarchsim-->warning: n.start greater than length of data...using unconditional start method...\n")
 	}
-	
+
 	# Random Samples from the Distribution
 	if(length(sseed) == 1){
-		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1], 
+		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1],
 				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1],  n = n * m.sim, seed = sseed[1])
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	} else{
-		zmatrix = data.frame(dist = rep(model$modeldesc$distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim), 
-				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim), 
+		zmatrix = data.frame(dist = rep(model$modeldesc$distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim),
+				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim),
 				n = rep(n, m.sim), seed = sseed)
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	}
 	if(startMethod == "unconditional"){
 		z = rbind(matrix(0, nrow = m, ncol = m.sim), z)
 	} else{
-		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z) 
+		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z)
 	}
-	
+
 	# create the presample information
 	if(!is.na(presigma[1])){
 		presigma = as.vector(presigma)
@@ -991,14 +991,14 @@
 	q = matrix(c(preq, rep(0, n)), nrow = n + m, ncol = m.sim)
 	x = matrix(c(prereturns, rep(0, n)), nrow = n + m, ncol = m.sim)
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2],1], nrow = n + m, ncol = m.sim)
-	
+
 	# outpus matrices
 	sigmaSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	qSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	residSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	z[is.na(z) | is.nan(z) | !is.finite(z)] = 0
-	
+
 	if(is.na(preresiduals[1])){
 		if(startMethod[1] == "unconditional"){
 			preres = matrix( z[1:m, 1:m.sim] * presigma, nrow = m, ncol = m.sim )
@@ -1014,16 +1014,16 @@
 		vxs = matrix(0, nrow = m + n, ncol = m.sim)
 	}
 	e = res * res
-	
-	ans = .Call("mcsgarchsim", model = as.integer(modelinc[1:21]), 
-			pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1), h = h, 
-			q = q, z = z, res = res, e = e, vxs = vxs, N = as.integer( c(m, n) ), 
+
+	ans = .Call("mcsgarchsim", model = as.integer(modelinc[1:21]),
+			pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1), h = h,
+			q = q, z = z, res = res, e = e, vxs = vxs, N = as.integer( c(m, n) ),
 			PACKAGE = "rugarch")
-	
+
 	sigmaSim = matrix(sqrt( ans$h[(n.start + m + 1):(n+m), ] ), ncol = m.sim)
 	qSim = matrix(ans$q[(n.start + m + 1):(n+m), ], ncol = m.sim)
 	residSim = matrix(ans$res[(n.start + m + 1):(n+m), ], ncol = m.sim)
-	
+
 	if(modelinc[6]>0){
 		mxreg = matrix( ipars[idx["mxreg",1]:idx["mxreg",2], 1], ncol = modelinc[6] )
 		if(modelinc[20]==0){
@@ -1033,7 +1033,7 @@
 				mxs = sapply(mexsim, FUN = function(x) mxreg%*%t(matrix(x*sqrt(ans$h), ncol = modelinc[6])))
 			} else{
 				mxs = sapply(mexsim, FUN = function(x) mxreg[,1:(modelinc[6]-modelinc[20]),drop=FALSE]%*%t(matrix(x[,1:(modelinc[6]-modelinc[20]),drop=FALSE], ncol = modelinc[6])))
-				mxs = mxs + sapply(mexsim, FUN = function(x) mxreg[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]%*%t(matrix(x[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]*sqrt(ans$h), ncol = modelinc[20])))				
+				mxs = mxs + sapply(mexsim, FUN = function(x) mxreg[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]%*%t(matrix(x[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]*sqrt(ans$h), ncol = modelinc[20])))
 			}
 		}
 	} else{
@@ -1044,7 +1044,7 @@
 	} else{
 		imh = 0
 	}
-	
+
 	constm = constm + mxs + imh
 	if(modelinc[4]>0){
 		for(i in 1:m.sim){
@@ -1054,16 +1054,16 @@
 		}
 	} else{
 		#if(constant) constm = constm * ( 1 - sum(ar) )
-		tmp = .Call("marmaxsim", model = as.integer(modelinc[1:21]), 
-				pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1), 
-				mu = constm, x = x, res = ans$res, N = as.integer( c(m, n) ), 
+		tmp = .Call("marmaxsim", model = as.integer(modelinc[1:21]),
+				pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1),
+				mu = constm, x = x, res = ans$res, N = as.integer( c(m, n) ),
 				PACKAGE = "rugarch")
 		seriesSim = matrix(tmp$x[(n.start + m + 1):(n+m), ], ncol = m.sim)
 	}
-	
+
 	sim = list(sigmaSim = sigmaSim, seriesSim = seriesSim, residSim = residSim, qSim = qSim)
 	model$modeldata$sigma = sigma
-	
+
 	sol = new("uGARCHsim",
 			simulation = sim,
 			model = model,
@@ -1076,26 +1076,26 @@
 # SECTION sGARCH path
 #---------------------------------------------------------------------------------
 .csgarchpath = function(spec, n.sim = 1000, n.start = 0, m.sim = 1,
-		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA, 
-		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL, 
+		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA,
+		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,
 		vexsimdata = NULL, ...)
 {
 	if( (n.sim+n.start) < 1000 && m.sim > 100 ){
 		ans = .csgarchpath2(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
-				presigma = presigma, prereturns = prereturns, preresiduals = preresiduals, 
-				rseed = rseed, custom.dist = custom.dist, mexsimdata = mexsimdata, 
+				presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
+				rseed = rseed, custom.dist = custom.dist, mexsimdata = mexsimdata,
 				vexsimdata = vexsimdata, ...)
 	} else{
 		ans = .csgarchpath1(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
-				presigma = presigma, prereturns = prereturns, preresiduals = preresiduals, 
-				rseed = rseed, custom.dist = custom.dist, mexsimdata = mexsimdata, 
+				presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
+				rseed = rseed, custom.dist = custom.dist, mexsimdata = mexsimdata,
 				vexsimdata = vexsimdata, ...)
 	}
 	return( ans )
 }
 
-.csgarchpath1 = function(spec, n.sim = 1000, n.start = 0, m.sim = 1, presigma = NA, prereturns = NA, 
-		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL, 
+.csgarchpath1 = function(spec, n.sim = 1000, n.start = 0, m.sim = 1, presigma = NA, prereturns = NA,
+		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,
 		vexsimdata = NULL, ...)
 {
 	if(spec@model$modelinc[4]>0){
@@ -1137,40 +1137,40 @@
 		N = dim(mexdata)[1]
 	} else { mexdata = NULL }
 	if(modelinc[15]>0) {
-		vexdata = matrix(model$modeldata$vexdata, ncol = modelinc[15]) 
+		vexdata = matrix(model$modeldata$vexdata, ncol = modelinc[15])
 		N = dim(vexdata)[1]
 	} else { vexdata = NULL }
-	distribution = model$modeldesc$distribution	
+	distribution = model$modeldesc$distribution
 	# check if necessary the external regressor forecasts provided first
-	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)	
+	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
 	vexsim = xreg$vexsimlist
-	
+
 	# Random Samples from the Distribution
 	if(length(sseed) == 1){
-		zmatrix = data.frame(dist = distribution, lambda = ipars[idx["ghlambda",1], 1], 
-				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1], 
+		zmatrix = data.frame(dist = distribution, lambda = ipars[idx["ghlambda",1], 1],
+				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1],
 				n = n * m.sim, seed = sseed[1])
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	} else{
-		zmatrix = data.frame(dist = rep(distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim), 
-				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim), 
+		zmatrix = data.frame(dist = rep(distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim),
+				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim),
 				n = rep(n, m.sim), seed = sseed)
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	}
 	z = rbind(matrix(0, nrow = m, ncol = m.sim), z)
-	
+
 	# create the presample information
 	if(!is.na(presigma[1])){
 		presigma = as.vector(presigma)
 		if(length(presigma)<m) stop(paste("\nugarchpath-->error: presigma must be of length ", m, sep=""))
 	}
-	
+
 	if(!is.na(prereturns[1])){
 		prereturns = as.vector(prereturns)
 		if(length(prereturns)<m) stop(paste("\nugarchpath-->error: prereturns must be of length ", m, sep=""))
 	}
-	
+
 	if(!is.na(preresiduals[1])){
 		preresiduals = as.vector(preresiduals)
 		if(length(preresiduals)<m) stop(paste("\nugarchpath-->error: preresiduals must be of length ", m, sep=""))
@@ -1188,19 +1188,19 @@
 	} else{
 		preq = rep(ipars[idx["omega",1],1]/(1 - ipars[idx["eta1",1],1]), m)
 	}
-	
+
 	# input vectors/matrices
 	h = c(presigma^2, rep(0, n))
 	q = c(preq, rep(0, n))
 	x = c(prereturns, rep(0, n))
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2],1], ncol = m.sim, nrow = n + m)
-	
+
 	# outpus matrices
 	sigmaSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	qSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	residSim =  matrix(0, ncol = m.sim, nrow = n.sim)
-	
+
 	for(i in 1:m.sim){
 		if(is.na(preresiduals[1])){
 			preres = as.numeric(z[1:m,i])*presigma
@@ -1208,14 +1208,14 @@
 		z[1:m, 1:m.sim] = preres[1:m]/presigma[1:m]
 		z[is.na(z) | is.nan(z) | !is.finite(z)] = 0
 		res = c(preres, rep(0, n))
-		
-		ans1 = try(.C("csgarchsimC", model = as.integer(modelinc[1:21]), 
-						pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-						h = as.double(h), q = as.double(q), z = as.double(z[,i]), 
+
+		ans1 = try(.C("csgarchsimC", model = as.integer(modelinc[1:21]),
+						pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+						h = as.double(h), q = as.double(q), z = as.double(z[,i]),
 						res = as.double(res), e = as.double(res*res),
-						vexdata = as.double(vexsim[[i]]), T = as.integer(n+m), 
+						vexdata = as.double(vexsim[[i]]), T = as.integer(n+m),
 						m = as.integer(m), PACKAGE = "rugarch"), silent = TRUE)
-		
+
 		if(inherits(ans1, "try-error")) stop("\nugarchpath-->error: error in calling C function....\n")
 		sigmaSim[,i] = ans1$h[(n.start + m + 1):(n+m)]^(1/2)
 		qSim[,i] = ans1$q[(n.start + m + 1):(n+m)]
@@ -1244,9 +1244,9 @@
 			seriesSim[,i] = ans2$x[(n.start + m + 1):(n+m)]
 		}
 	}
-	
+
 	path = list(sigmaSim = sigmaSim, seriesSim = seriesSim, residSim = residSim, qSim = qSim)
-	
+
 	sol = new("uGARCHpath",
 			path = path,
 			model = model,
@@ -1254,8 +1254,8 @@
 	return(sol)
 }
 
-.csgarchpath2 = function(spec, n.sim = 1000, n.start = 0, m.sim = 1, presigma = NA, prereturns = NA, 
-		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL, 
+.csgarchpath2 = function(spec, n.sim = 1000, n.start = 0, m.sim = 1, presigma = NA, prereturns = NA,
+		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,
 		vexsimdata = NULL, ...)
 {
 	if(spec@model$modelinc[4]>0){
@@ -1297,47 +1297,47 @@
 		N = dim(mexdata)[1]
 	} else { mexdata = NULL }
 	if(modelinc[15]>0) {
-		vexdata = matrix(model$modeldata$vexdata, ncol = modelinc[15]) 
+		vexdata = matrix(model$modeldata$vexdata, ncol = modelinc[15])
 		N = dim(vexdata)[1]
 	} else { vexdata = NULL }
 	distribution = model$modeldesc$distribution
-	
+
 	# check if necessary the external regressor forecasts provided first
-	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)	
+	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
 	vexsim = xreg$vexsimlist
-	
+
 	# Random Samples from the Distribution
 	if(length(sseed) == 1){
-		zmatrix = data.frame(dist = distribution, lambda = ipars[idx["ghlambda",1], 1], 
-				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1], 
+		zmatrix = data.frame(dist = distribution, lambda = ipars[idx["ghlambda",1], 1],
+				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1],
 				n = n * m.sim, seed = sseed[1])
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	} else{
-		zmatrix = data.frame(dist = rep(distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim), 
-				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim), 
+		zmatrix = data.frame(dist = rep(distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim),
+				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim),
 				n = rep(n, m.sim), seed = sseed)
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	}
 	z = rbind(matrix(0, nrow = m, ncol = m.sim), z)
-	
+
 	# create the presample information
 	if(!is.na(presigma[1])){
 		presigma = as.vector(presigma)
 		if(length(presigma)<m) stop(paste("\nugarchpath-->error: presigma must be of length ", m, sep=""))
 	}
-	
+
 	if(!is.na(prereturns[1])){
 		prereturns = as.vector(prereturns)
 		if(length(prereturns)<m) stop(paste("\nugarchpath-->error: prereturns must be of length ", m, sep=""))
 	}
-	
+
 	if(!is.na(preresiduals[1])){
 		preresiduals = as.vector(preresiduals)
 		if(length(preresiduals)<m) stop(paste("\nugarchpath-->error: preresiduals must be of length ", m, sep=""))
 		preres = matrix(preresiduals[1:m], nrow = m, ncol = m.sim)
 	}
-	
+
 	if(is.na(presigma[1])){
 		hEst = uncvariance(spec)^(1/2)
 		presigma = as.numeric(rep(hEst, times = m))
@@ -1350,19 +1350,19 @@
 	} else{
 		preq = rep(ipars[idx["omega",1],1]/(1 - ipars[idx["eta1",1],1]), m)
 	}
-	
+
 	# input vectors/matrices
 	h = matrix(c(presigma * presigma, rep(0, n)), nrow = n + m, ncol = m.sim)
 	q = matrix(c(preq, rep(0, n)), nrow = n + m, ncol = m.sim)
 	x = matrix(c(prereturns, rep(0, n)), nrow = n + m, ncol = m.sim)
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2],1], nrow = n + m, ncol = m.sim)
-	
+
 	# outpus matrices
 	sigmaSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	qSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	residSim =  matrix(0, ncol = m.sim, nrow = n.sim)
-	
+
 	if(is.na(preresiduals[1])){
 		preres = matrix( z[1:m, 1:m.sim] * presigma, nrow = m, ncol = m.sim )
 	} else{
@@ -1370,7 +1370,7 @@
 	}
 	z[1:m, 1:m.sim] = preres[1:m, 1:m.sim]/presigma[1:m]
 	z[is.na(z) | is.nan(z) | !is.finite(z)] = 0
-	
+
 	res =  rbind(preres, matrix(0, nrow = n, ncol = m.sim))
 	# we'll do the external regressors first for speed.
 	if(modelinc[15]>0){
@@ -1380,15 +1380,15 @@
 		vxs = matrix(0, nrow = m + n, ncol = m.sim)
 	}
 	e = res * res
-	ans = .Call("mcsgarchsim", model = as.integer(modelinc[1:21]), 
-			pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1), 
-			h = h, q = q, z = z, res = res, e = e, vxs = vxs, 
+	ans = .Call("mcsgarchsim", model = as.integer(modelinc[1:21]),
+			pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1),
+			h = h, q = q, z = z, res = res, e = e, vxs = vxs,
 			N = as.integer( c(m, n) ), PACKAGE = "rugarch")
-	
+
 	sigmaSim = matrix(sqrt( ans$h[(n.start + m + 1):(n+m), ] ), ncol = m.sim)
 	qSim = matrix(ans$q[(n.start + m + 1):(n+m), ], ncol = m.sim)
 	residSim = matrix(ans$res[(n.start + m + 1):(n+m), ], ncol = m.sim)
-	
+
 	if(modelinc[6]>0){
 		mxreg = matrix( ipars[idx["mxreg",1]:idx["mxreg",2], 1], ncol = modelinc[6] )
 		if(modelinc[20]==0){
@@ -1398,7 +1398,7 @@
 				mxs = sapply(mexsim, FUN = function(x) mxreg%*%t(matrix(x*sqrt( ans$h ), ncol = modelinc[6])))
 			} else{
 				mxs = sapply(mexsim, FUN = function(x) mxreg[,1:(modelinc[6]-modelinc[20]),drop=FALSE]%*%t(matrix(x[,1:(modelinc[6]-modelinc[20]),drop=FALSE], ncol = modelinc[6])))
-				mxs = mxs + sapply(mexsim, FUN = function(x) mxreg[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]%*%t(matrix(x[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]*sqrt( ans$h ), ncol = modelinc[20])))				
+				mxs = mxs + sapply(mexsim, FUN = function(x) mxreg[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]%*%t(matrix(x[,(modelinc[6]-modelinc[20]+1):modelinc[6],drop=FALSE]*sqrt( ans$h ), ncol = modelinc[20])))
 			}
 		}
 	} else{
@@ -1409,7 +1409,7 @@
 	} else{
 		imh = 0
 	}
-	
+
 	constm = constm + mxs + imh
 	if(modelinc[4]>0){
 		for(i in 1:m.sim){
@@ -1418,14 +1418,14 @@
 			seriesSim[,i] = head(tmp$series, n.sim)
 		}
 	} else{
-		tmp = .Call("marmaxsim", model = as.integer(modelinc[1:21]), 
-				pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1), 
-				mu = constm, x = x, res = ans$res, N = as.integer( c(m, n) ), 
+		tmp = .Call("marmaxsim", model = as.integer(modelinc[1:21]),
+				pars = as.numeric(ipars[,1]), idx = as.integer(idx[,1]-1),
+				mu = constm, x = x, res = ans$res, N = as.integer( c(m, n) ),
 				PACKAGE = "rugarch")
 		seriesSim = matrix(tmp$x[(n.start + m + 1):(n+m), ], ncol = m.sim)
 	}
 	path = list(sigmaSim = sigmaSim, seriesSim = seriesSim, residSim = residSim, qSim = qSim)
-	
+
 	sol = new("uGARCHpath",
 			path = path,
 			model = model,
