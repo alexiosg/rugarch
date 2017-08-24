@@ -16,7 +16,7 @@ extern void F77_NAME(fdsim)(void *, void *, void *, void *, void *, void *, void
 static const R_CMethodDef CEntries[] = {
     {"aparchfilterC",    (DL_FUNC) &aparchfilterC,    18},
     {"aparchsimC",       (DL_FUNC) &aparchsimC,        9},
-    {"arfimafitC",       (DL_FUNC) &arfimafitC,       16},
+    {"arfimafitC",       (DL_FUNC) &arfimafitC,       14},
     {"arfimaxfilterC",   (DL_FUNC) &arfimaxfilterC,   12},
     {"armaxsim",         (DL_FUNC) &armaxsim,          8},
     {"c_dged",           (DL_FUNC) &c_dged,            7},
