@@ -19,6 +19,8 @@
 
 void sgarchfilter(int *model, double *pars, int *idx, double *vexdata, double *e, int T, int i, double *h);
 
+void figarchfilter(int *model, double *pars, int *idx, double *vexdata, double *e, double *eps, double *be, double *ebar, int T, int N, int i, double *h);
+
 void gjrgarchfilter(int *model, double *pars, int *idx, double *vexdata, double *nres, double *e, int T, int i, double *h);
 
 void aparchfilter(int *model, double *pars, int *idx, double *vexdata, double *res, int T, int i, double *h);

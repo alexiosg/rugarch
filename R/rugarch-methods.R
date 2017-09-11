@@ -109,7 +109,7 @@ ugarchspec = function(variance.model = list(model = "sGARCH", garchOrder = c(1,1
 	# variance model:
 	vmodel = list()
 
-	valid.model = c("sGARCH", "eGARCH", "gjrGARCH", "tGARCH", "fGARCH", "iGARCH", "apARCH", "csGARCH", "mcsGARCH","realGARCH")
+	valid.model = c("sGARCH", "eGARCH", "gjrGARCH", "tGARCH", "fGARCH", "iGARCH", "fiGARCH","apARCH", "csGARCH", "mcsGARCH","realGARCH")
 	if(is.null(variance.model$model)){
 		modeldesc$vmodel = "sGARCH"
 	} else{
@@ -659,7 +659,7 @@ ugarchspec = function(variance.model = list(model = "sGARCH", garchOrder = c(1,1
 			start.pars = start.pars, fixed.pars = fixed.pars, maxOrder = maxOrder,
 			pos.matrix = pos.matrix, fmodel = fmodel, pidx = pidx)
 	ans = new("uGARCHspec", model = model)
-
+  if(model$modeldesc$vmodel=="fiGARCH" & (model$modelinc["beta"]==0 || model$modelinc["alpha"]==0)) stop(paste0("\nFIGARCH(",as.integer(model$modelinc['alpha']),",d,",as.integer(model$modelinc['beta']),") not a valid model"))
 	return(ans)
 }
 
@@ -870,6 +870,8 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					iGARCH = .igarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver,
 							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
+					fiGARCH = .figarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver,
+					    solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					eGARCH = .egarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver,
 							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd),
 					gjrGARCH = .gjrgarchfit(spec = spec, data = data, out.sample = out.sample, solver = solver,
@@ -891,6 +893,7 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 	return( switch(spec@model$modeldesc$vmodel,
 					sGARCH = .sgarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					iGARCH = .igarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
+					fiGARCH = .figarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					eGARCH = .egarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					gjrGARCH = .gjrgarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					apARCH = .aparchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
@@ -908,6 +911,8 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					iGARCH = .igarchforecast(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
+					fiGARCH = .figarchforecast(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
+					                         out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					eGARCH = .egarchforecast(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					gjrGARCH = .gjrgarchforecast(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
@@ -932,6 +937,8 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					iGARCH = .igarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
+					fiGARCH = .figarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
+					    out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					eGARCH = .egarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					gjrGARCH = .gjrgarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
@@ -961,6 +968,10 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 							startMethod = startMethod, presigma = presigma, prereturns = prereturns,
 							preresiduals = preresiduals, rseed = rseed,  custom.dist = custom.dist,
 							mexsimdata = mexsimdata, vexsimdata = vexsimdata, ...),
+					fiGARCH = .figarchsim(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+					    startMethod = startMethod, presigma = presigma, prereturns = prereturns,
+					    preresiduals = preresiduals, rseed = rseed,  custom.dist = custom.dist,
+					    mexsimdata = mexsimdata, vexsimdata = vexsimdata, ...),
 					eGARCH = .egarchsim(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 							startMethod = startMethod, presigma = presigma, prereturns = prereturns,
 							preresiduals = preresiduals, rseed = rseed,  custom.dist = custom.dist,
@@ -1003,6 +1014,10 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 							presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
 							rseed = rseed,  custom.dist = custom.dist, mexsimdata = mexsimdata,
 							vexsimdata = vexsimdata, ...),
+					fiGARCH = .figarchpath(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+              presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
+					    rseed = rseed,  custom.dist = custom.dist, mexsimdata = mexsimdata,
+					    vexsimdata = vexsimdata, ...),
 					eGARCH = .egarchpath(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 							presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
 							rseed = rseed,  custom.dist = custom.dist, mexsimdata = mexsimdata,
@@ -2590,7 +2605,8 @@ setMethod("persistence", signature(object = "uGARCHfilter", pars = "missing",
 			csGARCH = .persistcsgarch1(pars, idx, distribution),
 			mcsGARCH = .persistmcsgarch1(pars, idx, distribution),
 			realGARCH = .persistrealgarch1(pars, idx, distribution),
-			iGARCH = 1)
+			iGARCH = 1,
+			fiGARCH = NA)
 	#names(ans) = "persistence"
 	return(ans)
 }
@@ -2608,7 +2624,8 @@ setMethod("persistence", signature(object = "uGARCHfilter", pars = "missing",
 			csGARCH = .persistcsgarch2(pars, distribution),
 			mcsGARCH = .persistmcsgarch2(pars, distribution),
 			realGARCH = .persistrealgarch2(pars, distribution),
-			iGARCH = 1)
+			iGARCH = 1,
+			fiGARCH = NA)
 	#names(ans) = "persistence"
 	return(ans)
 }
@@ -3086,7 +3103,8 @@ uncvariance = function(object, pars, distribution = "norm", model = "sGARCH",
 			csGARCH = 	.unccsgarch1(pars, idx, distribution, vexdata),
 			mcsGARCH = 	.uncmcsgarch1(pars, idx, distribution, vexdata),
 			realGARCH = .uncrealgarch1(pars, idx, distribution, vexdata),
-			iGARCH = 	Inf)
+			iGARCH = 	Inf,
+			fiGARCH = 	NA)
 	#names(ans) = "unconditional"
 	return(unname(ans))
 }
@@ -3109,7 +3127,8 @@ uncvariance = function(object, pars, distribution = "norm", model = "sGARCH",
 			csGARCH = 	.unccsgarch1(pars, idx, distribution, vexdata),
 			mcsGARCH = 	.uncmcsgarch1(pars, idx, distribution, vexdata),
 			realGARCH = .uncrealgarch1(pars, idx, distribution, vexdata),
-			iGARCH = 	Inf)
+			iGARCH = 	Inf,
+			fiGARCH = 	NA)
 	#names(ans) = "unconditional"
 	return(unname(ans))
 }
@@ -3126,7 +3145,8 @@ uncvariance = function(object, pars, distribution = "norm", model = "sGARCH",
 			csGARCH = 	.unccsgarch2(pars, distribution, vexdata),
 			mcsGARCH = 	.uncmcsgarch2(pars, distribution, vexdata),
 			realGARCH = .uncrealgarch2(pars, distribution, vexdata),
-			iGARCH = 	Inf)
+			iGARCH = 	Inf,
+			fiGARCH = 	NA)
 	#names(ans) = "unconditional"
 	return(unname(ans))
 }

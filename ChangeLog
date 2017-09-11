@@ -1,6 +1,7 @@
 2015-07-02  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-8.
 	* Patch provided by Josh Ulrich for native routine registration
+	* Added Hyperbolic GARCH model of Davidson with full functionality.
 
 2015-07-02  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-6.

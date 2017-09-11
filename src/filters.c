@@ -39,6 +39,36 @@ void sgarchfilter(int *model, double *pars, int *idx, double *vexdata, double *e
 		h[i] = h[i] + pars[idx[8]+j]*h[i-(j+1)];
 	}
 }
+void figarchfilter(int *model, double *pars, int *idx, double *vexdata, double *e, double *eps, double *be, double *ebar, int T, int N, int i, double *h)
+{
+  int j,ind;
+  //(i>0) ? (jlag=1) : (jlag=0);
+  ebar[i]=0.0;
+  for(j=0;j<N;j++)
+  {
+      ebar[i]+=(be[j]*eps[j+i]);
+  }
+  h[i] = h[i] + pars[idx[6]]-ebar[i];
+  if(i<model[8]){
+
+  }
+  if( model[14]>0 )
+  {
+    for( j=0; j<model[14]; j++ )
+    {
+      ind = i + ( T * j );
+      h[i] = h[i] + pars[idx[14]+j]*vexdata[ind];
+    }
+  }
+  for( j=0; j<model[7]; j++ )
+  {
+      h[i] = h[i] + pars[idx[7]+j]*(e[i-(j+1)] + ebar[i-(j+1)]);
+  }
+  for( j=0; j<model[8]; j++ )
+  {
+      h[i] = h[i] + pars[idx[8]+j]*(h[i-(j+1)] - e[i-(j+1)]);
+  }
+}
 
 void gjrgarchfilter(int *model, double *pars, int *idx, double *vexdata, double *nres, double *e, int T, int i, double *h)
 {

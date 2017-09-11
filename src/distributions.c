@@ -43,9 +43,10 @@ double dhuge(void)
 {
   return HUGE_VAL;
 }
-double Heaviside(const double x, const double a){
+double heaviside(const double x, const double a){
 	return( (signum(x-a) + 1.0)/2.0 );
 }
+
 double depsilon(void)
 {
   double r;
@@ -116,8 +117,8 @@ double dghsktstd(const double x, const double betabar, const double nu)
 	double beta = param[1];
 	double delta = param[2];
 	double mu = param[3];
-	double pdf = ((1 - nu)/2) * log(2) + nu * log(delta) + ((nu + 1)/2) * log(fabs(beta)) 
-	+ log(bessel_k(sqrt(beta*beta * (delta*delta + (x - mu)*(x - mu))), (nu + 1)/2, 2)) - sqrt(beta*beta * (delta*delta 
+	double pdf = ((1 - nu)/2) * log(2) + nu * log(delta) + ((nu + 1)/2) * log(fabs(beta))
+	+ log(bessel_k(sqrt(beta*beta * (delta*delta + (x - mu)*(x - mu))), (nu + 1)/2, 2)) - sqrt(beta*beta * (delta*delta
 	+ (x - mu)*(x - mu))) + beta * (x - mu) - lgammafn(nu/2) - log(PI)/2 - ((nu + 1)/2) * log(delta*delta + (x - mu)*(x - mu))/2;
 	free(param);
 	pdf = exp(pdf);
@@ -324,7 +325,7 @@ void c_rsnig(int *n, double *mu, double *sigma, double *skew, double *shape, dou
 double rstd(const double nu)
 {
 	double ans = 0;
-	if(nu > 2.0) 
+	if(nu > 2.0)
 	{
 	double s = sqrt(nu/(nu-2));
 	ans = rt(nu) * 1.0 / s;
@@ -475,7 +476,7 @@ double psstd(const double q, const double mu, const double sigma, const double x
 	double z = qx*sig+mux;
 	double Xi = (z<0)?1.0/xi:xi;
 	double g = 2.0 / (xi + 1.0/xi);
-	double p = Heaviside(z, 0) - signum(z) * g * Xi * pstd(-fabs(z)/Xi, 0, 1, nu);
+	double p = heaviside(z, 0) - signum(z) * g * Xi * pstd(-fabs(z)/Xi, 0, 1, nu);
 	return( p );
 }
 
@@ -496,7 +497,7 @@ double qsstd(const double p, const double xi, const double nu)
 	double g = 2.0 / (xi + 1.0/xi);
 	double z = p-0.5;
 	double Xi = (z<0)?1.0/xi:xi;
-	double tmp = (Heaviside(z, 0) - signum(z)*p)/(g*Xi);
+	double tmp = (heaviside(z, 0) - signum(z)*p)/(g*Xi);
 	double q = (-signum(z)*qstd(tmp, 0, 1, nu)*Xi - mu)/sigma;
 	return( q );
 }
@@ -555,7 +556,7 @@ double qjsu(const double p, const double nu, const double tau)
 	omega = -1.0 * nu * rtau;
 	cc = sqrt(1/(0.5 * (w - 1.0)*(w * cosh(2.0 * omega) + 1)));
 	ans = (cc * sqrt(w) * sinh(omega)) + cc * z;
-	return(ans);   
+	return(ans);
 }
 
 void c_qjsu(double *p, double *mu, double *sigma, double *skew, double *shape, double *ans, int *n)
@@ -617,7 +618,7 @@ double rsnorm(const double xi)
 	weight = xi / (xi + 1.0/xi);
 	z = runif(-weight, 1.0 - weight);
 	xx = (z < 0)? 1.0/xi : xi;
-	rr = -1.0 * fabs(rnorm(0, 1))/xx * sign(z);  
+	rr = -1.0 * fabs(rnorm(0, 1))/xx * sign(z);
 	m1 = 2.0/sqrt(2.0 * PI);
 	mu = m1 * (xi - 1.0/xi);
 	sigma = sqrt((1 - (m1 * m1)) * ( (xi * xi) + 1.0/(xi* xi) ) + 2 * (m1 * m1) - 1.0);
@@ -669,7 +670,7 @@ double psnorm(const double q, const double mu, const double sigma, const double 
 	double z = qx*sig + mux;
 	double Xi = (z<0)?1.0/xi:xi;
 	double g = 2.0/(xi + 1.0/xi);
-	double p = Heaviside(z, 0) - signum(z) * g * Xi * pnorm(-fabs(z)/Xi, 0, 1, 1, 0);
+	double p = heaviside(z, 0) - signum(z) * g * Xi * pnorm(-fabs(z)/Xi, 0, 1, 1, 0);
 	return( p );
 }
 
@@ -690,7 +691,7 @@ double qsnorm(const double p, const double xi)
 	double g = 2.0/(xi + 1.0/xi);
 	double z = p-0.5;
 	double Xi = (z<0)?1.0/xi:xi;
-	double tmp = (Heaviside(z, 0) - signum(z) * p)/ (g* Xi);
+	double tmp = (heaviside(z, 0) - signum(z) * p)/ (g* Xi);
 	double q = (-1.0*signum(z)*qnorm(tmp, 0, Xi, 1, 0) - mu)/sigma;
 	return( q );
 }
@@ -857,7 +858,7 @@ double psged(const double q, const double mu, const double sigma, const double x
 	double z = qx*sig + mux;
 	double Xi = (z<0)?1.0/xi:xi;
 	double g = 2.0/(xi + 1.0/xi);
-	double p = Heaviside(z, 0) - signum(z) * g * Xi * pged(-fabs(z)/Xi, 0, 1, nu);
+	double p = heaviside(z, 0) - signum(z) * g * Xi * pged(-fabs(z)/Xi, 0, 1, nu);
 	return( p );
 }
 
@@ -879,7 +880,7 @@ double qsged(const double p, const double xi, const double nu)
 	double g = 2.0/(xi + 1.0/xi);
 	double z = p - 0.5;
 	double Xi = (z<0)?1.0/xi:xi;
-	double q = (Heaviside(z, 0) - signum(z) * p)/ (g* Xi);
+	double q = (heaviside(z, 0) - signum(z) * p)/ (g* Xi);
 	q = (-signum(z)*qged(q, nu)*Xi - mu)/sigma;
 	return( q );
 }
