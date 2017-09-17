@@ -228,6 +228,11 @@ TinY = 1.0e-8
 		fit$tau = temp$tau
 		fit$partial.log.likelihoods = temp$LHT1P
 	}
+	if(garchmodel == "fiGARCH"){
+	  fit$eps = temp$eps
+	  fit$ebar = temp$ebar
+	  fit$be = temp$be
+	}
 	fit$condH = condH
 	fit$z = temp$z
 	fit$LLH = -temp$llh

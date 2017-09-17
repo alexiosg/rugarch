@@ -336,6 +336,8 @@
 	z = ans$z
 	h = ans$h
 	epsx = ans$res
+	eps = ans$eps
+	ebar = ans$ebar
 	llh = ans$llh
 	if(is.finite(llh) && !is.na(llh) && !is.nan(llh)){
 		if(arglist$pmode!=1) assign("rugarch_llh", llh, envir = garchenv)
@@ -348,7 +350,7 @@
 	ans = switch(returnType,
 			llh = llh,
 			LHT = LHT,
-			all = list(llh = llh, h = h, epsx = epsx, z = z, kappa = kappa, LHT = LHT, persistence = persist))
+			all = list(llh = llh, h = h, epsx = epsx, z = z, eps=eps, ebar=ebar, be=be, kappa = kappa, LHT = LHT, persistence = persist))
 	return(ans)
 }
 #---------------------------------------------------------------------------------
@@ -430,6 +432,11 @@
 	be=(k-1-delta)/k
 	be=rev(cumprod(be))
 	ebar[1]=t(be)%*%eps[1:truncLag]
+	arglist=list()
+	arglist$ipars=ipars
+	arglist$truncLag = truncLag
+	persist=.figarchcon(pars, arglist)
+	if(any(persist<=0) | any(persist>=1)) warning("\nPositivity Contraints NOT met (check parameters)!")
 	if(modelinc[6]>0) mexdata = as.double(as.vector(mexdata)) else mexdata = double(1)
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
 	ans = try( .C("figarchfilterC", model = as.integer(modelinc[1:21]),
@@ -443,6 +450,9 @@
 	              PACKAGE = "rugarch"), silent = TRUE )
 	filter = list()
 	filter$z = ans$z
+	filter$ebar = ans$ebar
+	filter$eps = ans$eps
+	filter$be = ans$be
 	filter$sigma = sqrt(ans$h)
 	filter$residuals = ans$res
 	filter$LLH = -ans$llh
@@ -511,10 +521,12 @@
 					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
-	flt = .sgarchfilter(data = tmp, spec = fspec, n.old = N)
+	flt = .figarchfilter(data = tmp, spec = fspec, n.old = N)
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
 	zfilter = flt@filter$z
+	# ebar,eps and be from the filtered is now available
+
 	# forecast GARCH process
 	seriesFor = sigmaFor = matrix(NA, ncol = n.roll+1, nrow = n.ahead)
 	#seriesFor[1,] = fitted(flt)[(N+1):(N+n.roll+1)]
@@ -701,12 +713,12 @@
 		mexsimdata = NULL, vexsimdata = NULL, ...)
 {
 	if( (n.sim+n.start) < 1000 && m.sim > 100 ){
-		ans = .sgarchsim2(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+		ans = .figarchsim2(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 				startMethod = startMethod, presigma = presigma, prereturns = prereturns,
 				preresiduals = preresiduals, rseed = rseed, custom.dist = custom.dist,
 				mexsimdata = mexsimdata, vexsimdata = vexsimdata)
 	} else{
-		ans = .sgarchsim1(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+		ans = .figarchsim1(fit = fit, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 				startMethod = startMethod, presigma = presigma, prereturns = prereturns,
 				preresiduals = preresiduals, rseed = rseed, custom.dist = custom.dist,
 				mexsimdata = mexsimdata, vexsimdata = vexsimdata)
@@ -1042,12 +1054,12 @@
 		vexsimdata = NULL, ...)
 {
 	if( (n.sim+n.start) < 1000 && m.sim > 100 ){
-		ans = .sgarchpath2(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+		ans = .figarchpath2(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 				presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
 				rseed = rseed, custom.dist = custom.dist, mexsimdata = mexsimdata,
 				vexsimdata = vexsimdata)
 	} else{
-		ans = .sgarchpath1(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
+		ans = .figarchpath1(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 				presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
 				rseed = rseed, custom.dist = custom.dist, mexsimdata = mexsimdata,
 				vexsimdata = vexsimdata)
