@@ -24,7 +24,10 @@ rugarch.test14a = function(cluster=NULL)
                     variance.model = list(model = "fiGARCH", garchOrder = c(1,1)),
                     distribution="jsu")
   fit = ugarchfit(spec, sp500ret[,1], solver.control=list(trace=1))
+  specx = spec
+  setfixed(specx)<-as.list(coef(fit))
   filt = ugarchfilter(specx, sp500ret[,1], n.old=nrow(sp500ret))
+
   test1 = all.equal(as.numeric(sigma(fit)),as.numeric(sigma(filt)))
 
   cf = coef(fit)

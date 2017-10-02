@@ -526,6 +526,13 @@
 	resfilter = flt@filter$residuals
 	zfilter = flt@filter$z
 	# ebar,eps and be from the filtered is now available
+  ebar = flt@filter$ebar
+  eps = flt@filter$eps
+  delta = ipars["delta",1]
+  k=seq(1,length(ebar))
+  dk=(k-1-delta)/k
+  dk=rev(cumprod(dk))
+  eps = c(eps[-c(1:1000)], rep(0,n.ahead))
 
 	# forecast GARCH process
 	seriesFor = sigmaFor = matrix(NA, ncol = n.roll+1, nrow = n.ahead)
@@ -549,6 +556,8 @@
 		# forecast of externals is provided outside the system
 		mxfi = mxf[1:(N+i-1+n.ahead), , drop = FALSE]
 		vxfi = vxf[1:(N+i-1+n.ahead), , drop = FALSE]
+		# CONTINUE Here
+		# need to append ebar/eps/ and indicate nlagbin
 		ans = .nfigarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, data = x, N = np, n.ahead)
 		sigmaFor[,i] = ans$h
 		seriesFor[,i] = ans$x
@@ -575,21 +584,22 @@
 		omega = omega + vxfi%*%t(matrix(ipars[idx["vxreg",1]:idx["vxreg",2],1], ncol = modelinc[15]))
 	}
 	for(i in 1:n.ahead){
+	  ebar[N+i] = dk%*%eps[(i+1):(N+i)]
+	  h[N+i] = omega - ebar[i]
 		if(modelinc[9]>0){
-			h[N+i] = omega[N+i] + sum(ipars[idx["beta",1]:idx["beta",2],1]*h[N+i-(1:modelinc[9])]^2)
-		} else{
-			h[N+i] = omega[N+i]
+			h[N+i] = omega[N+i] + sum(ipars[idx["beta",1]:idx["beta",2],1]*(h[N+i-(1:modelinc[9])]^2-eps[(N+i-(1:modelinc[9]))]))
 		}
 		if(modelinc[8]>0){
 			for (j in 1:modelinc[8]){
-				if (i-j > 0){
+				if ((i-j) > 0){
 					s = h[N + i - j]^2
 				} else{
 					s = epsx[N + i - j]^2
 				}
-				h[N+i] = h[N+i] + ipars[idx["alpha",1]+j-1,1] * s
+				h[N+i] = h[N+i] + ipars[idx["alpha",1]+j-1,1] * (s + ebar[N + i - j])
 			}
 		}
+	  eps[N+i] = h[N+i]
 		h[N+i] = sqrt(h[N+i])
 	}
 
@@ -598,7 +608,7 @@
 	} else{
 		res = armaf(ipars, modelinc[1:21], idx, mu, mxfi, h, epsx, z, data, N, n.ahead)
 	}
-	return(list(h = h[(N+1):(N+n.ahead)], x = res[(N+1):(N+n.ahead)]))
+	return(list(h = h[(N+1):(N+n.ahead)], x = res[(N+1):(N+n.ahead)], ebar=ebar, eps=eps))
 }
 
 
