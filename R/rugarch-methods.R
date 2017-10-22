@@ -853,7 +853,7 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 #----------------------------------------------------------------------------------
 
 .ugarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all', trunclag = 1000),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2),...)
 {
@@ -888,12 +888,12 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 							solver.control = solver.control, fit.control = fit.control, numderiv.control = default.numd, ...)) )
 }
 
-.ugarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all', ...)
+.ugarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all', trunclag = 1000, ...)
 {
 	return( switch(spec@model$modeldesc$vmodel,
 					sGARCH = .sgarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					iGARCH = .igarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
-					fiGARCH = .figarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
+					fiGARCH = .figarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init, trunclag = trunclag),
 					eGARCH = .egarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					gjrGARCH = .gjrgarchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
 					apARCH = .aparchfilter(spec = spec, data = data, out.sample = out.sample, n.old = n.old, rec.init = rec.init),
@@ -930,7 +930,7 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 }
 
 .ugarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
-		external.forecasts = list(mregfor = NULL, vregfor = NULL), ...)
+		external.forecasts = list(mregfor = NULL, vregfor = NULL), trunclag = 1000, ...)
 {
 	return( switch(fitORspec@model$modeldesc$vmodel,
 					sGARCH = .sgarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
@@ -938,7 +938,7 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 					iGARCH = .igarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					fiGARCH = .figarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
-					    out.sample = out.sample, external.forecasts = external.forecasts, ...),
+					    out.sample = out.sample, external.forecasts = external.forecasts, trunclag = trunclag, ...),
 					eGARCH = .egarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
 							out.sample = out.sample, external.forecasts = external.forecasts, ...),
 					gjrGARCH = .gjrgarchforecast2(fitORspec = fitORspec, data = data, n.ahead = n.ahead, n.roll = n.roll,
@@ -1003,7 +1003,8 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 }
 
 .ugarchpath = function(spec, n.sim = 1000, n.start = 0, m.sim = 1, presigma = NA, prereturns = NA, preresiduals = NA,
-		rseed = NA, custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,  vexsimdata = NULL, ...)
+		rseed = NA, custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,  vexsimdata = NULL,
+		trunclag = 1000, ...)
 {
 	return( switch(spec@model$modeldesc$vmodel,
 					sGARCH = .sgarchpath(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
@@ -1017,7 +1018,7 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 					fiGARCH = .figarchpath(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
               presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
 					    rseed = rseed,  custom.dist = custom.dist, mexsimdata = mexsimdata,
-					    vexsimdata = vexsimdata, ...),
+					    vexsimdata = vexsimdata, trunclag = trunclag, ...),
 					eGARCH = .egarchpath(spec = spec, n.sim = n.sim, n.start = n.start, m.sim = m.sim,
 							presigma = presigma, prereturns = prereturns, preresiduals = preresiduals,
 							rseed = rseed,  custom.dist = custom.dist, mexsimdata = mexsimdata,
@@ -1046,7 +1047,7 @@ setReplaceMethod(f="setbounds", signature= c(object = "uGARCHspec", value = "vec
 #----------------------------------------------------------------------------------
 # univariate filter method
 #----------------------------------------------------------------------------------
-ugarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all', ...)
+ugarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all', trunclag = 1000, ...)
 {
 	UseMethod("ugarchfilter")
 }
@@ -1056,7 +1057,7 @@ setMethod("ugarchfilter", signature(spec = "uGARCHspec"), .ugarchfilter)
 # univariate fit method
 #----------------------------------------------------------------------------------
 ugarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all', trunclag = 1000),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2), ...)
 {
@@ -1068,7 +1069,7 @@ setMethod("ugarchfit", signature(spec = "uGARCHspec"), .ugarchfit)
 # univariate forecast method
 #----------------------------------------------------------------------------------
 ugarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
-		external.forecasts = list(mregfor = NULL, vregfor = NULL), ...)
+		external.forecasts = list(mregfor = NULL, vregfor = NULL), trunclag = 1000, ...)
 {
 	UseMethod("ugarchforecast")
 }
@@ -1104,7 +1105,7 @@ setMethod("ugarchsim", signature(fit = "uGARCHfit"), .ugarchsim)
 ugarchpath = function(spec, n.sim = 1000, n.start = 0, m.sim = 1,
 		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA,
 		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,
-		vexsimdata = NULL, ...)
+		vexsimdata = NULL, trunclag = 1000, ...)
 {
 	UseMethod("ugarchpath")
 }

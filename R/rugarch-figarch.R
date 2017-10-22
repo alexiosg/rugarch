@@ -21,7 +21,7 @@
 # [mu ar ma arfima im mxreg omega alpha beta gamma gamma11 gamma21 delta lambda vxreg skew shape dlamda aux aux aux aux]
 
 .figarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all',trunclag = 1000),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
@@ -356,7 +356,7 @@
 #---------------------------------------------------------------------------------
 # SECTION sGARCH filter
 #---------------------------------------------------------------------------------
-.figarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all')
+.figarchfilter = function(spec, data, out.sample = 0, n.old = NULL, rec.init = 'all', trunclag = 1000)
 {
 	# n.old is optional and indicates the length of the original dataseries (in
 	# cases when this represents a dataseries augmented by newer data). The reason
@@ -424,7 +424,7 @@
 	if(is.na(hEst) | !is.finite(hEst) | is.nan(hEst)) hEst = var(data)
 	delta=ipars[idx["delta",1],1]
 	# figarch setup
-	truncLag=1000
+	truncLag=trunclag
 	NL=T+truncLag
 	eps=matrix(mvar, ncol=1, nrow=NL)
 	ebar = rep(0, T)
@@ -464,6 +464,7 @@
 	model$modeldata$index = origindex
 	model$modeldata$period = period
 	model$n.start = out.sample
+	model$trunclag = trunclag
 	sol = new("uGARCHfilter",
 			filter = filter,
 			model = model)
@@ -509,7 +510,6 @@
 	xreg = .forcregressors(model, external.forecasts$mregfor, external.forecasts$vregfor, n.ahead, Nor, out.sample = ns, n.roll)
 	mxf = xreg$mxf
 	vxf = xreg$vxf
-
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
 	fspec = ugarchspec(variance.model = list(model = "fiGARCH",
@@ -521,10 +521,11 @@
 					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
-	flt = .figarchfilter(data = tmp, spec = fspec, n.old = N)
+	flt = .figarchfilter(data = tmp, spec = fspec, n.old = N, trunclag = fit@model$trunclag)
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
 	zfilter = flt@filter$z
+	truncLag = fit@model$trunclag
 	# ebar,eps and be from the filtered is now available
   ebar = flt@filter$ebar
   eps = flt@filter$eps
@@ -532,8 +533,7 @@
   k=seq(1,length(ebar))
   dk=(k-1-delta)/k
   dk=rev(cumprod(dk))
-  eps = c(eps[-c(1:1000)], rep(0,n.ahead))
-
+  eps = c(eps[-c(1:truncLag)], rep(0,n.ahead))
 	# forecast GARCH process
 	seriesFor = sigmaFor = matrix(NA, ncol = n.roll+1, nrow = n.ahead)
 	#seriesFor[1,] = fitted(flt)[(N+1):(N+n.roll+1)]
@@ -616,7 +616,7 @@
 #---------------------------------------------------------------------------------
 # 2nd dispatch method for forecast
 .figarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
-		external.forecasts = list(mregfor = NULL, vregfor = NULL), ...)
+		external.forecasts = list(mregfor = NULL, vregfor = NULL), trunclag = 1000, ...)
 {
 	# first we filter the data to get the results:
 	spec = fitORspec
