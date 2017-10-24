@@ -33,7 +33,7 @@
 	if(is.null(fit.control$rec.init)) fit.control$rec.init = 'all'
 	if(is.null(fit.control$trunclag)) truncLag = 1000 else truncLag = fit.control$trunclag
 
-	mm = match(names(fit.control), c("stationarity", "fixed.se", "scale", "rec.init"))
+	mm = match(names(fit.control), c("stationarity", "fixed.se", "scale", "rec.init", "trunclag"))
 	if(any(is.na(mm))){
 		idx = which(is.na(mm))
 		enx = NULL
@@ -232,6 +232,7 @@
 	# will be called by other functions (show, plot, sim etc)
 	model$n.start = n.start
 	fit$solver = solution
+	model$trunclag = truncLag
 	ans = new("uGARCHfit",
 			fit = fit,
 			model = model)
@@ -527,10 +528,10 @@
 	zfilter = flt@filter$z
 	truncLag = fit@model$trunclag
 	# ebar,eps and be from the filtered is now available
-  ebar = flt@filter$ebar
+  ebar =c(flt@filter$ebar,rep(0,n.ahead))
   eps = flt@filter$eps
   delta = ipars["delta",1]
-  k=seq(1,length(ebar))
+  k=seq(1,truncLag)
   dk=(k-1-delta)/k
   dk=rev(cumprod(dk))
   eps = c(eps[-c(1:truncLag)], rep(0,n.ahead))
@@ -558,7 +559,7 @@
 		vxfi = vxf[1:(N+i-1+n.ahead), , drop = FALSE]
 		# CONTINUE Here
 		# need to append ebar/eps/ and indicate nlagbin
-		ans = .nfigarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, data = x, N = np, n.ahead)
+		ans = .nfigarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, eps=eps, ebar=ebar,  dk=dk, truncLag=truncLag, data = x, N = np, n.ahead)
 		sigmaFor[,i] = ans$h
 		seriesFor[,i] = ans$x
 	}
@@ -578,16 +579,16 @@
 	return(ans)
 }
 
-.nfigarchforecast = function(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, data, N, n.ahead)
+.nfigarchforecast = function(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, eps, ebar, dk, truncLag, data, N, n.ahead)
 {
 	if(modelinc[15]>0){
 		omega = omega + vxfi%*%t(matrix(ipars[idx["vxreg",1]:idx["vxreg",2],1], ncol = modelinc[15]))
 	}
 	for(i in 1:n.ahead){
-	  ebar[N+i] = dk%*%eps[(i+1):(N+i)]
-	  h[N+i] = omega - ebar[i]
-		if(modelinc[9]>0){
-			h[N+i] = omega[N+i] + sum(ipars[idx["beta",1]:idx["beta",2],1]*(h[N+i-(1:modelinc[9])]^2-eps[(N+i-(1:modelinc[9]))]))
+	  ebar[N+i] = dk%*%eps[(N-truncLag+i):(N+i-1)]
+	  h[N+i] = omega[N+i] - ebar[N+i]
+		if(modelinc[9]>=i){
+			h[N+i] = h[N+i] + sum(ipars[idx["beta",1]:idx["beta",2],1]*(h[N+i-(1:modelinc[9])]^2-eps[(N+i-(1:modelinc[9]))]))
 		}
 		if(modelinc[8]>0){
 			for (j in 1:modelinc[8]){
@@ -602,13 +603,12 @@
 	  eps[N+i] = h[N+i]
 		h[N+i] = sqrt(h[N+i])
 	}
-
 	if(modelinc[4]>0){
 		res = arfimaf(ipars, modelinc[1:21], idx, mu, mxfi, h, epsx, z, data, N, n.ahead)
 	} else{
 		res = armaf(ipars, modelinc[1:21], idx, mu, mxfi, h, epsx, z, data, N, n.ahead)
 	}
-	return(list(h = h[(N+1):(N+n.ahead)], x = res[(N+1):(N+n.ahead)], ebar=ebar, eps=eps))
+	return(list(h = h[(N+1):(N+n.ahead)], x = res[(N+1):(N+n.ahead)], ebar=ebar[(N+1):(N+n.ahead)], eps=eps[(N+1):(N+n.ahead)]))
 }
 
 
@@ -661,7 +661,7 @@
 
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
-	fspec = ugarchspec(variance.model = list(model = "sGARCH",
+	fspec = ugarchspec(variance.model = list(model = "fiGARCH",
 					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL,
 					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]),
 			mean.model = list(armaOrder = c(modelinc[2], modelinc[3]),
@@ -670,10 +670,19 @@
 					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
-	flt = .sgarchfilter(data = tmp, spec = fspec, n.old = N)
+	flt = .figarchfilter(data = tmp, spec = fspec, n.old = N, trunclag = fit@model$trunclag)
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
 	zfilter = flt@filter$z
+	truncLag = fit@model$trunclag
+	# ebar,eps and be from the filtered is now available
+	ebar =c(flt@filter$ebar,rep(0,n.ahead))
+	eps = flt@filter$eps
+	delta = ipars["delta",1]
+	k=seq(1,truncLag)
+	dk=(k-1-delta)/k
+	dk=rev(cumprod(dk))
+	eps = c(eps[-c(1:truncLag)], rep(0,n.ahead))
 	# forecast GARCH process
 	seriesFor = sigmaFor = matrix(NA, ncol = n.roll+1, nrow = n.ahead)
 	#seriesFor[1,] = fitted(flt)[(N+1):(N+n.roll+1)]
@@ -696,7 +705,7 @@
 		# forecast of externals is provided outside the system
 		mxfi = mxf[1:(N+i-1+n.ahead), , drop = FALSE]
 		vxfi = vxf[1:(N+i-1+n.ahead), , drop = FALSE]
-		ans = .nsgarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, data = x, N = np, n.ahead)
+		ans = .nfigarchforecast(ipars, modelinc, idx, mu, omega, mxfi, vxfi, h, epsx, z, eps=eps, ebar=ebar,  dk=dk, truncLag=truncLag, data = x, N = np, n.ahead)
 		sigmaFor[,i] = ans$h
 		seriesFor[,i] = ans$x
 	}

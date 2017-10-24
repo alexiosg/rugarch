@@ -42,7 +42,6 @@ void sgarchfilter(int *model, double *pars, int *idx, double *vexdata, double *e
 void figarchfilter(int *model, double *pars, int *idx, double *vexdata, double *e, double *eps, double *be, double *ebar, int T, int N, int i, double *h)
 {
   int j,ind;
-  //(i>0) ? (jlag=1) : (jlag=0);
   ebar[i]=0.0;
   for(j=0;j<N;j++)
   {

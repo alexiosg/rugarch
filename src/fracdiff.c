@@ -48,7 +48,8 @@ void c_binexpansion(int *n, double *d, double *ans)
 
 void c_figarchcons(double *alpha1, double *delta, double *beta1, double *g, double *psi, int* truncLag)
 {
-  int j,k;
+  int j=0;
+  int k=0;
   double b;
   if(*beta1>0){
     if(*alpha1<=((1.0-*delta)/2.0)){
