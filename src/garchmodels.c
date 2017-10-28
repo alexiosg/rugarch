@@ -101,6 +101,20 @@ void figarchfilterC(int *model, double *pars, int *idx, double *hEst, double *x,
   *llh=lk;
 }
 
+void figarchsimC(int *model, double *pars, int *idx, double *h, double *z, double *res, double *e,
+                double *ebar, double *eps, double *be, double *vexdata, int *T, int *N, int *m)
+{
+  int i;
+  for (i=*m; i<*T; i++)
+  {
+    figarchfilter(model, pars, idx, vexdata, e, eps, be, ebar, *T, *N, i, h);
+    res[i]=pow(h[i], 0.5)*z[i];
+    e[i] = res[i]*res[i];
+    eps[i+*N]=e[i];
+  }
+}
+
+
 void egarchfilterC(int *model, double *pars, int *idx, double *hEst, double *meanz,
 		double *x, double *res, double *e, double *mexdata, double *vexdata, double *zrf,
 		double *constm, double *condm, int *m, int *T, double *h, double *z, double *llh, double *LHT)

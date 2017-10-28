@@ -58,6 +58,8 @@ extern void realgarchsimC(void *, void *, void *, void *, void *, void *, void *
 extern void sgarchfilterC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sgarchsimC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void figarchfilterC(void *, void *, void *, void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *);
+extern void figarchsimC(void *, void *, void *, void *, void *, void *, void *,void *, void *, void *, void *, void *, void *, void *);
+
 /* .Call calls */
 extern SEXP colMaxRcpp(SEXP);
 extern SEXP maparchsim(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -125,6 +127,8 @@ static const R_CMethodDef CEntries[] = {
   {"sgarchfilterC",    (DL_FUNC) &sgarchfilterC,    18},
   {"sgarchsimC",       (DL_FUNC) &sgarchsimC,       10},
   {"figarchfilterC",   (DL_FUNC) &figarchfilterC,   22},
+  {"figarchsimC",      (DL_FUNC) &figarchsimC,      14},
+
   {NULL, NULL, 0}
 };
 static const R_CallMethodDef CallEntries[] = {

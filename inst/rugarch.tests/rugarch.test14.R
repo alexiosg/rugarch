@@ -28,6 +28,7 @@ rugarch.test14a = function(cluster=NULL)
                   numderiv.control=list(grad.zero.tol = 1e-9), solver="solnp")
   specx = spec
   setfixed(specx)<-as.list(coef(fit))
+  filt = ugarchfilter(specx, x, n.old=nrow(x),trunclag = 2000)
   test1 = all.equal(as.numeric(sigma(fit)),as.numeric(sigma(filt)))
 
   cf = coef(fit)
@@ -81,5 +82,44 @@ rugarch.test13b = function(cluster=NULL)
   fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000),
                   numderiv.control=list(grad.zero.tol = 1e-9), solver="solnp")
   forc = ugarchforecast(fit, n.ahead=1500)
+  # plot(sigma(forc), type="l")
+}
+
+rugarch.test13c = function(cluster=NULL)
+{
+  data(sp500ret)
+  x = as.xts(sp500ret)
+  spec = ugarchspec(mean.model=list(armaOrder=c(1,1), include.mean=TRUE),
+                    variance.model = list(model = "fiGARCH", garchOrder = c(1,1)),
+                    distribution="norm")
+  fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000),
+                  numderiv.control=list(grad.zero.tol = 1e-9), solver="solnp")
+  sim = ugarchsim(fit, n.sim=5000, m.sim=100)
+  fx = fitted(sim)
+  cf=do.call(cbind, lapply(1:100, function(i){
+    fitx = try(ugarchfit(spec, as.numeric(fx[,i]), fit.control=list(trunclag=2000)))
+    if(inherits(fitx,'try-error')){
+      return(matrix(NA, ncol=1, nrow=7))
+    }
+    if(convergence(fitx)==1) return(matrix(NA, ncol=1, nrow=7))
+    print(i)
+    matrix(coef(fitx),ncol=1)
+  }))
+  rownames(cf)=names(coef(fit))
+  hist(cf["delta",],breaks="fd")
+  abline(v=coef(fit)["delta"], col=2)
+
+  hist(cf["alpha1",],breaks="fd")
+  abline(v=coef(fit)["alpha1"], col=2)
+
+  hist(cf["beta1",],breaks="fd")
+  abline(v=coef(fit)["beta1"], col=2)
+
+  hist(cf["omega",],breaks="fd")
+  abline(v=coef(fit)["omega"], col=2)
+
+  hist(cf["mu",],breaks="fd")
+  abline(v=coef(fit)["mu"], col=2)
+
   # plot(sigma(forc), type="l")
 }
