@@ -92,9 +92,12 @@ rugarch.test13c = function(cluster=NULL)
   spec = ugarchspec(mean.model=list(armaOrder=c(1,1), include.mean=TRUE),
                     variance.model = list(model = "fiGARCH", garchOrder = c(1,1)),
                     distribution="norm")
-  fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000),
-                  numderiv.control=list(grad.zero.tol = 1e-9), solver="solnp")
-  sim = ugarchsim(fit, n.sim=5000, m.sim=100)
+  fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000), solver="solnp")
+  sim1= ugarchsim(fit, n.sim=5000, m.sim=10, rseed=100)
+  specx=spec
+  setfixed(specx)<-as.list(coef(fit))
+  sim2= ugarchpath(specx, n.sim=5000, m.sim=10, presigma = tail(sigma(fit),1), preresiduals = tail(residuals(fit),1),rseed = 100, trunclag = 2000)
+
   fx = fitted(sim)
   cf=do.call(cbind, lapply(1:100, function(i){
     fitx = try(ugarchfit(spec, as.numeric(fx[,i]), fit.control=list(trunclag=2000)))
