@@ -93,36 +93,7 @@ rugarch.test13c = function(cluster=NULL)
                     variance.model = list(model = "fiGARCH", garchOrder = c(1,1)),
                     distribution="norm")
   fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000), solver="solnp")
-  sim1= ugarchsim(fit, n.sim=5000, m.sim=10, rseed=100)
-  specx=spec
-  setfixed(specx)<-as.list(coef(fit))
-  sim2= ugarchpath(specx, n.sim=5000, m.sim=10, presigma = tail(sigma(fit),1), preresiduals = tail(residuals(fit),1),rseed = 100, trunclag = 2000)
-
-  fx = fitted(sim)
-  cf=do.call(cbind, lapply(1:100, function(i){
-    fitx = try(ugarchfit(spec, as.numeric(fx[,i]), fit.control=list(trunclag=2000)))
-    if(inherits(fitx,'try-error')){
-      return(matrix(NA, ncol=1, nrow=7))
-    }
-    if(convergence(fitx)==1) return(matrix(NA, ncol=1, nrow=7))
-    print(i)
-    matrix(coef(fitx),ncol=1)
-  }))
-  rownames(cf)=names(coef(fit))
-  hist(cf["delta",],breaks="fd")
-  abline(v=coef(fit)["delta"], col=2)
-
-  hist(cf["alpha1",],breaks="fd")
-  abline(v=coef(fit)["alpha1"], col=2)
-
-  hist(cf["beta1",],breaks="fd")
-  abline(v=coef(fit)["beta1"], col=2)
-
-  hist(cf["omega",],breaks="fd")
-  abline(v=coef(fit)["omega"], col=2)
-
-  hist(cf["mu",],breaks="fd")
-  abline(v=coef(fit)["mu"], col=2)
+  ds = ugarchdistribution(fit, n.sim=2000, m.sim=200, recursive=TRUE, cluster=cluster)
 
   # plot(sigma(forc), type="l")
 }

@@ -2542,6 +2542,7 @@ persistence = function(object, pars, distribution = "norm", model = "sGARCH",
 .filterpersistence = function(object)
 {
 	ans = object@filter$persistence
+	if(is.null(ans)) ans = NA
 	#names(ans) = "persistence"
 	return(ans)
 }
@@ -2567,7 +2568,8 @@ setMethod("persistence", signature(object = "uGARCHfilter", pars = "missing",
 			csGARCH = .persistcsgarch1(pars, idx, distribution),
 			mcsGARCH = .persistmcsgarch1(pars, idx, distribution),
 			realGARCH = .persistrealgarch1(pars, idx, distribution),
-			iGARCH = 1)
+			iGARCH = 1,
+			fiGARCH = NA)
 	#names(ans) = "persistence"
 	return(ans)
 }
@@ -3062,7 +3064,8 @@ uncvariance = function(object, pars, distribution = "norm", model = "sGARCH",
 			csGARCH = .unccsgarch1(pars, idx, distribution, vexdata),
 			mcsGARCH = .uncmcsgarch1(pars, idx, distribution, vexdata),
 			realGARCH = .uncrealgarch1(pars, idx, distribution, vexdata),
-			iGARCH = Inf)
+			iGARCH = Inf,
+			fiGARCH = NA)
 	#names(ans) = "unconditional"
 	return(unname(ans))
 }
