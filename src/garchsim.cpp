@@ -105,6 +105,7 @@ SEXP msgarchsim(SEXP model, SEXP pars, SEXP idx, SEXP h, SEXP z, SEXP res,
     return R_NilValue;
 }
 
+
 SEXP mgjrgarchsim(SEXP model, SEXP pars, SEXP idx, SEXP h, SEXP z, SEXP res, SEXP e,
 		SEXP nres, SEXP nindx, SEXP vxs, SEXP N)
 {

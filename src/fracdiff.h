@@ -17,6 +17,8 @@
 #ifndef FRACDIFF_H
 #define FRACDIFF_H
 void fracdiff(int *n, double *d, double *p, double *x, double *ydiff);
+void c_binexpansion(int *n, double *d, double *ans);
+void c_figarchcons(double *alpha1, double *delta, double *beta1, double *g, double *psi, int* truncLag);
 #endif /* FRACDIFF_H */
 
 

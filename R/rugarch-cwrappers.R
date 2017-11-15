@@ -174,3 +174,13 @@
 		return(ans)
 	}
 }
+binexpansion = function(d, n=10000)
+{
+  ans = as.double(rep(0.0, n))
+  out = try(.C("c_binexpansion", n = as.integer(n), d = as.double(d), ans = ans, PACKAGE = "rugarch"), silent = TRUE)
+  if(inherits(out, "try-error")){
+    return(NA)
+  } else{
+    return(out)
+  }
+}

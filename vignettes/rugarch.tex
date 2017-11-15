@@ -566,6 +566,60 @@ so that ${Y_{t + k}} = {A^k}{Y_t} + \sum\limits_{j = 0}^{k - 1} {{A^j}\left( {b 
 
 In the \verb@rugarch@ package, all the methods, from estimation, to filtering, forecasting and simulation have been included with key parts of the code written in C for speed (as elsewhere). For the forecast routine, some additional arguments are made available as a result of the generation of the conditional variance density (rather than point forecasts, although these are returned based on the average of the simulated density values). Consult the documentation and online examples for more details.
 
+\subsubsection{The fractionally integrated GARCH model ('fiGARCH')}\label{section:figarch}
+Motivated by the developments in long memory processes, and in particular the ARFIMA type models (see section \ref{section:umean}), \cite{Baillie1996} proposed the fractionally integrated generalized autoregressive conditional heteroscedasticity, or FIGARCH, model to capture long memory (in essence hyperbolic memory). Unlike the standard GARCH where shocks decay at an exponential rate, or the integrated GARCH model where shocks persist forever, in the FIGARCH model shocks decay at a slower hyperbolic rate.
+Consider the standard GARCH equation:
+\begin{equation}
+\sigma _t^2 = \omega  + \alpha \left( L \right)\varepsilon _t^2 + \beta \left( L \right)\sigma _t^2
+\end{equation}
+where $L$ is the lag operator, such that $a\left( L \right) = \sum\limits_{i = 1}^q {{\alpha _i}{L^i}}$ and $\beta \left( L \right) = \sum\limits_{j = 1}^p {{\beta _j}{L^j}}$. Re-arranging to give the ARMA in squares representation:
+\begin{equation}
+\left[ {1 - \alpha \left( L \right) - \beta \left( L \right)} \right]\varepsilon _t^2 = \omega  + \left[ {1 - \beta \left( L \right)} \right]{v_t}
+\end{equation}
+where ${v_t} = \varepsilon _t^2 - \sigma _t^2$, and condensing the left hand side:
+\begin{equation}
+\left( {1 - L} \right)\phi \left( L \right)\varepsilon _t^2 = \omega  + \left[ {1 - \beta \left( L \right)} \right]{v_t}
+\end{equation}
+with $\phi \left( L \right) = \sum\limits_{i = 1}^{m - 1} {{\phi _i}{L^i}}$ and $m = \max \left\{ {p,q} \right\}$. In the fractionally integrated model, $\left(1-L\right)$ is replaced by :
+\begin{equation}
+{\left( {1 - L} \right)^d} = \sum\limits_{k = 0}^\infty  {\frac{{\Gamma \left( {d + 1} \right)}}{{\Gamma \left( {k + 1} \right)\Gamma \left( {d - k + 1} \right)}}{L^k} = } 1 - \sum\limits_{k = 1}^\infty  {{\pi _k}{L^k}}
+\end{equation}
+where ${\pi _i} = \prod\limits_{1 \le k \le i} {\frac{{k - 1 - d}}{k}}$. The expansion\footnote{This is the hypergeometric function expansion.} is usually truncated to some large number, such as 1000. Rearranging again, we obtain the following representation of the FIGARCH model:
+
+\begin{equation}\label{equation:figarch1}
+\begin{array}{l}
+\sigma _t^2 = \omega {\left[ {1 - \beta \left( L \right)} \right]^{ - 1}} + \left\{ {1 - [1 - \beta {{\left( L \right)}^{ - 1}}\phi \left( L \right){{\left( {1 - L} \right)}^d}} \right\}\varepsilon _t^2\\
+ = {\omega ^*} + \lambda \left( L \right)\varepsilon _t^2\\
+ = {\omega ^*} + \sum\limits_{j = 1}^\infty  {{\lambda _i}{L^i}\varepsilon _t^2}
+\end{array}
+\end{equation}
+where ${\lambda _1} = {\phi _1} - {\beta _1} + d$ and ${\lambda _k} = {\beta _1}{\lambda _{k - 1}} + \left( {\frac{{k - 1 - d}}{k} - {\phi _1}} \right){\pi _{d,k - 1}}$. For the FIGARCH(1,d,1) model, sufficient conditions to ensure positivity of the conditional variance are $\omega  > 0$,${\beta _1} - d \le {\phi _1} \le \left( {\frac{{2 - d}}{2}} \right)$ , and $d\left( {{\phi _1} - \frac{{\left( {1 - d} \right)}}{2}} \right) \le {\beta _1}\left( {{\phi _1} - {\beta _1} + d} \right)$.
+In keeping with the formulation used for GARCH models in this package, we re-write equation \ref{equation:figarch1} as follows, setting $\phi \left( L \right) \equiv \left( {1 - \alpha \left( L \right)} \right)$:
+\begin{equation}
+\begin{array}{l}
+\phi \left( L \right){\left( {1 - L} \right)^d}\varepsilon _t^2 = \omega  + \left( {1 - \beta \left( L \right)} \right)\left( {\varepsilon _t^2 - \sigma _t^2} \right)\\
+\phi \left( L \right){\left( {1 - L} \right)^d}\varepsilon _t^2 = \omega  - \sigma _t^2 + \varepsilon _t^2 + \beta \left( L \right)\sigma _t^2 - \beta \left( L \right)\varepsilon _t^2\\
+\sigma _t^2 = \omega  + \varepsilon _t^2 + \beta \left( L \right)\sigma _t^2 - \beta \left( L \right)\varepsilon _t^2 - \phi \left( L \right){\left( {1 - L} \right)^d}\varepsilon _t^2\\
+\sigma _t^2 = \omega  + \left\{ {1 - \beta \left( L \right) - \phi \left( L \right){{\left( {1 - L} \right)}^d}} \right\}\varepsilon _t^2 + \beta \left( L \right)\sigma _t^2\\
+\sigma _t^2 = \omega  + \left\{ {1 - \beta \left( L \right) - \left( {1 - \alpha \left( L \right)} \right){{\left( {1 - L} \right)}^d}} \right\}\varepsilon _t^2 + \beta \left( L \right)\sigma _t^2
+\end{array}
+\end{equation}
+Truncating the expansion to 1000 lags and setting $\bar \varepsilon _{t - j}^2 = {\left( {1 - L} \right)^d}\varepsilon _{t - j}^2 = \varepsilon _{t - j}^2 + \left( {\sum\limits_{k = 1}^{1000} {{\pi _k}{L^k}} } \right)\varepsilon _{t - j}^2$:
+\begin{equation}
+\begin{array}{l}
+\sigma _t^2 = \omega  - \sum\limits_{j = 1}^p {{\beta _j}\varepsilon _{t - j}^2 + } \sum\limits_{j = 1}^q {{\alpha _j}\varepsilon _{t - j}^2 - \bar \varepsilon _{t - j}^2 + \sum\limits_{j = 1}^q {{\alpha _j}\bar \varepsilon _{t - j}^2 + } } \sum\limits_{j = 1}^p {{\beta _j}\sigma _{t - j}^2} \\
+ = \left( {\omega  - \bar \varepsilon _{t - j}^2} \right) + \sum\limits_{j = 1}^q {{\alpha _j}\left( {\varepsilon _{t - j}^2 + \bar \varepsilon _{t - j}^2} \right)}  + \sum\limits_{j = 1}^p {{\beta _j}\left( {\sigma _{t - j}^2 - \varepsilon _{t - j}^2} \right)}
+\end{array}
+\end{equation}
+
+Contrary to the case of the ARFIMA model, the degree of persistence in the FIGARCH model operates in the oppposite direction, so that as the fractional differencing parameter $d$ gets closer to one, the memory of the FIGARCH process increases, a direct result of on the parameter acting on the squared errors rather than the conditional variance. When $d=0$ the FIGARCH collapses to the vanilla GARCH model and when $d=1$ to the integrated GARCH model. The question of the stationarity of a FIGARCH(q,d,p) model is open and there is no general proof of this at present. As such, the stationarity argument in the estimation function is used interchangeably for positivity conditions. While \cite{Baillie1996} provided a set of sufficient conditions for the FIGARCH(1,d,1) case which may be restrictive in practice which is why \cite{Conrad2006} provide a more general set of sufficient conditions for the FIGARCH(q,d,p). Equations (7)-(9) and Corollary 1 of their paper provide the conditions for the positivity in the case of the FIGARCH(1,d,1) case which the \verb@rugarch@ package implements.\footnote{At present, only the (1,d,1) case is allowed.} Therefore, while it is possible to estimate any order desired, only conditions for the (1,d,1) are checked and imposed during estimation when the stationarity\footnote{Which is used here to denote a positivity constraint} flag is set to TRUE.
+
+
+Numerous alternatives and extensions have been proposed in the literature since the FIGARCH model was published. The model of \cite{Karanasos2004} models the squared residuals as deviations from $\omega$ so that it specifies a covariance stationary process (although the question of strict stationary still remains open). Augmenting the EGARCH model with the fractional operator appears to provide for a natural way to deal with the positivity issue since the process is always strictly positive (see \cite{Bollerslev1996b}). This may be included in a future version.
+
+
+
+
 \subsection{Conditional Distributions}\label{section:distributions}
 The \verb@rugarch@ package supports a range of univariate distributions
 including the Normal ('norm'), Generalized Error ('ged'), Student ('std')
@@ -960,7 +1014,7 @@ consult the documentation on the methods available for the returned class.
 *          GARCH Model Fit        *
 *---------------------------------*
 
-Conditional Variance Dynamics 	
+Conditional Variance Dynamics
 -----------------------------------
 GARCH Model	: sGARCH(1,1)
 Mean Model	: ARFIMA(1,0,1)
@@ -1170,7 +1224,7 @@ The example which follows explains how:
 *          GARCH Model Filter        *
 *------------------------------------*
 
-Conditional Variance Dynamics 	
+Conditional Variance Dynamics
 --------------------------------------
 GARCH Model	: apARCH(1,1)
 Mean Model	: ARFIMA(1,0,1)
@@ -1806,29 +1860,29 @@ and NOT insample, for which no correction to the tests have been made to account
 for parameter uncertainty.
 
 \subsection{The Model Confidence Set Test}
-The Model Confidence Set (\emph{MCS}) procedure of \cite{Hansen2011} (henceforth \emph{HLN}) provides 
-for a ranking of models given some penalized measure on their relative loss function difference. Define a 
-set $M^0$ as the original model comparison set with $i$ models and $t$ the time index, and let $L_{i,t}\left(.\right)$ be 
-some user specified loss function. The ranking of the models is then based on the relative difference of the 
+The Model Confidence Set (\emph{MCS}) procedure of \cite{Hansen2011} (henceforth \emph{HLN}) provides
+for a ranking of models given some penalized measure on their relative loss function difference. Define a
+set $M^0$ as the original model comparison set with $i$ models and $t$ the time index, and let $L_{i,t}\left(.\right)$ be
+some user specified loss function. The ranking of the models is then based on the relative difference of the
 pairwise loss function, $d_{ij,t}$:
 \begin{equation}\label{mcs1}
 {d_{ij,t}} = {L_{i,t}} - {L_{j,t}}{\text{  }}\forall i,j \in {M^0},
 \end{equation}
-where it is assumed that ${\mu _{ij}} \equiv E\left[ {{d_{ij,t}}} \right]$ is finite and does not depend on $t$, and 
+where it is assumed that ${\mu _{ij}} \equiv E\left[ {{d_{ij,t}}} \right]$ is finite and does not depend on $t$, and
 that $i$ is preferred to $j$ if $\mu_{ij}\le 0$. The set of models which can then be described as superior is defined as:
 \begin{equation}\label{mcs2}
 {M^*} \equiv \left\{ {i \in {M^0}:{\mu _{ij}} \leqslant 0{\text{  }}\forall j \in {M^0}} \right\}.
 \end{equation}
-The determination of $M^*$ is done through a sequence of significance tests with models found to be significantly inferior 
+The determination of $M^*$ is done through a sequence of significance tests with models found to be significantly inferior
 eliminated from the set. The null hypothesis takes the form:
 \begin{equation}\label{mcs3}
 {H_{0,M}}:{\mu _{ij}} = 0{\text{ }}\forall i,j \in M
 \end{equation}
-with $M \in M^0$, and tested using an equivalence test $\delta_M$. In case of rejection of the null, an elimination 
-rule $e_M$ is then used to identify the model to be removed from the set and the procedure repeated until all inferior 
-models are eliminated. Given a significance level $a$, the models which are not eliminated are deemed the model confidence 
-set $\hat M_{1 - a}^*$ with the key theorem of the test, given a set of assumptions on $\delta_M$ and $e_M$, being 
-that $\lim_{n \to +\infty}P\left( {{M^*} \subset \hat M_{1 - a}^*} \right) \geqslant 1 - a$. The actual studentized measure 
+with $M \in M^0$, and tested using an equivalence test $\delta_M$. In case of rejection of the null, an elimination
+rule $e_M$ is then used to identify the model to be removed from the set and the procedure repeated until all inferior
+models are eliminated. Given a significance level $a$, the models which are not eliminated are deemed the model confidence
+set $\hat M_{1 - a}^*$ with the key theorem of the test, given a set of assumptions on $\delta_M$ and $e_M$, being
+that $\lim_{n \to +\infty}P\left( {{M^*} \subset \hat M_{1 - a}^*} \right) \geqslant 1 - a$. The actual studentized measure
 used to compare models is defined as:
 \begin{equation}\label{msc4}
 \frac{{{{\hat d}_i}}}
@@ -1843,17 +1897,17 @@ with $\hat d_i$ derived as:
 {{m - 1}}\sum\limits_{j \in M} {{{\hat d}_{ij}}}  \hfill \\
 \end{gathered}
 \end{equation}
-where $\hat d_{ij}$ measures the relative performance between models, and $\hat d_i$ the measures the relative performance of 
-model $i$ to the average of all the models in $M$, and the variance of $\hat d_i$, $var(\hat d_i)$ may be derived by use of 
-the bootstrap. The statistic then used to eliminate inferior models is the range statistic\footnote{Other options 
+where $\hat d_{ij}$ measures the relative performance between models, and $\hat d_i$ the measures the relative performance of
+model $i$ to the average of all the models in $M$, and the variance of $\hat d_i$, $var(\hat d_i)$ may be derived by use of
+the bootstrap. The statistic then used to eliminate inferior models is the range statistic\footnote{Other options
 are available such as the semi-quadratic statistic which is also returned by
 the package function.} and defined as:
 \begin{equation}\label{mcs6}
 {T_R} = \mathop {\max }\limits_{i,j \in M} \frac{{\left| {{{\hat d}_i}} \right|}}
 {{\sqrt {\operatorname{var} \left( {{{\hat d}_i}} \right)} }}.
 \end{equation}
-The asymptotic distribution of $T_R$, and hence the p-values reported, is obtained via the bootstrap procedure, the validity 
-of which is established in HLN. 
+The asymptotic distribution of $T_R$, and hence the p-values reported, is obtained via the bootstrap procedure, the validity
+of which is established in HLN.
 
 \section{Future Development}\label{section:fut}
 Any future extensions will likely be 'add-on' packages released in the bitbucket

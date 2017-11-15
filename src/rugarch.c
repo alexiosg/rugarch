@@ -8,6 +8,8 @@ extern void aparchsimC(void *, void *, void *, void *, void *, void *, void *, v
 extern void arfimafitC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void arfimaxfilterC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void armaxsim(void *, void *, void *, void *, void *, void *, void *, void *);
+extern void c_binexpansion(void *, void *, void *);
+extern void c_figarchcons(void *, void *, void *, void *, void *, void *);
 extern void c_dged(void *, void *, void *, void *, void *, void *, void *);
 extern void c_dgh(void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void c_dghst(void *, void *, void *, void *, void *, void *, void *, void *);
@@ -55,6 +57,8 @@ extern void realgarchfilterC(void *, void *, void *, void *, void *, void *, voi
 extern void realgarchsimC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sgarchfilterC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void sgarchsimC(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void figarchfilterC(void *, void *, void *, void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *,void *);
+extern void figarchsimC(void *, void *, void *, void *, void *, void *, void *,void *, void *, void *, void *, void *, void *, void *);
 /* .Call calls */
 extern SEXP colMaxRcpp(SEXP);
 extern SEXP maparchsim(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -72,6 +76,8 @@ static const R_CMethodDef CEntries[] = {
   {"arfimafitC",       (DL_FUNC) &arfimafitC,       14},
   {"arfimaxfilterC",   (DL_FUNC) &arfimaxfilterC,   12},
   {"armaxsim",         (DL_FUNC) &armaxsim,          8},
+  {"c_binexpansion",   (DL_FUNC) &c_binexpansion,    3},
+  {"c_figarchcons",    (DL_FUNC) &c_figarchcons,     6},
   {"c_dged",           (DL_FUNC) &c_dged,            7},
   {"c_dgh",            (DL_FUNC) &c_dgh,             9},
   {"c_dghst",          (DL_FUNC) &c_dghst,           8},
@@ -119,6 +125,8 @@ static const R_CMethodDef CEntries[] = {
   {"realgarchsimC",    (DL_FUNC) &realgarchsimC,    12},
   {"sgarchfilterC",    (DL_FUNC) &sgarchfilterC,    18},
   {"sgarchsimC",       (DL_FUNC) &sgarchsimC,       10},
+  {"figarchfilterC",   (DL_FUNC) &figarchfilterC,   22},
+  {"figarchsimC",      (DL_FUNC) &figarchsimC,      14},
   {NULL, NULL, 0}
 };
 static const R_CallMethodDef CallEntries[] = {

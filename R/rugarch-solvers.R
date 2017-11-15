@@ -16,7 +16,7 @@
 #################################################################################
 # implements nlminb, lbgs and solnp
 # only solnp implements true constraint (stationarity) optimization
-.garchsolver = function(solver, pars, fun, Ifn, ILB, IUB, gr, hessian, parscale, 
+.garchsolver = function(solver, pars, fun, Ifn, ILB, IUB, gr, hessian, parscale,
 		control, LB, UB, ux=NULL, ci=NULL, mu=NULL, arglist)
 {
 	gocontrol = control
@@ -33,7 +33,7 @@
 
 .nlminbsolver = function(pars, fun, gr, hessian, parscale, control, LB, UB, arglist){
 	ans = try(nlminb(start = pars, objective = fun, gradient = gr, hessian = hessian,
-					arglist = arglist, scale = 1/parscale, control = control, 
+					arglist = arglist, scale = 1/parscale, control = control,
 					lower = LB, upper = UB), silent = TRUE)
 	if(inherits(ans, "try-error")){
 		sol = list()
@@ -49,7 +49,7 @@
 }
 
 .solnpsolver = function(pars, fun, Ifn, ILB, IUB, control, LB, UB, arglist){
-	ans = try(solnp(pars, fun = fun, eqfun = NULL, eqB = NULL, ineqfun = Ifn, ineqLB = ILB, 
+	ans = try(solnp(pars, fun = fun, eqfun = NULL, eqB = NULL, ineqfun = Ifn, ineqLB = ILB,
 					ineqUB = IUB, LB = LB, UB = UB, control = control, arglist), silent = TRUE)
 	if(inherits(ans,"try-error")){
 		sol = list()
@@ -112,10 +112,10 @@
 	} else{
 		cl = NULL
 	}
-	ans = try(gosolnp(pars = pars, fixed = NULL, fun = fun, eqfun = NULL, 
-			eqB = NULL, ineqfun = Ifn, ineqLB = ILB, ineqUB = IUB, LB = LB, 
-			UB = UB, control = control, distr = rep(2, length(LB)), 
-			distr.opt = distr.opt, n.restarts = n.restarts, n.sim = n.sim, 
+	ans = try(gosolnp(pars = pars, fixed = NULL, fun = fun, eqfun = NULL,
+			eqB = NULL, ineqfun = Ifn, ineqLB = ILB, ineqUB = IUB, LB = LB,
+			UB = UB, control = control, distr = rep(2, length(LB)),
+			distr.opt = distr.opt, n.restarts = n.restarts, n.sim = n.sim,
 			cluster = cl, rseed = rseed, arglist),
 	silent = TRUE)
 	if(doparallel) stopCluster(cl)
@@ -138,7 +138,7 @@
 .lbfgssolver = function(pars, fun, gr, parscale, control, LB, UB, arglist){
 	control$parscale = parscale
 	ans = try(optim(par = pars, fn = fun, gr = gr, arglist = arglist,
-			method = "L-BFGS-B", lower = LB, upper = UB, control = control, 
+			method = "L-BFGS-B", lower = LB, upper = UB, control = control,
 			hessian = TRUE),silent=TRUE)
 	if(inherits(ans, "try-error")){
 		sol = list()
@@ -155,9 +155,9 @@
 
 # nloptr solver requires named (...)!
 .nloptrsolver = function(pars, fun, control, LB, UB, arglist){
-	ans = try(nloptr(x0 = pars, eval_f = fun,  eval_grad_f = NULL, 
-					eval_g_ineq = NULL, lb = LB, ub = UB, eval_jac_g_ineq = NULL, 
-					eval_g_eq = NULL, eval_jac_g_eq = NULL, opts = control, arglist = arglist), 
+	ans = try(nloptr(x0 = pars, eval_f = fun,  eval_grad_f = NULL,
+					eval_g_ineq = NULL, lb = LB, ub = UB, eval_jac_g_ineq = NULL,
+					eval_g_eq = NULL, eval_jac_g_eq = NULL, opts = control, arglist = arglist),
 			silent=TRUE)
 	if(inherits(ans, "try-error")){
 		sol = list()
@@ -302,7 +302,7 @@
 		ans$local_opts$xtol_rel = ans$xtol_rel
 		ans$local_opts$maxeval = 2000
 		ans$local_opts$print_level = 0
-		
+
 	}
 	return(ans)
 }
@@ -338,7 +338,7 @@
 	estidx = arglist$estidx
 	idx = arglist$model$pidx
 	ipars[estidx, 1] = pars
-	distribution = arglist$model$modeldesc$distribution	
+	distribution = arglist$model$modeldesc$distribution
 	con = .persistaparch1(pars = ipars[,1], idx = idx, distribution = distribution)
 	if(is.na(con)) con = 1
 	return(con)
@@ -349,9 +349,9 @@
 	estidx = arglist$estidx
 	idx = arglist$model$pidx
 	ipars[estidx, 1] = pars
-	distribution = arglist$model$modeldesc$distribution	
+	distribution = arglist$model$modeldesc$distribution
 	vsubmodel = arglist$model$modeldesc$vsubmodel
-	con = .persistfgarch1(pars = ipars[,1], idx = idx, distribution = distribution, 
+	con = .persistfgarch1(pars = ipars[,1], idx = idx, distribution = distribution,
 			submodel = vsubmodel)
 	if(is.na(con)) con = 1
 	return(con)
@@ -405,4 +405,62 @@
 	c2 = beta - eta2
 	return(c(c1, c2))
 	#return( 1-  ( (alpha + beta)*(1-eta1) + eta1 ) )
+}
+
+.figarchcon = function(pars, arglist)
+{
+  ipars = arglist$ipars
+  estidx = arglist$estidx
+  idx = arglist$model$pidx
+  ipars[estidx, 1] = pars
+  modelinc = arglist$model$modelinc
+  alpha1 = ipars["alpha1",1]
+  beta1 = ipars["beta1",1]
+  delta = ipars["delta",1]
+  truncLag=arglist$truncLag
+  # alpha1=0.01;beta1=-0.5;delta=0.9
+  g = rugarch:::binexpansion(d=delta, n=10001)$ans
+  test = (alpha1==beta1 || alpha1==0 || abs(alpha1)>=1 || beta1==0 || abs(beta1)>=1 || delta>=1 || delta<=0)
+  if(test) return(c(1,1))
+  psi = rep(0,2)
+  psi[2]=0.01
+  ans = try(.C("c_figarchcons",alpha1=as.double(alpha1), delta=as.double(delta), beta1=as.double(beta1),
+               g = as.double(g), psi = as.double(psi), truncLag = as.integer(truncLag),PACKAGE="rugarch"),silent=TRUE)
+  if(inherits(ans,'try-error')) return(1)
+  return(ans$psi)
+  #
+  # if(beta1>0){
+  #   if (alpha1 <= (1-delta)/2){
+  #     k=1
+  #   } else{
+  #     k=ceil((1+delta)/(1-alpha1))+1
+  #   }
+  #   psi=delta+alpha1-beta1
+  #   if(k>1){
+  #     for(i in 2:k){
+  #        psi=beta1*psi +((i-1-delta)/i-alpha1)*(-g[i-1])
+  #     }
+  #   }
+  # } else{
+  #   psi=rep(0,2)
+  #   for(j in 3:1001)
+  #   {
+  #     bound=beta1 * ((j-2-delta)/(j-1)-alpha1) + ((j-1-delta)/j - alpha1) * (j-2-delta)/(j-1)
+  #     if(bound>=0)
+  #     {
+  #       k=j
+  #       break()
+  #     }
+  #   }
+  #   psi[1]=delta+alpha1-beta1
+  #   psi[2]=beta1*psi[1]+((2-1-delta)/2-alpha1)*delta
+  #   if(k>3){
+  #     for (j in 3:(k-1))
+  #     {
+  #       psi[1]=psi[2]
+  #       psi[2]=beta1*psi[1] +((j-1-delta)/j-alpha1)*(-g[j])
+  #     }
+  #   }
+  # }
+  # return(min(psi))
 }

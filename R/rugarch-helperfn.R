@@ -20,7 +20,7 @@ TinY = 1.0e-8
 
 ##################################################################################
 # Helper Functions
-.makearfimafitmodel = function(f, T, m, timer, convergence, message, hess, arglist, 
+.makearfimafitmodel = function(f, T, m, timer, convergence, message, hess, arglist,
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
@@ -35,8 +35,8 @@ TinY = 1.0e-8
 	arglist$returnType = "llh"
 	fit = list()
 	if(is.null(hess)){
-		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$hess.eps, 
-						d= numderiv.control$hess.d, zero.tol=numderiv.control$hess.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$hess.eps,
+						d= numderiv.control$hess.d, zero.tol=numderiv.control$hess.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 						show.details=FALSE), arglist=arglist)
 		#fit$hessian = .hessian2sided(f, ipars[estidx, 1], arglist = arglist)
 	} else{
@@ -77,7 +77,7 @@ TinY = 1.0e-8
 			fit$robust.se.coef = rep(NA, nfixedn)
 			fit$robust.tval = rep(NA, nfixedn)
 			fit$robust.matcoef = matrix(NA, ncol = 4, nrow = length(fit$coef))
-			fit$robust.matcoef[-fixed,] = cbind(fit$coef[-fixed], fit$robust.se.coef, 
+			fit$robust.matcoef[-fixed,] = cbind(fit$coef[-fixed], fit$robust.se.coef,
 					fit$robust.tval, rep(NA, nfixedn))
 			fit$robust.matcoef[fixed,] = cbind(fit$coef[fixed], fNA, fNA, fNA)
 			fit$hessian.message = "failed to invert hessian"
@@ -85,8 +85,8 @@ TinY = 1.0e-8
 			arglist$returnType="LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
-							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
@@ -116,7 +116,7 @@ TinY = 1.0e-8
 			fit$robust.se.coef = rep(NA,length(fit$coef))
 			fit$robust.tval = rep(NA,length(fit$coef))
 			# change here
-			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval, 
+			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval,
 					rep(NA,length(fit$coef)))
 			fit$hessian.message = "failed to invert hessian"
 		} else{
@@ -125,8 +125,9 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
-							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+			fit$robust.scores = tmp$scores
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
@@ -137,7 +138,7 @@ TinY = 1.0e-8
 			fit$robust.se.coef = sqrt(diag(fit$robust.cvar))
 			fit$robust.tval = fit$coef/fit$robust.se.coef
 			# change here
-			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval, 
+			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval,
 					2*(1-pnorm(abs(fit$robust.tval))))
 			fit$hessian.message = NULL
 		}
@@ -159,7 +160,7 @@ TinY = 1.0e-8
 }
 
 
-.makefitmodel = function(garchmodel, f, T, m, timer, convergence, message, hess, arglist, 
+.makefitmodel = function(garchmodel, f, T, m, timer, convergence, message, hess, arglist,
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2))
 {
@@ -174,9 +175,9 @@ TinY = 1.0e-8
 	arglist$returnType = "llh"
 	fit = vector(mode = "list")
 	if(is.null(hess)){
-		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$hess.eps, 
-						d= numderiv.control$hess.d, zero.tol=numderiv.control$hess.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
-						show.details=FALSE), arglist=arglist)		
+		fit$hessian = hessian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$hess.eps,
+						d= numderiv.control$hess.d, zero.tol=numderiv.control$hess.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
+						show.details=FALSE), arglist=arglist)
 		# fit$hessian = .hessian2sided(f, ipars[estidx, 1], data = data, returnType = "llh", garchenv = garchenv)
 		# fit$hessian = .hessian2sidedcpp(f, ipars[estidx, 1], arglist = arglist)
 		E = eigen(fit$hessian)$values
@@ -185,7 +186,7 @@ TinY = 1.0e-8
 			# This should silence the warnings
 			condH = NaN
 		} else{
-			condH = log10(max(E)/min(E))			
+			condH = log10(max(E)/min(E))
 		}
 	} else{
 		fit$hessian = hess
@@ -194,7 +195,7 @@ TinY = 1.0e-8
 			# This should silence the warnings
 			condH = NaN
 		} else{
-			condH = log10(max(E)/min(E))			
+			condH = log10(max(E)/min(E))
 		}
 	}
 	fit$cvar = try(solve(fit$hessian), silent = TRUE)
@@ -208,7 +209,7 @@ TinY = 1.0e-8
 			fit$cvar = zz
 		}
 	}
-	#fit$grad = grad(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps=1e-4, d=0.001, 
+	#fit$grad = grad(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps=1e-4, d=0.001,
 	#				zero.tol=sqrt(.Machine$double.eps/7e-7), r=6, v=2, show.details=FALSE), data = data, returnType = "llh", garchenv = garchenv)
 	# this is the sum of the scores: apply(fit$scores, 2, "sum")
 	arglist$returnType = "all"
@@ -227,6 +228,11 @@ TinY = 1.0e-8
 		fit$u = temp$u
 		fit$tau = temp$tau
 		fit$partial.log.likelihoods = temp$LHT1P
+	}
+	if(garchmodel == "fiGARCH"){
+	  fit$eps = temp$eps
+	  fit$ebar = temp$ebar
+	  fit$be = temp$be
 	}
 	fit$condH = condH
 	fit$z = temp$z
@@ -251,7 +257,7 @@ TinY = 1.0e-8
 			fit$robust.se.coef = rep(NA, nfixedn)
 			fit$robust.tval = rep(NA, nfixedn)
 			fit$robust.matcoef = matrix(NA, ncol = 4, nrow = length(fit$coef))
-			fit$robust.matcoef[-fixed,] = cbind(fit$coef[-fixed], fit$robust.se.coef, 
+			fit$robust.matcoef[-fixed,] = cbind(fit$coef[-fixed], fit$robust.se.coef,
 					fit$robust.tval, rep(NA, nfixedn))
 			fit$robust.matcoef[fixed,] = cbind(fit$coef[fixed], fNA, fNA, fNA)
 			fit$hessian.message = "failed to invert hessian"
@@ -259,8 +265,10 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
-							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+			fit$A = tmp$A
+			fit$B = tmp$B
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
@@ -304,7 +312,7 @@ TinY = 1.0e-8
 			fit$robust.se.coef = rep(NA,length(fit$coef))
 			fit$robust.tval = rep(NA,length(fit$coef))
 			# change here
-			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval, 
+			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval,
 					rep(NA,length(fit$coef)))
 			fit$hessian.message = "failed to invert hessian"
 		} else{
@@ -312,8 +320,10 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
-			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps, 
-							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v, 
+			fit$A = tmp$A
+			fit$B = tmp$B
+			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
+							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)
 			colnames(fit$scores) = names(ipars[estidx, 1])
 			fit$se.coef = sqrt(diag(abs(fit$cvar)))
@@ -324,7 +334,7 @@ TinY = 1.0e-8
 			fit$robust.se.coef = sqrt(diag(fit$robust.cvar))
 			fit$robust.tval = fit$coef/fit$robust.se.coef
 			# change here
-			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval, 
+			fit$robust.matcoef = cbind(fit$coef, fit$robust.se.coef,fit$robust.tval,
 					2*(1-pnorm(abs(fit$robust.tval))))
 			fit$hessian.message = NULL
 		}
@@ -338,7 +348,7 @@ TinY = 1.0e-8
 			fit$tval = c(fit$tval, NA)
 			# change here
 			fit$matcoef = rbind(fit$matcoef, c(vtomega, NA, NA, NA))
-			
+
 			fit$robust.se.coef = c(fit$robust.se.coef, NA)
 			fit$robust.tval = c(fit$robust.tval, NA)
 			# change here
@@ -381,10 +391,10 @@ TinY = 1.0e-8
 			cat(paste("\nModel has ", mxn, " external regressors but forecast matrix has ", mmex, sep = ""))
 			stop("\n...exiting\n")
 		}
-		
+
 		if(!is.null(mregfor) && nmex < treq)
 		{
-			cat(paste("\nugarchforecast-->error: You requested ", treq ," actual forecasts 
+			cat(paste("\nugarchforecast-->error: You requested ", treq ," actual forecasts
 (including the rolling periods) but external mean forecasts provided have only ", nmex, " rows",sep=""))
 			cat(paste("\nA minimum of ", treq," rows are required", sep=""))
 			stop("\n...exiting")
@@ -398,7 +408,7 @@ TinY = 1.0e-8
 		mxf = NULL
 	}
 	if(vxn>0){
-		
+
 		if(!is.null(vregfor)){
 			nvex = dim(as.matrix(vregfor))[1]
 			mvex = dim(as.matrix(vregfor))[2]
@@ -415,13 +425,13 @@ TinY = 1.0e-8
 		# N is the original length
 		if(!is.null(vregfor) && nvex < treq)
 		{
-			cat(paste("\nugarchforecast-->error: You requested ", treq ," actual forecasts (including 
+			cat(paste("\nugarchforecast-->error: You requested ", treq ," actual forecasts (including
 									the rolling periods) but external variance forecasts provided have only ",
 							nvex, " rows",sep=""))
 			cat(paste("\nA minimum of ", treq," rows are required", sep=""))
 			stop("\n...exiting")
 		}
-		
+
 		if(is.null(vregfor)){
 			vxf = rbind(as.matrix(model$modeldata$vexdata)[1:(N-out.sample), ,drop = FALSE], matrix(0, ncol = vxn, nrow = treq))
 		} else {
@@ -452,11 +462,11 @@ TinY = 1.0e-8
 				warning("\nugarchsim-->warning: length of mexsimdata list not equal to m.sim...\nreplicating first list element m.sim times.\n")
 			}
 			for(i in 1:m.sim){
-				if(dim(as.matrix(mexsimdata[[i]]))[2] != mxn ) 
+				if(dim(as.matrix(mexsimdata[[i]]))[2] != mxn )
 					stop(paste("\nugarchsim-->error: mexsimdata ", i," has wrong no. of column", sep=""))
 				if(dim(as.matrix(mexsimdata[[i]]))[1] != n )
 					stop(paste("\nugarchsim-->error: mexsimdata ", i," has wrong no. of rows", sep=""))
-			}		
+			}
 		}
 		mexsimlist = vector(mode = "list", length = m.sim)
 		for(i in 1:m.sim){
@@ -474,7 +484,7 @@ TinY = 1.0e-8
 		}
 		if(!is.null(vexsimdata))
 		{
-			if(!is.list(vexsimdata)) 
+			if(!is.list(vexsimdata))
 				stop("\nugarchsim-->error: vexsimdata should be a list of length m.sim")
 			if(length(vexsimdata) != m.sim){
 				vsd = vector(mode = "list", length = m.sim)
@@ -483,11 +493,11 @@ TinY = 1.0e-8
 				warning("\nugarchsim-->warning: length of vexsimdata list not equal to m.sim...\nreplicating first list element m.sim times.\n")
 			}
 			for(i in 1:m.sim){
-				if(dim(as.matrix(vexsimdata[[i]]))[2] != vxn ) 
+				if(dim(as.matrix(vexsimdata[[i]]))[2] != vxn )
 					stop(paste("\nugarchsim-->error: vexsimdata ", i," has wrong no. of column", sep=""))
 				if(dim(as.matrix(vexsimdata[[i]]))[1] != n )
 					stop(paste("\nugarchsim-->error: vexsimdata ", i," has wrong no. of rows", sep=""))
-			}		
+			}
 		}
 		vexsimlist = vector(mode = "list", length = m.sim)
 		for(i in 1:m.sim){
@@ -505,23 +515,23 @@ TinY = 1.0e-8
 {
 	# ToDo: clean up (make use of rdist which is now vectorized)
 	if(is.na(custom.dist$name) | is.na(custom.dist$distfit)[1]){
-		z = matrix(apply(zmatrix, 1, FUN = function(x) .makeSample(as.character(x[1]), lambda = as.numeric(x[2]), 
+		z = matrix(apply(zmatrix, 1, FUN = function(x) .makeSample(as.character(x[1]), lambda = as.numeric(x[2]),
 		skew = as.numeric(x[3]), shape = as.numeric(x[4]), n = as.numeric(x[5]), seed = as.integer(x[6]))), n, m.sim)
 	}
 	if(!is.na(custom.dist$name) && !is.na(custom.dist$distfit)[1]){
-		
+
 		if(is.matrix(custom.dist$distfit))
 		{
-			if(dim(custom.dist$distfit)[2]!=m.sim) stop("column dimension of custom 
+			if(dim(custom.dist$distfit)[2]!=m.sim) stop("column dimension of custom
 				innovations\n matrix must be equal to m.sim")
-			if(dim(custom.dist$distfit)[1]!=n) stop("row dimension 
+			if(dim(custom.dist$distfit)[1]!=n) stop("row dimension
 				of custom innovations\n matrix must be equal to n.sim+n.start")
 			z = custom.dist$distfit
 		} else{
-			if(!is.character(custom.dist$name)) stop("custom distribution must be a 
+			if(!is.character(custom.dist$name)) stop("custom distribution must be a
 				character string")
 			temp = paste("r", custom.dist$name, sep="")
-			if(is.null(custom.dist$distfit)) stop("custom distribution missing a 
+			if(is.null(custom.dist$distfit)) stop("custom distribution missing a
 				distfit object")
 			# if this is often used we might consider using apply to
 			# use a new seed for each m.sim
@@ -644,7 +654,7 @@ newlagmatrix = function(x,nlags,xc)
 	nf = c(1, 2, 3, 4,
 		   5, 6, 6, 7,
 		   8, 6, 6, 9,
-		  10, 11, 12, 13)		
+		  10, 11, 12, 13)
 	nf = layout(matrix(nf, 4, 4, byrow = TRUE), respect = TRUE)
 	}
 }
@@ -756,3 +766,4 @@ backcastv = function(res, T, lambda, delta=2){
 	v = (lambda^T)*s + (1-lambda)*sum(lambda^(0:(T-1))*(res^delta))
 	return(v)
 }
+

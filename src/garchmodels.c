@@ -64,6 +64,57 @@ void sgarchsimC(int *model, double *pars, int *idx, double *h, double *z, double
 	}
 }
 
+
+/* FIGARCH (p,d,q) Filter with ARMA, ARFIMA, Exogenous Regressors, and GARCH-IN-MEAN
+ * Option for Mean Equation norm, skew-norm, t, skew-t, ged, skew-ged, nig & jsu
+ * distributions for innovations*/
+void figarchfilterC(int *model, double *pars, int *idx, double *hEst, double *x, double *res,
+                   double *e, double *ebar, double *eps, double *be, double *mexdata, double *vexdata,
+                   double *zrf, double *constm, double *condm, int *m, int *T, int *N,
+                   double *h, double *z, double *llh, double *LHT)
+{
+  int i;
+  double lk=0;
+  double hm = 0;
+  for(i=0; i<*m; i++)
+  {
+    h[i] = *hEst;
+    arfimaxfilter(model, pars, idx, x, res, mexdata, zrf, constm, condm, sqrt(fabs(*hEst)), *m, i, *T);
+    e[i] = res[i] * res[i];
+    z[i] = res[i]/sqrt(fabs(h[i]));
+    eps[i+*N]=e[i];
+    LHT[i] = log(garchdistribution(z[i], sqrt(fabs(h[i])), pars[idx[15]], pars[idx[16]], pars[idx[17]], model[20]));
+    lk = lk - LHT[i];
+  }
+  for (i=*m; i<*T; i++)
+  {
+    //figarch
+    figarchfilter(model, pars, idx, vexdata, e, eps, be, ebar, *T, *N, i, h);
+    hm = sqrt(fabs(h[i]));
+    arfimaxfilter(model, pars, idx, x, res, mexdata, zrf, constm, condm, hm, *m, i, *T);
+    e[i] = res[i] * res[i];
+    z[i] = res[i]/sqrt(fabs(h[i]));
+    eps[i+*N]=e[i];
+    LHT[i] = log(garchdistribution(z[i], sqrt(fabs(h[i])), pars[idx[15]], pars[idx[16]], pars[idx[17]], model[20]));
+    lk = lk - LHT[i];
+  }
+  *llh=lk;
+}
+
+void figarchsimC(int *model, double *pars, int *idx, double *h, double *z, double *res, double *e,
+                double *ebar, double *eps, double *be, double *vexdata, int *T, int *N, int *m)
+{
+  int i;
+  for (i=*m; i<*T; i++)
+  {
+    figarchfilter(model, pars, idx, vexdata, e, eps, be, ebar, *T, *N, i, h);
+    res[i]=pow(h[i], 0.5)*z[i];
+    e[i] = res[i]*res[i];
+    eps[i+*N]=e[i];
+  }
+}
+
+
 void egarchfilterC(int *model, double *pars, int *idx, double *hEst, double *meanz,
 		double *x, double *res, double *e, double *mexdata, double *vexdata, double *zrf,
 		double *constm, double *condm, int *m, int *T, double *h, double *z, double *llh, double *LHT)

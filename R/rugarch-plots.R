@@ -59,13 +59,13 @@
 			.multgarchfitPlot(x, choices, plotFUN, ...)
 		}
 	}
-	
+
 	invisible(x)
 }
 
 .multgarchfitPlot = function(x, choices, ...)
 {
-	
+
 	pick = 1
 	while (pick > 0) {
 		pick = menu (
@@ -89,7 +89,7 @@
 	xseries = x@model$modeldata$data[insample]
 	xsigma  = x@fit$sigma
 	ci = 2
-	plot(xdates, xseries, type = "l",  col = "steelblue", ylab = "Returns", xlab="Time", 
+	plot(xdates, xseries, type = "l",  col = "steelblue", ylab = "Returns", xlab="Time",
 			main = "Series with 2 Conditional SD Superimposed", cex.main = 0.8)
 	lines(xdates, +ci* xsigma , col = "tomato1")
 	lines(xdates, -ci* xsigma, col = "tomato1")
@@ -122,7 +122,7 @@
 	cat("\nplease wait...calculating quantiles...\n")
 	q01 	= fitted(x) + sigma(x)* qdist(distribution, z1, 0, 1, lambda = ghlambda, skew, shape)
 	q99 	= fitted(x) + sigma(x)* qdist(distribution, z2, 0, 1, lambda = ghlambda, skew, shape)
-	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
+	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time",
 			main = "Series with with 1% VaR Limits", cex.main = 0.8)
 	lines(xdates, q01, col = "tomato1")
 	lines(xdates, q99, col = "green")
@@ -143,7 +143,7 @@
 	xseries = abs(x@model$modeldata$data[insample])
 	xdates  = x@model$modeldata$index[insample]
 	xsigma 	= x@fit$sigma
-	plot(xdates, xseries, type = "l", col = "lightgrey", ylab = "Volatility", 
+	plot(xdates, xseries, type = "l", col = "lightgrey", ylab = "Volatility",
 			xlab="Time", main = "Conditional SD (vs |returns|)", cex.main = 0.8)
 	lines(xdates, xsigma, col = "steelblue")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
@@ -238,7 +238,7 @@
 	vmodel  = x@model$modeldesc$vmodel
 	T = x@model$modeldata$T
 	insample = 1:T
-	xseries = x@model$modeldata$data[insample]	
+	xseries = x@model$modeldata$data[insample]
 	lag.max = as.integer(10*log10(T))
 	ccfx	= ccf(xseries^2, xseries, lag.max = lag.max, plot = FALSE)
 	clim0	= qnorm((1 + 0.95)/2)/sqrt(ccfx$n.used)
@@ -268,7 +268,7 @@
 	pars  = x@fit$ipars[,1]
 	skew  = pars[idx["skew",1]]
 	shape = pars[idx["shape",1]]
-	if(distribution == "ghst") ghlambda = -shape/2 else ghlambda = pars[idx["ghlambda",1]]	
+	if(distribution == "ghst") ghlambda = -shape/2 else ghlambda = pars[idx["ghlambda",1]]
 	xmean 	= mean(zseries)
 	xmedian = median(zseries)
 	xsd 	= sd(zseries)
@@ -372,8 +372,8 @@
 .plot.garchfit.12 = function(x, ...)
 {
 	vmodel  = x@model$modeldesc$vmodel
-	if(vmodel == "iGARCH"){
-		warning(paste("\nplot-->: iGARCH newsimpact not available"))
+	if(vmodel == "iGARCH" | vmodel=="fiGARCH"){
+		warning(paste("\nplot-->: iGARCH and fiGARCH newsimpact not available"))
 	} else{
 		ni = newsimpact(z = NULL, x)
 		ni.y = ni$zy
@@ -409,7 +409,7 @@
 			"ACF of Standardized Residuals",
 			"ACF of Squared Standardized Residuals",
 			"News-Impact Curve")
-	.intergarchfilterPlot(x, choices = choices, plotFUN = paste(".plot.garchfilter", 1:12, 
+	.intergarchfilterPlot(x, choices = choices, plotFUN = paste(".plot.garchfilter", 1:12,
 					sep = "."), which = which, ...)
 	# Return Value:
 	invisible(x)
@@ -419,7 +419,7 @@
 {
 	old.par <- par(no.readonly = TRUE)
 	if (is.numeric(which)) {
-		if(which>length(choices)) 
+		if(which>length(choices))
 			stop("Not a valid choice. Plots choices are 1-12.\n",call. = FALSE)
 		FUN = match.fun(plotFUN[which])
 		FUN(x)
@@ -439,13 +439,13 @@
 			.multgarchfilterPlot(x, choices, plotFUN, ...)
 		}
 	}
-	
+
 	invisible(x)
 }
 
 .multgarchfilterPlot = function(x, choices, ...)
 {
-	
+
 	pick = 1
 	while (pick > 0) {
 		pick = menu (
@@ -469,7 +469,7 @@
 	xdates  = x@model$modeldata$index[insample]
 	xsigma  = x@filter$sigma
 	ci = 2
-	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
+	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time",
 			main = "Series with 2 Conditional SD Superimposed", cex.main = 0.8)
 	lines(xdates, +ci* xsigma, col = "tomato1")
 	lines(xdates, -ci* xsigma, col = "tomato1")
@@ -499,7 +499,7 @@
 	if(distribution == "ghst") ghlambda = -shape/2 else ghlambda = pars[idx["ghlambda",1]]
 	q01 	= qdist(distribution, 0.01, mu = xcmu, sigma = xsigma, lambda = ghlambda, skew = skew, shape = shape)
 	q99 	= qdist(distribution, 0.99, mu = xcmu, sigma = xsigma, lambda = ghlambda, skew = skew, shape = shape)
-	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time", 
+	plot(xdates, xseries, type = "l", col = "steelblue", ylab = "Returns", xlab="Time",
 			main = "Series with with 1% VaR Limits", cex.main = 0.8)
 	lines(xdates, q01, col = "tomato1")
 	lines(xdates, q99, col = "green")
@@ -520,7 +520,7 @@
 	xseries = abs(x@model$modeldata$data[insample])
 	xdates  = x@model$modeldata$index[insample]
 	xsigma 	= x@filter$sigma
-	plot(xdates, xseries, type = "l", col = "lightgrey", ylab = "Volatility", 
+	plot(xdates, xseries, type = "l", col = "lightgrey", ylab = "Volatility",
 			xlab="Time", main = "Conditional Sigma (vs |returns|)", cex.main = 0.8)
 	lines(xdates, xsigma, col = "steelblue")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
@@ -649,7 +649,7 @@
 	if(distribution == "ghst") ghlambda = -shape/2 else ghlambda = pars[idx["ghlambda",1]]
 	xmean 	= mean(zseries)
 	xmedian = median(zseries)
-	xsd 	= sd(zseries)	
+	xsd 	= sd(zseries)
 	xlim 	= c(min(zseries), max(zseries))
 	result 	= hist(x = zseries, col = "grey", border = "white",
 			breaks = "Scott", main = "Empirical Density of Standardized Residuals", xlim = xlim, ylim = c(0,0.6),
@@ -778,7 +778,7 @@
 			"Return Series Simulation Path",
 			"Conditional SD Simulation Density",
 			"Return Series Simulation Path Density")
-	.intergarchsimPlot(x,choices=choices, plotFUN = paste(".plot.garchsim", 1:4, sep = "."), which = which, 
+	.intergarchsimPlot(x,choices=choices, plotFUN = paste(".plot.garchsim", 1:4, sep = "."), which = which,
 			m.sim = m.sim, ...)
 	# Return Value:
 	invisible(x)
@@ -820,7 +820,7 @@
 				choices = paste(" ", choices),
 				title = "\nMake a plot selection (or 0 to exit):")
 				switch (pick,
-					.plot.garchsim.1(x, m.sim),  .plot.garchsim.2(x, m.sim),  
+					.plot.garchsim.1(x, m.sim),  .plot.garchsim.2(x, m.sim),
 					.plot.garchsim.3(x, m.sim),  .plot.garchsim.4(x, m.sim))
 	}
 }
@@ -875,7 +875,7 @@
 	simseries = c(series[(Ns-nx):Ns], simseries)
 	series = c(series[(Ns-nx):Ns], rep(NA, N2))
 	ylim = c(0.95*min(simseries,na.rm=TRUE), 1.05*max(simseries,na.rm=TRUE))
-	plot(c(xdates[(Ns-nx):Ns],fwddates), simseries, type = "l", col = "tomato1", main = "Simulated Series", 
+	plot(c(xdates[(Ns-nx):Ns],fwddates), simseries, type = "l", col = "tomato1", main = "Simulated Series",
 			ylab = "Series", xlab = "Time/Horizon", ylim = ylim, cex.main = 0.8)
 	abline(h = 0, col = "grey", lty = 3)
 	abline(v = nx+1, col = "red", lty = 3)
@@ -906,12 +906,12 @@
 	s2x = s2$x
 	s2y = s2$y/length(s2$y)
 	ylim = c(0, max(s1y,s2y))
-	plot(s1x, s1y, ylim = ylim, main = "Conditional Sigma\n Kernel Density", type = "l", 
+	plot(s1x, s1y, ylim = ylim, main = "Conditional Sigma\n Kernel Density", type = "l",
 			ylab = "Probability", xlab = "Sigma", cex.main = 0.8, col = "steelblue")
 	lines(s2x, s2y, col = "tomato1")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel == "fGARCH"){
-		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), 
+		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""),
 				side = 4, adj = 0, padj = 1.5, col = "gray", cex = 0.5)
 		mtext(paste("seed: ", xseed, sep = ""), side = 3, adj = 0, padj=0, col = "gray", cex = 0.5)
 	} else{
@@ -940,7 +940,7 @@
 	s2x = s2$x
 	s2y = s2$y/length(s2$y)
 	ylim = c(0, max(s1y,s2y))
-	plot(s1x, s1y, ylim = ylim, main = "Time Series\n Kernel Density", type = "l", 
+	plot(s1x, s1y, ylim = ylim, main = "Time Series\n Kernel Density", type = "l",
 			ylab = "Probability", xlab = "Returns", cex.main = 0.8, col = "steelblue")
 	lines(s2x, s2y, col = "tomato1")
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
@@ -966,7 +966,7 @@
 			"Time Series Prediction (rolling)",
 			"Sigma Prediction (unconditional)",
 			"Sigma Prediction (rolling)")
-	.intergarchforecastPlot(x,choices=choices, plotFUN = paste(".plot.garchforecast", 1:4, sep = "."), 
+	.intergarchforecastPlot(x,choices=choices, plotFUN = paste(".plot.garchforecast", 1:4, sep = "."),
 			which = which, n.roll = n.roll, ...)
 	# Return Value:
 	invisible(x)
@@ -996,14 +996,14 @@
 			.multgarchforecastPlot(x, choices, n.roll, ...)
 		}
 	}
-	
+
 	invisible(x)
 }
 
 .multgarchforecastPlot<-function(x, choices, n.roll = 0, ...)
 {
 	# A function originally written by Diethelm Wuertz
-	
+
 	# Description:
 	#   Internal plot function
 	pick = 1
@@ -1013,7 +1013,7 @@
 				choices = paste(" ", choices),
 				title = "\nMake a plot selection (or 0 to exit):")
 		# up to 19 plot functions ...
-		switch (pick,.plot.garchforecast.1(x, n.roll),  .plot.garchforecast.2(x), 
+		switch (pick,.plot.garchforecast.1(x, n.roll),  .plot.garchforecast.2(x),
 				.plot.garchforecast.3(x, n.roll), .plot.garchforecast.4(x, n.roll))
 	}
 }
@@ -1032,11 +1032,11 @@
 	xdates = x@model$modeldata$index[(N+n.roll-min(N,100)):(N+n.roll)]
 	fdates = seq(tail(xdates,1), by = x@model$modeldata$period, length.out = n+1)[-1]
 	series = x@model$modeldata$data[(N+n.roll-min(N,100)):(N+n.roll)]
-	
+
 	xforseries = c(series, forseries)
 	series = c(series, rep(NA, n))
 	ylim=c(0.95*min(xforseries,na.rm=TRUE), 1.05*max(xforseries,na.rm=TRUE))
-	plot(c(xdates, fdates), as.numeric(xforseries), type="l", col="steelblue", 
+	plot(c(xdates, fdates), as.numeric(xforseries), type="l", col="steelblue",
 			main = paste("Forecast Series\n w/th unconditional 1-Sigma bands", sep = "") ,
 			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, cex.axis = 0.8, cex.lab = 0.9)
 	abline(h = 0, col = "grey", lty = 3)
@@ -1077,11 +1077,11 @@
 	fplus = c(rep(NA, (ns - nr)), fdata[-length(fdata)] +  2*fsigma[-length(fsigma)])
 	fminus = c(rep(NA, (ns - nr)), fdata[-length(fdata)] - 2*fsigma[-length(fsigma)])
 	fdata = c(rep(NA, (ns - nr)), fdata[-length(fdata)])
-	
+
 	ylim=c(0.95*min(xminus,na.rm=TRUE), 1.2*max(xplus,na.rm=TRUE))
-	plot(xdates, xdata, type="l", col="black", 
+	plot(xdates, xdata, type="l", col="black",
 			main = paste("Rolling Forecast vs Actual Series\n w/th conditional 2-Sigma bands", sep = "") ,
-			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, 
+			ylab="Series",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7,
 			cex.axis = 0.8, cex.lab = 0.9)
 	#for(i in 6:(nr+25)) rect(xdates[i-5], xminus[i-5], xdates[i], xplus[i], col = colors()[411], border=NA)
 	for(i in 26:(nr+25)) rect(xdates[i-1], fminus[i-1], xdates[i], fplus[i], col = colors()[142], border=NA)
@@ -1092,7 +1092,7 @@
 	lines(xdates, fdata, col = "tomato1", lwd = 2.5)
 	#lines(xts(fplus,xdates),  col = "brown", lwd = 0.5)
 	#lines(xts(fminus,xdates),  col = "brown", lwd = 0.5)
-	
+
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel=="fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -1114,15 +1114,15 @@
 	n = x@forecast$n.ahead
 	N = x@forecast$N - x@forecast$n.start
 	forsigma = x@forecast$sigmaFor[,n.roll+1]
-	xdates = x@model$modeldata$index[(N+n.roll-min(N,25)):(N+n.roll)]	
-	fdates = seq(tail(xdates,1), by = x@model$modeldata$period, length.out = n+1)[-1]	
+	xdates = x@model$modeldata$index[(N+n.roll-min(N,25)):(N+n.roll)]
+	fdates = seq(tail(xdates,1), by = x@model$modeldata$period, length.out = n+1)[-1]
 	sigma = x@model$modeldata$sigma[(N+n.roll-min(N,25)):(N+n.roll)]
 	forsigma = c(sigma, forsigma)
 	sigma = c(sigma, rep(NA,n))
 	ylim=c(0.95*min(forsigma,na.rm=TRUE),1.05*max(forsigma,na.rm=TRUE))
-	plot(c(xdates,fdates), forsigma, type = "l", col = "black", 
-			main = paste("Forecast Unconditional Sigma\n (n.roll = ", n.roll,")", sep = "") , 
-			ylab = "Sigma", xlab = "Time/Horizon", ylim = ylim, cex.main = 0.7, 
+	plot(c(xdates,fdates), forsigma, type = "l", col = "black",
+			main = paste("Forecast Unconditional Sigma\n (n.roll = ", n.roll,")", sep = "") ,
+			ylab = "Sigma", xlab = "Time/Horizon", ylim = ylim, cex.main = 0.7,
 			cex.axis = 0.8, cex.lab = 0.9)
 	abline(h = 0, col = "grey", lty = 3)
 	lines(c(xdates,fdates), forsigma, , col = "tomato1")
@@ -1135,7 +1135,7 @@
 		mtext(paste("Horizon: ",n,sep=""), side = 3, adj = 0, col = "gray", cex = 0.5)
 	}
 	lg.txt<-c("Actual","Forecast")
-	legend("topleft", legend=lg.txt,col=c("steelblue","tomato1"), 
+	legend("topleft", legend=lg.txt,col=c("steelblue","tomato1"),
 			y.intersp=1.5,pch=21,cex=0.7, bty="n")
 	box()
 	grid()
@@ -1155,15 +1155,15 @@
 	xdata  = x@model$modeldata$data[((N+1)-min(N, 25)):(N+nr)]
 	xsigma = x@model$modeldata$sigma[((N+1)-min(N, 25)):(N+nr)]
 	xdates = x@model$modeldata$index[((N+1)-min(N, 25)):(N+nr)]
-	ns = length(xdata)	
+	ns = length(xdata)
 	ylim=c(0.95*min(abs(xdata),na.rm=TRUE), 1.2*max(abs(xdata),na.rm=TRUE))
-	plot(xdates, abs(xdata), type="l", col="lightgrey", 
+	plot(xdates, abs(xdata), type="l", col="lightgrey",
 			main = paste("Forecast Rolling Sigma vs |Series|", sep = "") ,
-			ylab="Sigma",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7, 
+			ylab="Sigma",xlab="Time/Horizon", ylim = ylim, cex.main = 0.7,
 			cex.axis = 0.8, cex.lab = 0.9)
 	lines(xdates, xsigma, col = "steelblue")
 	lines(fdates, fsigma, col = "tomato1", lwd = 0.5)
-	abline(h = 0, col = "grey", lty = 3)	
+	abline(h = 0, col = "grey", lty = 3)
 	mtext(paste("GARCH model : ", vmodel), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	if(vmodel=="fGARCH"){
 		mtext(paste("fGARCH submodel: ", x@model$modeldesc$vsubmodel, sep = ""), side = 4, adj = 0, padj=1.5, col = "gray", cex = 0.5)
@@ -1188,7 +1188,7 @@
 			"Return Series Simulation Path",
 			"Conditional SD Simulation Density",
 			"Return Series Simulation Path Density")
-	.intergarchpathPlot(x, choices = choices, plotFUN = paste(".plot.garchpath", 1:4, sep = "."), 
+	.intergarchpathPlot(x, choices = choices, plotFUN = paste(".plot.garchpath", 1:4, sep = "."),
 			which = which, m.sim = m.sim,...)
 	# Return Value:
 	invisible(x)
@@ -1231,7 +1231,7 @@
 				choices = paste(" ", choices),
 				title = "\nMake a plot selection (or 0 to exit):")
 			switch (pick,
-					.plot.garchpath.1(x, m.sim), .plot.garchpath.2(x, m.sim),  
+					.plot.garchpath.1(x, m.sim), .plot.garchpath.2(x, m.sim),
 					.plot.garchpath.3(x, m.sim), .plot.garchpath.4(x, m.sim))
 	}
 }
@@ -1241,7 +1241,7 @@
 	model = strsplit(class(x),"path")
 	xseed = x@seed[m.sim]
 	simsigma = matrix(x@path$sigmaSim[,m.sim],ncol=1)
-	plot(simsigma, type = "l", col = "steelblue", main = "Simulated Path of Conditional Sigma", 
+	plot(simsigma, type = "l", col = "steelblue", main = "Simulated Path of Conditional Sigma",
 			ylab="Sigma", xlab="Time/Horizon", cex.main = 0.7)
 	mtext(paste("GARCH model :",model), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	box()
@@ -1255,7 +1255,7 @@
 	simseries = matrix(x@path$seriesSim[,m.sim],ncol=1)
 	simseries = as.numeric(simseries[,1])
 	simseries = simseries
-	plot(simseries,type="l",col="red", main = "Simulated Path of Series", ylab = "Series", 
+	plot(simseries,type="l",col="red", main = "Simulated Path of Series", ylab = "Series",
 			xlab="Time/Horizon", cex.main = 0.7)
 	mtext(paste("GARCH model :",model), side = 4, adj = 0, padj=0, col = "gray", cex = 0.5)
 	box()
@@ -1301,13 +1301,13 @@
 			"Series Forecast",
 			"VaR Forecast",
 			"Fit Coefficients (with s.e. bands)")
-	.intergarchrollPlot(x, choices=choices, plotFUN = paste(".plot.garchroll", 1:5, sep = "."), 
+	.intergarchrollPlot(x, choices=choices, plotFUN = paste(".plot.garchroll", 1:5, sep = "."),
 			which = which, VaR.alpha = VaR.alpha, density.support = density.support, ...)
 	# Return Value:
 	invisible(x)
 }
 
-.intergarchrollPlot = function(x, choices, plotFUN, which, VaR.alpha = 0.01, 
+.intergarchrollPlot = function(x, choices, plotFUN, which, VaR.alpha = 0.01,
 		density.support=c(-0.15, 0.15), ...)
 {
 	old.par <- par(no.readonly = TRUE)
@@ -1342,8 +1342,8 @@
 				choices = paste(" ", choices),
 				title = "\nMake a plot selection (or 0 to exit):")
 		switch (pick,
-				.plot.garchroll.1(x, VaR.alpha, density.support,...),  
-				.plot.garchroll.2(x, VaR.alpha, density.support,...),  
+				.plot.garchroll.1(x, VaR.alpha, density.support,...),
+				.plot.garchroll.2(x, VaR.alpha, density.support,...),
 				.plot.garchroll.3(x, VaR.alpha, density.support,...),
 				.plot.garchroll.4(x, VaR.alpha, density.support,...),
 				.plot.garchroll.5(x, VaR.alpha, density.support,...))
@@ -1362,20 +1362,20 @@
 	colr = topo.colors(nesd, alpha = 1)
 	xdate = rownames(density)
 	xseq = seq(density.support[1], density.support[2], length.out=1000)
-	yseq = apply(as.data.frame(2:nesd), 1, FUN=function(i)  
-				ddist(xseq, mu = density[esd[i],1], sigma = density[esd[i],2], 
-						lambda = density[esd[i],5], skew = density[esd[i],3], 
+	yseq = apply(as.data.frame(2:nesd), 1, FUN=function(i)
+				ddist(xseq, mu = density[esd[i],1], sigma = density[esd[i],2],
+						lambda = density[esd[i],5], skew = density[esd[i],3],
 						shape = density[esd[i],4], distribution = distribution))
-	plot(xseq, ddist(xseq, mu = density[esd[1],1], sigma = density[esd[1],2], 
-					lambda = density[esd[1],5], skew = density[esd[1],3], 
-					shape = density[esd[1],4], distribution = distribution), type="l", col = "steelblue", 
-			main = paste("n.ahead-", 1," Forecast Density (time varying)",sep=""), ylab="", xlab = "", 
+	plot(xseq, ddist(xseq, mu = density[esd[1],1], sigma = density[esd[1],2],
+					lambda = density[esd[1],5], skew = density[esd[1],3],
+					shape = density[esd[1],4], distribution = distribution), type="l", col = "steelblue",
+			main = paste("n.ahead-", 1," Forecast Density (time varying)",sep=""), ylab="", xlab = "",
 			cex.main = 0.7, cex.axis = 0.8, cex.lab=0.9)
 	for(i in 1:(nesd-1)){
 		lines(xseq, yseq[,i], col = colr[i+1])
 	}
 	xesd = floor(seq(1,length(esd), length.out = 5))
-	legend("topright", legend = as.character(xdate[esd[xesd]]), fill = colr[xesd], col = colr[xesd], bty = "n")	
+	legend("topright", legend = as.character(xdate[esd[xesd]]), fill = colr[xesd], col = colr[xesd], bty = "n")
 	invisible(x)
 }
 
@@ -1383,8 +1383,8 @@
 .plot.garchroll.2 = function(x, VaR.alpha = 0.01, density.support = c(-0.15, 0.15), ...)
 {
 	density = x@forecast$density
-	plot(as.Date(rownames(density)), abs(density[,6]), type="l", col = "grey", 
-			main = paste("Sigma Forecast vs |Series|", sep = ""), 
+	plot(as.Date(rownames(density)), abs(density[,6]), type="l", col = "grey",
+			main = paste("Sigma Forecast vs |Series|", sep = ""),
 			ylab = "", xlab  = "", cex.main = 0.7,  cex.axis = 0.8, cex.lab=0.9)
 	lines(as.Date(rownames(density)), abs(density[,2]), col = "steelblue", lwd = 1.5)
 	grid()
@@ -1395,8 +1395,8 @@
 .plot.garchroll.3 = function(x, VaR.alpha = 0.01, density.support = c(-0.15, 0.15), ...)
 {
 	density = x@forecast$density
-	plot(as.Date(rownames(density)), density[,6], type="l", col = "grey", 
-			main = paste("Series Forecast vs Realized", sep = ""), 
+	plot(as.Date(rownames(density)), density[,6], type="l", col = "grey",
+			main = paste("Series Forecast vs Realized", sep = ""),
 			ylab = "", xlab  = "", cex.main = 0.7, cex.axis = 0.8, cex.lab=0.9)
 	lines(as.Date(rownames(density)), abs(density[,1]), col = "tomato1", lwd = 1.5)
 	grid()
@@ -1407,7 +1407,7 @@
 .plot.garchroll.4 = function(x, VaR.alpha = 0.01, density.support = c(-0.15, 0.15), ...)
 {
 	vmodel = x@model$spec@model$modeldesc$vmodel
-	v.a = x@model$VaR.alpha	
+	v.a = x@model$VaR.alpha
 	if(!x@model$calculate.VaR) stop("\nplot-->error: VaR was not calculated for this object\n", call.=FALSE)
 	if(!is.null(v.a) && !any(v.a==VaR.alpha[1])) stop("\nplot-->error: VaR.alpha chosen is invalid for the object\n", call.=FALSE)
 	A = paste("alpha(", as.integer(VaR.alpha*100), "%)",sep="")
@@ -1436,14 +1436,14 @@
 	np = .divisortable(m)
 	par(mfrow = c(np[1], np[2]))
 	for(i in 1:m){
-		plot(as.Date(dt), Z[,i], type="l", ylim = c(min(Zdn[,i]), max(Zup[,i])), 
+		plot(as.Date(dt), Z[,i], type="l", ylim = c(min(Zdn[,i]), max(Zup[,i])),
 				ylab = "value" , xlab = "", main = "",  ann = FALSE)
 		lines(as.Date(dt), Zdn[,i], col=2)
 		lines(as.Date(dt), Zup[,i], col=2)
 		title(cnames[i], line = 0.4, cex = 0.9)
 		grid()
 	}
-	title(main = list(paste(vmodel," fit coefficients (across ",N," refits) with robust s.e. bands",sep=""), 
+	title(main = list(paste(vmodel," fit coefficients (across ",N," refits) with robust s.e. bands",sep=""),
 					cex = 1.5, col = "steelblue", font=2), outer = TRUE, line = -1.4)
 	invisible(x)
 }
@@ -1458,8 +1458,8 @@
 			"Bivariate Plots",
 			"Other Density Plots (Persistence, Likelihood, ...)",
 			"Asymptotic Efficiency Plots")
-	
-	.intergarchdistPlot(x, choices = choices, plotFUN = paste(".plot.garchdist", 1:4, sep = "."), 
+
+	.intergarchdistPlot(x, choices = choices, plotFUN = paste(".plot.garchdist", 1:4, sep = "."),
 			which = which, window = window, ...)
 	# Return Value:
 	invisible(x)
@@ -1468,7 +1468,7 @@
 .intergarchdistPlot = function(x, choices, plotFUN, which, window, ...)
 {
 	if (is.numeric(which)) {
-		if(which>length(choices)) 
+		if(which>length(choices))
 			stop("Not a valid choice. Plots choices are 1-4.\n", call. = FALSE)
 		if(which == 4 && !x@dist$detail$recursive)
 			stop("Asymptotic Efficiency Plots only available for option recursive TRUE", .call = FALSE)
@@ -1493,8 +1493,8 @@
 				choices = paste(" ", choices),
 				title = "\nMake a plot selection (or 0 to exit):")
 		switch (pick,
-				.plot.garchdist.1(x, window, ...),  
-				.plot.garchdist.2(x, window, ...),  
+				.plot.garchdist.1(x, window, ...),
+				.plot.garchdist.2(x, window, ...),
 				.plot.garchdist.3(x, ...),
 				.plot.garchdist.4(x, ...))
 	}
@@ -1514,10 +1514,10 @@
 	for(i in 1:n){
 		str = paste("Parameter ", cnames[i],"\nTrue Value: ", signif(truecf[i], digits = 3))
 		plot(density(cf[,i], kernel = "gaussian", na.rm = TRUE), col = "steelblue4", main = str, cex.main = 0.7)
-		mtext(paste("GARCH model :", vmodel), side = 4, adj = 0, padj=0, col = "gray", 
+		mtext(paste("GARCH model :", vmodel), side = 4, adj = 0, padj=0, col = "gray",
 				cex = 0.5)
 		if(vmodel == "fGARCH"){
-			mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0, 
+			mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0,
 					padj = 1.5, col = "gray", cex = 0.5)
 		}
 	}
@@ -1558,7 +1558,7 @@
 			"Parameter Density Plots",
 			"Series Standard Error Plots",
 			"Sigma  Standard Error Plots")
-	.intergarchbootPlot(x, choices = choices, plotFUN = paste(".plot.garchboot", 1:3, sep = "."), 
+	.intergarchbootPlot(x, choices = choices, plotFUN = paste(".plot.garchboot", 1:3, sep = "."),
 			which = which, window = window, ...)
 	# Return Value:
 	invisible(x)
@@ -1568,7 +1568,7 @@
 {
 	old.par <- par(no.readonly = TRUE)
 	if (is.numeric(which)) {
-		if(which>length(choices)) 
+		if(which>length(choices))
 			stop("Not a valid choice. Plots choices are 1-3.\n", call. = FALSE)
 		if(which == 1 && x@model$type!="full")
 			stop("Parameter Density Plots only available for full bootstrap method", .call = FALSE)
@@ -1598,8 +1598,8 @@
 				choices = paste(" ", choices),
 				title = "\nMake a plot selection (or 0 to exit):")
 		switch (pick,
-				.plot.garchboot.1(x, ...),  
-				.plot.garchboot.2(x, ...),  
+				.plot.garchboot.1(x, ...),
+				.plot.garchboot.2(x, ...),
 				.plot.garchboot.3(x, ...))
 	}
 }
@@ -1620,10 +1620,10 @@
 		str = paste("Parameter ", cnames[i],"\nTrue Value: ", signif(truecf[i], digits = 3))
 		plot(density(cf[,i], kernel = "gaussian", na.rm = TRUE), col = "steelblue4", main = str,
 				cex.main = 0.85)
-		mtext(paste("GARCH model :", vmodel), side = 4, adj = 0, padj=0, col = "gray", 
+		mtext(paste("GARCH model :", vmodel), side = 4, adj = 0, padj=0, col = "gray",
 				cex = 0.5)
 		if(vmodel == "fGARCH"){
-			mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0, 
+			mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0,
 					padj = 1.5, col = "gray", cex = 0.5)
 		}
 	}
@@ -1653,13 +1653,13 @@
 	points(as.numeric(serp[4,]), col = "steelblue4", pch = 19, cex = 0.5)
 	n.overlays = round(0.1*n.ahead)
 	if(n.overlays == 0) n.overlays = 1
-	dens1 = apply(xser, 2, FUN = function(x) density(x, kernel = "gaussian", 
+	dens1 = apply(xser, 2, FUN = function(x) density(x, kernel = "gaussian",
 						n = max(512, round(0.01*N))))
 	.densityoverlay(as.numeric(meanser), dens1, n.overlays = n.overlays)
-	mtext(paste("GARCH model :",vmodel), side = 4, adj = 0, padj=0, col = "gray", 
+	mtext(paste("GARCH model :",vmodel), side = 4, adj = 0, padj=0, col = "gray",
 			cex = 0.5)
 	if(vmodel == "fGARCH"){
-		mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0, 
+		mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0,
 				padj = 1.5, col = "gray", cex = 0.5)
 	}
 	legend.txt = c("forecast", "bootstrapped")
@@ -1697,10 +1697,10 @@
 	points(as.numeric(sigp[2,]), col = "steelblue2", pch = 19, cex = 0.5)
 	points(as.numeric(sigp[3,]), col = "steelblue3", pch = 19, cex = 0.5)
 	points(as.numeric(sigp[4,]), col = "steelblue4", pch = 19, cex = 0.5)
-	mtext(paste("GARCH model :",vmodel), side = 4, adj = 0, padj=0, col = "gray", 
+	mtext(paste("GARCH model :",vmodel), side = 4, adj = 0, padj=0, col = "gray",
 			cex = 0.5)
 	if(vmodel == "fGARCH"){
-		mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0, 
+		mtext(paste("fGARCH submodel: ", vsubmodel,sep=""), side = 4, adj = 0,
 				padj = 1.5, col = "gray", cex = 0.5)
 	}
 	legend.txt = c("forecast", "bootstrapped", namr)
@@ -1711,14 +1711,14 @@
 ###############################################################################
 # Distribution plots
 
-distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NULL, 
+distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NULL,
 		n.points = NULL)
 {
 	old.par <- par(no.readonly = TRUE)
 	on.exit(par(old.par))
 	distribution = match.arg(distribution, c("snorm", "std", "ged","sstd","sged","ghst","nig","jsu"))
 	if(is.null(skewbounds)){
-		skewbounds = switch(distribution, 
+		skewbounds = switch(distribution,
 				snorm = c(0.1, 10),
 				std = c(0,0),
 				ged = c(0,0),
@@ -1729,7 +1729,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 				jsu = c(-5, 5))
 	}
 	if(is.null(shapebounds)){
-		shapebounds = switch(distribution, 
+		shapebounds = switch(distribution,
 				snorm = c(0, 0),
 				std = c(4.5, 35),
 				ged = c(0.75, 10),
@@ -1739,7 +1739,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 				nig =  c(0.15, 5),
 				jsu = c(1, 2))
 	}
-	switch(distribution, 
+	switch(distribution,
 			snorm = .snormplot(skewbounds, n.points),
 			std = .stdplot(shapebounds, n.points),
 			ged = .gedplot(shapebounds, n.points),
@@ -1828,16 +1828,16 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 	ku = apply(gr, 1, function(x) .sstdexkurt(x[1], x[2]))
 	zs = matrix(sk, n.points, n.points)
 	zk = matrix(ku, n.points, n.points)
-	
+
 	par(mfrow = c(2,1), mar=c(2,2,2,2))
-	x1 = .drapecol(zs, col = femme100(), NAcol = "white")	
+	x1 = .drapecol(zs, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
 			z = zs,  col = x1, theta = -50, phi = 25, expand = 0.5,
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "skewness",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "Skew-Student Skewness Surface")
-	
+
 	x1 = .drapecol(zk, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
@@ -1845,7 +1845,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "Kurtosis (Ex)",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "Skew-Student Kurtosis (Ex) Surface")
-	
+
 	invisible()
 }
 
@@ -1867,16 +1867,16 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 	ku = apply(gr, 1, function(x) .sgedexkurt(x[1], x[2]))
 	zs = matrix(sk, n.points, n.points)
 	zk = matrix(ku, n.points, n.points)
-	
+
 	par(mfrow = c(2,1), mar=c(2,2,2,2))
-	x1 = .drapecol(zs, col = femme100(), NAcol = "white")	
+	x1 = .drapecol(zs, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
 			z = zs,  col = x1, theta = -50, phi = 25, expand = 0.5,
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "skewness",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "Skew-GED Skewness Surface")
-	
+
 	x1 = .drapecol(zk, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
@@ -1884,7 +1884,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "Kurtosis (Ex)",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "Skew-GED Kurtosis (Ex) Surface")
-	
+
 	invisible()
 }
 
@@ -1906,16 +1906,16 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 	ku = apply(gr, 1, function(x) .ghstexkurt(x[1], x[2]))
 	zs = matrix(sk, n.points, n.points)
 	zk = matrix(ku, n.points, n.points)
-	
+
 	par(mfrow = c(2,1), mar=c(2,2,2,2))
-	x1 = .drapecol(zs, col = femme100(), NAcol = "white")	
+	x1 = .drapecol(zs, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
 			z = zs,  col = x1, theta = -50, phi = 25, expand = 0.5,
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "skewness",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "GHST Skewness Surface")
-	
+
 	x1 = .drapecol(zk, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
@@ -1923,7 +1923,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "Kurtosis (Ex)",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "GHST Kurtosis (Ex) Surface")
-	
+
 	invisible()
 }
 
@@ -1945,16 +1945,16 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 	ku = apply(gr, 1, function(x) dkurtosis("nig", skew = x[1], shape=x[2]))
 	zs = matrix(sk, n.points, n.points)
 	zk = matrix(ku, n.points, n.points)
-	
+
 	par(mfrow = c(2,1), mar=c(2,2,2,2))
-	x1 = .drapecol(zs, col = femme100(), NAcol = "white")	
+	x1 = .drapecol(zs, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
 			z = zs,  col = x1, theta = -50, phi = 25, expand = 0.5,
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "skewness",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "NIG Skewness Surface")
-	
+
 	x1 = .drapecol(zk, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
@@ -1962,7 +1962,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "Kurtosis (Ex)",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "NIG Kurtosis (Ex) Surface")
-	
+
 	invisible()
 }
 
@@ -1986,16 +1986,16 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 	ku = apply(gr, 1, function(x) .jsuexkurt(skew = x[1], shape = x[2]))
 	zs = matrix(sk, n.points, n.points)
 	zk = matrix(ku, n.points, n.points)
-	
+
 	par(mfrow = c(2,1), mar=c(2,2,2,2))
-	x1 = .drapecol(zs, col = femme100(), NAcol = "white")	
+	x1 = .drapecol(zs, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
 			z = zs,  col = x1, theta = -50, phi = 25, expand = 0.5,
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "skewness",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "JSU Skewness Surface")
-	
+
 	x1 = .drapecol(zk, col = femme100(), NAcol = "white")
 	persp(  x = rngsk,
 			y = rngsh,
@@ -2003,7 +2003,7 @@ distplot = function(distribution = "snorm", skewbounds = NULL, shapebounds = NUL
 			ltheta = 120, shade = 0.75, ticktype = "detailed", xlab = "skew",
 			ylab = "shape", zlab = "Kurtosis (Ex)",
 			cex.lab = 0.7, cex.axis = 0.7,  cex.main = 0.8, main = "JSU Kurtosis (Ex) Surface")
-	
+
 	invisible()
 }
 
@@ -2026,7 +2026,7 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 		lines(sol$Kurtosis, sol$Skewness, col = "steelblue", lwd = 2)
 		lines(sol$Kurtosis, -sol$Skewness, col = "steelblue", lwd = 2)
 		if(is.null(legend)){
-			legend("topleft", c("MAX", distribution), col = c("red", "steelblue"),  lty = c(1,2), 
+			legend("topleft", c("MAX", distribution), col = c("red", "steelblue"),  lty = c(1,2),
 					lwd = rep(2, 2), bty = "n")
 		}
 		abline(v=3, col = "lightgrey")
@@ -2034,7 +2034,7 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 	return(sol)
 }
 
-.nigdomain = function(kurt.max = 30, n.points = 25) 
+.nigdomain = function(kurt.max = 30, n.points = 25)
 {
 	di = .DistributionBounds("nig")
 	di$shape.UB = 100
@@ -2059,7 +2059,7 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 	return(list(Kurtosis = ans$x, Skewness = ans$y))
 }
 
-.hypdomain = function(kurt.max = 30, n.points = 25) 
+.hypdomain = function(kurt.max = 30, n.points = 25)
 {
 	di = .DistributionBounds("ghyp")
 	di$shape.UB = 100
@@ -2084,7 +2084,7 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 	return(list(Kurtosis = ans$x, Skewness = ans$y))
 }
 
-.ghypdomain = function(kurt.max = 30, n.points = 25, lambda = 1) 
+.ghypdomain = function(kurt.max = 30, n.points = 25, lambda = 1)
 {
 	di = .DistributionBounds("ghyp")
 	di$shape.UB = 100
@@ -2111,7 +2111,7 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 }
 
 
-.sstddomain = function(kurt.max = 30, n.points = 25) 
+.sstddomain = function(kurt.max = 30, n.points = 25)
 {
 	di = .DistributionBounds("sstd")
 	di$shape.UB = 100
@@ -2136,7 +2136,7 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 	return(list(Kurtosis = ans$x, Skewness = ans$y))
 }
 
-.jsudomain = function(kurt.max = 30, n.points = 25) 
+.jsudomain = function(kurt.max = 30, n.points = 25)
 {
 	di = .DistributionBounds("jsu")
 	di$shape.UB = 100
@@ -2164,14 +2164,14 @@ skdomain = function(distribution = "nig", kurt.max = 30, n.points = 25, lambda =
 ################################################################################
 VaRplot = function(alpha, actual, VaR, title = paste("Daily Returns and Value-at-Risk \nExceedances\n","(alpha=", alpha,")",sep=""),
 		ylab = "Daily Log Returns", xlab = "Time")
-{	
+{
 	period = diff(index(actual))
 	# intraday
 	if(attr(period, "units") == "mins"){
 		A = as.numeric(actual)
 		V = as.numeric(VaR)
 		ep <- axTicksByTime(actual)
-		plot(A, type = "n", main = title, ylab = ylab, xlab = xlab, 
+		plot(A, type = "n", main = title, ylab = ylab, xlab = xlab,
 				ylim = c(min(A, V), max(A, V)), ann = FALSE, xaxt = "n",
 				cex.main = 0.8, cex.lab = 0.9, cex.axis = 0.8)
 		axis(1, at = ep, labels = names(ep), tick = TRUE)
@@ -2182,14 +2182,14 @@ VaRplot = function(alpha, actual, VaR, title = paste("Daily Returns and Value-at
 		Ap[sel] = A[sel]
 		lines(V, lwd = 1, col = "black")
 		points(Ap, pch = 3, cex = 1.1, col = "red")
-		
+
 		legend("topleft", max(A),c("returns","return < VaR","VaR"),
 				col=c("lightgrey", "red","black"), cex=0.75,
 				pch = c(18,3,-1), lty=c(0,0,1), lwd=c(0,0,2), bty = "n")
 		grid()
 	} else{
-		plot(index(actual), as.numeric(actual), type = "n", main = title, ylab = ylab, xlab = xlab, 
-				ylim = c(min(actual, VaR), max(actual, VaR)), ann = FALSE, 
+		plot(index(actual), as.numeric(actual), type = "n", main = title, ylab = ylab, xlab = xlab,
+				ylim = c(min(actual, VaR), max(actual, VaR)), ann = FALSE,
 				cex.main = 0.8, cex.lab = 0.9, cex.axis = 0.8)
 		abline(h = 0, col = "grey", lty = 2)
 		points(index(actual), as.numeric(actual), pch = 18, col = "lightgrey")

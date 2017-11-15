@@ -20,7 +20,7 @@
 void arfimafitC(int *model, double *pars, int *idx, double *x, double *res,
 		double *mexdata, double *zrf, double *constm, double *condm, int *m, int *T,
 		double *z, double *llh, double *LHT);
-		
+
 void arfimaxfilterC(int *model, double *pars, int *idx, double *x, double *res, double *mexdata,
 		double *zrf, double *constm, double *condm, double *h, int *m, int *T);
 
@@ -30,6 +30,14 @@ void sgarchfilterC(int *model, double *pars, int *idx, double *hEst, double *x, 
 
 void sgarchsimC(int *model, double *pars, int *idx, double *h, double *z, double *res, double *e,
 		double *vexdata, int *T, int *m);
+
+void figarchfilterC(int *model, double *pars, int *idx, double *hEst, double *x, double *res,
+                    double *e, double *ebar, double *eps, double *be, double *mexdata, double *vexdata,
+                    double *zrf, double *constm, double *condm, int *m, int *T, int *N,
+                    double *h, double *z, double *llh, double *LHT);
+
+void figarchsimC(int *model, double *pars, int *idx, double *h, double *z, double *res, double *e,
+                 double *ebar, double *eps, double *be, double *vexdata, int *T, int *N, int *m);
 
 void aparchfilterC(int *model, double *pars, int *idx, double *hEst, double *x, double *res, double *e,
 		double *mexdata, double *vexdata, double *zrf, double *constm, double *condm,
