@@ -419,7 +419,7 @@
   delta = ipars["delta",1]
   truncLag=arglist$truncLag
   # alpha1=0.01;beta1=-0.5;delta=0.9
-  g = rugarch:::binexpansion(d=delta, n=10001)$ans
+  g = binexpansion(d=delta, n=10001)$ans
   test = (alpha1==beta1 || alpha1==0 || abs(alpha1)>=1 || beta1==0 || abs(beta1)>=1 || delta>=1 || delta<=0)
   if(test) return(c(1,1))
   psi = rep(0,2)
