@@ -174,7 +174,6 @@
 		return(ans)
 	}
 }
-
 binexpansion = function(d, n=10000)
 {
   ans = as.double(rep(0.0, n))

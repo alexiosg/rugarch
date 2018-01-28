@@ -21,14 +21,14 @@
 	n = length(x)
 	fx = f(x, ...)
 	eps = .Machine$double.eps
-	
+
 	# Compute the stepsize (h)
 	# h = eps^(1/3)*apply(as.data.frame(x), 1,FUN = function(z) max(abs(z), 1e-4))
 	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
 	xh = x+h
 	h = xh-x
 	if(length(h) == 1) ee = matrix(h, ncol = 1, nrow = 1) else ee = as.matrix(diag(h))
-	
+
 	# Compute forward and backward steps
 	gp = vector(mode = "numeric", length = n)
 	gp = apply(ee, 2, FUN = function(z) f(x+z, ...))
@@ -62,14 +62,14 @@
 	n = length(x)
 	fx = f(x, ...)
 	eps = .Machine$double.eps
-	
+
 	# Compute the stepsize (h)
 	# h = eps^(1/3)*apply(as.data.frame(x), 1,FUN = function(z) max(abs(z), 1e-4))
 	h = apply(as.data.frame(x), 1,FUN = function(z) max(abs(z*eps^(1/3)), 1e-9))
 	xh = x+h
 	h = xh-x
 	if(length(h) == 1) ee = matrix(h, ncol = 1, nrow = 1) else ee = as.matrix(diag(h))
-	
+
 	# Compute forward and backward steps
 	gp = vector(mode = "numeric", length = n)
 	gp = apply(ee, 2, FUN = function(z) f(x+z, ...))
@@ -127,11 +127,11 @@ robustvcv = function(fun, pars, nlag = 0, hess, n, ...)
 	hparsminus = hparsplus = matrix(pars, ncol = k, nrow = k, byrow = T)
 	diag(hparsplus) = hplus
 	diag(hparsminus) = hminus
-	
+
 	likelihoodsminus = likelihoodsplus = zeros(n, k)
 	likelihoodsplus =  apply(hparsplus, 1,  FUN = function(x) fun(x, ...))
 	likelihoodsminus = apply(hparsminus, 1, FUN = function(x) fun(x, ...))
-	
+
 	scores = zeros(n,k)
 	likpm = likelihoodsplus-likelihoodsminus
 	scores = likpm/(2*repmat(t(h), n, 1))
@@ -151,5 +151,5 @@ robustvcv = function(fun, pars, nlag = 0, hess, n, ...)
 		}
 		info = 0
 	}
-	return(list(vcv = vcv, scores = scores, info = info))
+	return(list(vcv = vcv, B = B, A = A, info = info))
 }

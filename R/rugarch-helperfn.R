@@ -125,6 +125,7 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
+			fit$robust.scores = tmp$scores
 			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
 							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)
@@ -264,6 +265,8 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx, 1], nlag = 0, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
+			fit$A = tmp$A
+			fit$B = tmp$B
 			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
 							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)
@@ -317,6 +320,8 @@ TinY = 1.0e-8
 			arglist$returnType = "LHT"
 			tmp = robustvcv(fun = f, pars = ipars[estidx,1], nlag = nlag, hess = fit$hessian, n = T, arglist = arglist)
 			fit$robust.cvar = tmp$vcv
+			fit$A = tmp$A
+			fit$B = tmp$B
 			fit$scores = jacobian(func = f, x = ipars[estidx, 1], method="Richardson", method.args=list(eps = numderiv.control$grad.eps,
 							d = numderiv.control$grad.d, zero.tol=numderiv.control$grad.zero.tol, r=numderiv.control$r, v=numderiv.control$v,
 							show.details=FALSE), arglist=arglist)

@@ -77,7 +77,7 @@
 	if(as.numeric(out.sample)<0) stop("\nugarchfit-->error: out.sample must be positive\n")
 	n.start = round(out.sample,0)
 	n = length(xdata$data)
-	if((n-n.start)<100) stop("\nugarchfit-->error: function requires at least 100 data\n points to run\n")
+	if((n-n.start)<100) warning("\nugarchfit-->waring: using less than 100 data\n points for estimation\n")
 	data = xdata$data[1:(n-n.start)]
 	index = xdata$index[1:(n-n.start)]
 	origdata = xdata$data
