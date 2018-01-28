@@ -670,7 +670,7 @@
 					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
 	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
-	flt = .figarchfilter(data = tmp, spec = fspec, n.old = N, trunclag = fit@model$trunclag)
+	flt = .figarchfilter(data = tmp, spec = fspec, n.old = N, trunclag = trunclag)
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
 	zfilter = flt@filter$z

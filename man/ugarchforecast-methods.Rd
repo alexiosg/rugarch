@@ -11,7 +11,8 @@ Method for forecasting from a variety of univariate GARCH models.
 }
 \usage{
 ugarchforecast(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
-		external.forecasts = list(mregfor = NULL, vregfor = NULL), trunclag = 1000, ...)
+		external.forecasts = list(mregfor = NULL, vregfor = NULL),
+		trunclag = 1000, ...)
 }
 \arguments{
 \item{fitORspec}{

@@ -9,7 +9,8 @@
 Method for filtering a variety of univariate GARCH models.
 }
 \usage{
-ugarchfilter(spec, data, out.sample = 0, n.old=NULL, rec.init = 'all', trunclag = 1000, ...)
+ugarchfilter(spec, data, out.sample = 0, n.old=NULL, rec.init = 'all',
+trunclag = 1000, ...)
 }
 \arguments{
 \item{data}{
