@@ -19,17 +19,18 @@
 #---------------------------------------------------------------------------------
 # [mu ar ma arfima im mxreg omega alpha beta vxreg eta11 eta21 delta lambda xi skew shape]
 
-.realgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(), 
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'), 
+.realgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all',trunclag = 1000),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2),
 		realizedVol = NULL)
 {
 	tic = Sys.time()
 	if(is.null(solver.control$trace)) trace = 0 else trace = solver.control$trace
-	
+
 	if(is.null(fit.control$stationarity)) fit.control$stationarity = TRUE
 	if(is.null(fit.control$fixed.se)) fit.control$fixed.se = FALSE
+	if(is.null(fit.control$trunclag)) fit.control$trunclag = 1000
 	if(is.null(fit.control$scale)){
 		fit.control$scale = FALSE
 	} else{
@@ -39,7 +40,7 @@
 		}
 	}
 	if(is.null(fit.control$rec.init)) fit.control$rec.init = 'all'
-	mm = match(names(fit.control), c("stationarity", "fixed.se", "scale", "rec.init"))
+	mm = match(names(fit.control), c("stationarity", "fixed.se", "scale", "rec.init", "trunclag"))
 	if(any(is.na(mm))){
 		idx = which(is.na(mm))
 		enx = NULL
@@ -51,7 +52,7 @@
 	# if we have arch-in-mean turn off scaling
 	if(spec@model$modelinc[5] > 0) fit.control$scale = FALSE
 	# if there are fixed pars we do no allow scaling as there would be no way of mixing scaled
-	# amd non scaled parameters	
+	# amd non scaled parameters
 	if(sum(spec@model$pars[,2]) > 0) fit.control$scale = FALSE
 
 	xdata = .extractdata(data)
@@ -65,7 +66,7 @@
 	origdata = xdata$data
 	origindex = xdata$index
 	period = xdata$period
-	
+
 	if(is.null(realizedVol)){
 		stop("\nugarchfit-->error: you must supply the realized volatility (realizedVol) for the realGARCH model\n")
 	} else{
@@ -74,9 +75,9 @@
 		if(!all.equal(realizedVolIndex, format(xdata$index, format="%Y-%m-%d"))) stop("\nugarchfit-->error: realizedVol must match the time index of the data")
 		if(ncol(realizedVol)>1) stop("\nugarchfit-->error: realizedVol should be a univariate series\n")
 	}
-	
-	
-	# arglist replaces the use of custom environments (resolves the problem of 
+
+
+	# arglist replaces the use of custom environments (resolves the problem of
 	# non-shared environment in parallel estimation, particularly windows)
 	garchenv = new.env(hash = TRUE)
 	arglist = list()
@@ -125,7 +126,7 @@
 	arglist$tmph  = tmp$tmph
 	# we now split out any fixed parameters
 	estidx = as.logical( ipars[,4] )
-	arglist$estidx = estidx	
+	arglist$estidx = estidx
 	arglist$fit.control = fit.control
 	npars = sum(estidx)
 	if(any(ipars[,2]==1)){
@@ -175,9 +176,9 @@
 		if(modelinc[1] > 0) parscale["mu"] = abs(mean(as.numeric(zdata)))
 		if(modelinc[7] > 0) parscale["omega"] = var(as.numeric(zdata))
 		arglist$returnType = "llh"
-		solution = .garchsolver(solver, pars = ipars[estidx, 1], fun = .realgarchLLH, 
-				Ifn, ILB, IUB, gr = NULL, hessian = NULL, parscale = parscale, 
-				control = solver.control, LB = ipars[estidx, 5], 
+		solution = .garchsolver(solver, pars = ipars[estidx, 1], fun = .realgarchLLH,
+				Ifn, ILB, IUB, gr = NULL, hessian = NULL, parscale = parscale,
+				control = solver.control, LB = ipars[estidx, 5],
 				UB = ipars[estidx, 6], ux = NULL, ci = NULL, mu = NULL, arglist)
 		sol = solution$sol
 		hess = solution$hess
@@ -223,11 +224,11 @@
 			ipars[ipars[,2]==1, 2] = 0
 			arglist$ipars = ipars
 			estidx = as.logical( ipars[,4] )
-			arglist$estidx = estidx	
+			arglist$estidx = estidx
 		}
 		arglist$data = data
-		fit = .makefitmodel(garchmodel = "realGARCH", f = .realgarchLLH, T = T, m = m, 
-				timer = timer, convergence = convergence, message = sol$message, 
+		fit = .makefitmodel(garchmodel = "realGARCH", f = .realgarchLLH, T = T, m = m,
+				timer = timer, convergence = convergence, message = sol$message,
 				hess, arglist = arglist, numderiv.control = numderiv.control)
 		model$modeldata$realizedVol = realizedVol
 		model$modelinc[7] = modelinc[7]
@@ -243,7 +244,7 @@
 		fit$ipars["omega", 3] = 1
 		model$pars["omega", 3] = 1
 		########################################################################
-		
+
 		fit$z = fit$residuals/fit$sigma
 	} else{
 		fit$message = sol$message
@@ -281,8 +282,8 @@
 	ipars[estidx, 1] = pars
 	trace = arglist$trace
 	T = length(data)
-	dscale = arglist$dscale	
-	recinit = arglist$recinit	
+	dscale = arglist$dscale
+	recinit = arglist$recinit
 	fit.control = arglist$fit.control
 	m = model$maxOrder
 	N = c(m,T)
@@ -329,15 +330,15 @@
 	if(modelinc[6]>0) mexdata = as.double(as.vector(mexdata)) else mexdata = double(1)
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
 	# modelinc (1:21) since 22 is either NA or numeric and no longer needed (paased to ipars if used)
-	ans = try( .C("realgarchfilterC", model = as.integer(modelinc[1:21]), 
-					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-					hEst = as.double(hEst), x = as.double(data), res = as.double(res), 
-					mexdata = mexdata, vexdata = vexdata, 
-					zrf = as.double(zrf), constm = double(T), condm = double(T), 
-					m = as.integer(m), T = as.integer(T), h = double(T), 
-					z = double(T), tau = double(T), r = as.double(realized)[1:T], 
-					u = double(T), llh = double(1), LHT1P = double(T), 
-					LHT = double(T), 
+	ans = try( .C("realgarchfilterC", model = as.integer(modelinc[1:21]),
+					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+					hEst = as.double(hEst), x = as.double(data), res = as.double(res),
+					mexdata = mexdata, vexdata = vexdata,
+					zrf = as.double(zrf), constm = double(T), condm = double(T),
+					m = as.integer(m), T = as.integer(T), h = double(T),
+					z = double(T), tau = double(T), r = as.double(realized)[1:T],
+					u = double(T), llh = double(1), LHT1P = double(T),
+					LHT = double(T),
 					PACKAGE = "rugarch"), silent = TRUE )
 	if(inherits(ans, "try-error")){
 		if(arglist$pmode!=1){
@@ -351,7 +352,7 @@
 	} else{
 		if(arglist$pmode!=1){
 			assign("rugarch_csol", 0, envir = garchenv)
-		}	
+		}
 	}
 	z = ans$z
 	h = ans$h
@@ -360,7 +361,7 @@
 	u = ans$u
 	tau = ans$tau
 	LHT1P = ans$LHT1P
-	
+
 	if(is.finite(llh) && !is.na(llh) && !is.nan(llh)){
 		if(arglist$pmode!=1) assign("rugarch_llh", llh, envir = garchenv)
 	} else {
@@ -372,7 +373,7 @@
 	ans = switch(returnType,
 			llh = llh,
 			LHT = LHT,
-			all = list(llh = llh, h = h, epsx = epsx, z = z, LHT = LHT, persistence = persist, u = u, tau = tau, 
+			all = list(llh = llh, h = h, epsx = epsx, z = z, LHT = LHT, persistence = persist, u = u, tau = tau,
 					LHT1P = -LHT1P))
 	return(ans)
 }
@@ -459,18 +460,18 @@
 	}
 	if(modelinc[6]>0) mexdata = as.double(as.vector(mexdata)) else mexdata = double(1)
 	if(modelinc[15]>0) vexdata = as.double(as.vector(vexdata)) else vexdata = double(1)
-	
-	ans = try( .C("realgarchfilterC", model = as.integer(modelinc[1:21]), 
-					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1), 
-					hEst = as.double(hEst), x = as.double(data), res = as.double(res), 
-					mexdata = mexdata, vexdata = vexdata, 
-					zrf = as.double(zrf), constm = double(T), condm = double(T), 
-					m = as.integer(m), T = as.integer(T), h = double(T), 
-					z = double(T), tau = double(T), r = as.double(realized)[1:T], 
-					u = double(T), llh = double(1), LHT1P = double(T), 
-					LHT = double(T), 
+
+	ans = try( .C("realgarchfilterC", model = as.integer(modelinc[1:21]),
+					pars = as.double(ipars[,1]), idx = as.integer(idx[,1]-1),
+					hEst = as.double(hEst), x = as.double(data), res = as.double(res),
+					mexdata = mexdata, vexdata = vexdata,
+					zrf = as.double(zrf), constm = double(T), condm = double(T),
+					m = as.integer(m), T = as.integer(T), h = double(T),
+					z = double(T), tau = double(T), r = as.double(realized)[1:T],
+					u = double(T), llh = double(1), LHT1P = double(T),
+					LHT = double(T),
 					PACKAGE = "rugarch"), silent = TRUE )
-	
+
 	filter = list()
 	filter$residuals = res
 	filter$LLH = -ans$llh
@@ -497,8 +498,8 @@
 #---------------------------------------------------------------------------------
 # SECTION realGARCH forecast
 #---------------------------------------------------------------------------------
-.realgarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0, 
-		external.forecasts = list(mregfor = NULL, vregfor = NULL), n.sim = 1000, returnDistribution = TRUE, 
+.realgarchforecast = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
+		external.forecasts = list(mregfor = NULL, vregfor = NULL), n.sim = 1000, returnDistribution = TRUE,
 		...)
 {
 	# will not allow to combine n.ahead and n.roll in this model
@@ -521,20 +522,20 @@
 	xreg = .forcregressors(model, external.forecasts$mregfor, external.forecasts$vregfor, n.ahead, Nor, out.sample = ns, n.roll)
 	mxf = xreg$mxf
 	vxf = xreg$vxf
-	
+
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
-	fspec = ugarchspec(variance.model = list(model = "realGARCH", 
-					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL, 
-					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]), 
+	fspec = ugarchspec(variance.model = list(model = "realGARCH",
+					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL,
+					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]),
 			mean.model = list(armaOrder = c(modelinc[2], modelinc[3]),
-					include.mean = modelinc[1], 
-					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4], 
-					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]), 
+					include.mean = modelinc[1],
+					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4],
+					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
-	
-	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])	
-	realtmp = xts(realized[1:(N + fcreq)], index[1:(N + fcreq)])	
+
+	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
+	realtmp = xts(realized[1:(N + fcreq)], index[1:(N + fcreq)])
 	flt = .realgarchfilter(data = tmp, spec = fspec, n.old = N, realizedVol = realtmp)
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
@@ -547,7 +548,7 @@
 	colnames(realizedFor) = colnames(seriesFor) = colnames(sigmaFor) = as.character(index[N:(N+n.roll)])
 	rownames(realizedFor) = rownames(sigmaFor) = paste("T+", 1:n.ahead, sep="")
 	if(returnDistribution){
-		realizedDF = sigmaDF = array(NA, dim = c(n.ahead, n.sim, n.roll+1), 
+		realizedDF = sigmaDF = array(NA, dim = c(n.ahead, n.sim, n.roll+1),
 				dimnames=list(paste("T+", 1:n.ahead, sep=""), paste("Sim_", 1:n.sim, sep=""), as.character(index[N:(N+n.roll)])))
 	}
 	for(i in 1:(n.roll+1)){
@@ -566,7 +567,7 @@
 		# forecast of externals is provided outside the system
 		mxfi = mxf[1:(N+i-1+n.ahead), , drop = FALSE]
 		vxfi = vxf[1:(N+i-1+n.ahead), , drop = FALSE]
-		ans = .nrealgarchforecast(ipars, modelinc, idx, mu, mxfi, omega, vxfi, h, realized = r, epsx, z, data = x, 
+		ans = .nrealgarchforecast(ipars, modelinc, idx, mu, mxfi, omega, vxfi, h, realized = r, epsx, z, data = x,
 				N = np, n.ahead, n.sim, returnD = returnDistribution)
 		sigmaFor[,i] = ans$h
 		seriesFor[,i] = ans$x
@@ -601,7 +602,7 @@
 
 .taufn = function(z, tau1, tau2){ tau1*z + tau2*(z^2-1) }
 
-.nrealgarchforecast = function(ipars, modelinc, idx, mu, mxfi, omega, vxfi, h, realized, epsx, z, 
+.nrealgarchforecast = function(ipars, modelinc, idx, mu, mxfi, omega, vxfi, h, realized, epsx, z,
 		data, N, n.ahead, n.sim = 1000, returnD = FALSE)
 {
 	p = modelinc[9]
@@ -617,20 +618,20 @@
 	if(modelinc[15]>0){
 		omega = omega + vxfi%*%t(matrix(ipars[idx["vxreg",1]:idx["vxreg",2],1], ncol = modelinc[15]))
 	}
-	
+
 	zs = lapply(1:n.ahead, function(i) rdist(dist, n = n.sim, mu = 0, sigma = 1, skew = ipars[idx["skew",1],1], shape = ipars[idx["shape",1],1],
 						lambda = ipars[idx["ghlambda",1],1]))
 	u = lapply(1:n.ahead, function(i) rnorm(n.sim, 0, lambda))
 	Y = c(rev(tail(h[1:N]^2,p)), rev(tail(realized[1:N],q)))
 	Y = log(Y)
-	A = cbind(rbind(matrix(beta, nrow=1), if(p>1) cbind(diag(p-1), matrix(0, nrow=p-1,ncol=1)) else NULL, 
+	A = cbind(rbind(matrix(beta, nrow=1), if(p>1) cbind(diag(p-1), matrix(0, nrow=p-1,ncol=1)) else NULL,
 					matrix(delta*beta, nrow=1),
 					if(q>1 && p>0) matrix(0, nrow=q-1, ncol=p) else NULL),
-			rbind(matrix(alpha, nrow=1), if(p>1 && q>0) matrix(0, nrow=p-1,ncol=q) else NULL, 
+			rbind(matrix(alpha, nrow=1), if(p>1 && q>0) matrix(0, nrow=p-1,ncol=q) else NULL,
 					matrix(delta*alpha, nrow=1),
 					if(q>1) cbind(diag(q-1), matrix(0, nrow=q-1,ncol=1)) else NULL))
-	e = lapply(1:n.ahead, function(i) rbind(if(p>0) matrix(0, nrow=p, ncol=n.sim) else NULL, 
-						matrix(.taufn(zs[[i]], tau1, tau2)+u[[i]], nrow=1, ncol=n.sim), 
+	e = lapply(1:n.ahead, function(i) rbind(if(p>0) matrix(0, nrow=p, ncol=n.sim) else NULL,
+						matrix(.taufn(zs[[i]], tau1, tau2)+u[[i]], nrow=1, ncol=n.sim),
 						if(q>1) matrix(0, nrow=q-1, ncol=n.sim) else NULL))
 	sigmaDFor = matrix(NA, nrow = n.ahead, ncol = n.sim)
 	realizedDFor = matrix(NA, nrow = n.ahead, ncol = n.sim)
@@ -653,7 +654,7 @@
 	} else{
 		res = armaf(ipars, modelinc[1:21], idx, mu, mxfi, h, epsx, z, data, N, n.ahead)
 	}
-	sol = list(h = h[(N+1):(N+n.ahead)], x = res[(N+1):(N+n.ahead)], r = realized[(N+1):(N+n.ahead)], 
+	sol = list(h = h[(N+1):(N+n.ahead)], x = res[(N+1):(N+n.ahead)], r = realized[(N+1):(N+n.ahead)],
 			hforcdist = if(returnD) sigmaDFor else NULL,
 			rforcdist = if(returnD) realizedDFor else NULL)
 	return(sol)
@@ -670,8 +671,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 }
 #---------------------------------------------------------------------------------
 # 2nd dispatch method for forecast
-.realgarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0, 
-		external.forecasts = list(mregfor = NULL, vregfor = NULL), realizedVol = NULL, 
+.realgarchforecast2 = function(fitORspec, data = NULL, n.ahead = 10, n.roll = 0, out.sample = 0,
+		external.forecasts = list(mregfor = NULL, vregfor = NULL), realizedVol = NULL,
 		n.sim = 1000, returnDistribution = TRUE, ...)
 {
 	# first we filter the data to get the results:
@@ -717,24 +718,24 @@ epsfn = function(A, e, b, n.ahead, ed)
 	model$modeldata$data = data
 	model$modeldata$index = index
 	model$modeldata$period = period
-	
+
 	# check if necessary the external regressor forecasts provided first
 	xreg = .forcregressors(model, external.forecasts$mregfor, external.forecasts$vregfor, n.ahead, Nor, out.sample = ns, n.roll)
 	mxf = xreg$mxf
 	vxf = xreg$vxf
-	
+
 	# filter data (check external regressor data - must equal length of origData)
 	fcreq = ifelse(ns >= (n.ahead+n.roll), n.ahead+n.roll, ns)
-	fspec = ugarchspec(variance.model = list(model = "realGARCH", 
-					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL, 
-					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]), 
+	fspec = ugarchspec(variance.model = list(model = "realGARCH",
+					garchOrder = c(modelinc[8], modelinc[9]), submodel = NULL,
+					external.regressors = vxf[1:(N + fcreq), , drop = FALSE]),
 			mean.model = list(armaOrder = c(modelinc[2], modelinc[3]),
-					include.mean = modelinc[1], 
-					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4], 
+					include.mean = modelinc[1],
+					archm = ifelse(modelinc[5]>0,TRUE,FALSE), archpow = modelinc[5], arfima = modelinc[4],
 					external.regressors = mxf[1:(N + fcreq), , drop = FALSE], archex = modelinc[20]),
 			distribution.model = model$modeldesc$distribution, fixed.pars = as.list(pars))
-	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])	
-	realtmp = xts(realized[1:(N + fcreq)], index[1:(N + fcreq)])	
+	tmp =  xts(data[1:(N + fcreq)], index[1:(N + fcreq)])
+	realtmp = xts(realized[1:(N + fcreq)], index[1:(N + fcreq)])
 	flt = .realgarchfilter(data = tmp, spec = fspec, n.old = N, realizedVol = realtmp)
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
@@ -747,7 +748,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 	colnames(realizedFor) = colnames(seriesFor) = colnames(sigmaFor) = as.character(index[N:(N+n.roll)])
 	rownames(realizedFor) = rownames(sigmaFor) = paste("T+", 1:n.ahead, sep="")
 	if(returnDistribution){
-		realizedDF = sigmaDF = array(NA, dim = c(n.ahead, n.sim, n.roll+1), 
+		realizedDF = sigmaDF = array(NA, dim = c(n.ahead, n.sim, n.roll+1),
 				dimnames=list(paste("T+", 1:n.ahead, sep=""), paste("Sim_", 1:n.sim, sep=""), as.character(index[N:(N+n.roll)])))
 	}
 	for(i in 1:(n.roll+1)){
@@ -766,7 +767,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 		# forecast of externals is provided outside the system
 		mxfi = mxf[1:(N+i-1+n.ahead), , drop = FALSE]
 		vxfi = vxf[1:(N+i-1+n.ahead), , drop = FALSE]
-		ans = .nrealgarchforecast(ipars, modelinc, idx, mu, mxfi, omega, vxfi, h, realized = r, epsx, z, data = x, 
+		ans = .nrealgarchforecast(ipars, modelinc, idx, mu, mxfi, omega, vxfi, h, realized = r, epsx, z, data = x,
 				N = np, n.ahead, n.sim, returnD = returnDistribution)
 		sigmaFor[,i] = ans$h
 		seriesFor[,i] = ans$x
@@ -815,9 +816,9 @@ epsfn = function(A, e, b, n.ahead, ed)
 # 5. simulate y_{t+1} using \sigma_{t+1} and z_{t+1}
 # Given a starting value for r_t we do not need any additional inputs for n.sim
 
-.realgarchsim = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod = 
-				c("unconditional","sample"), presigma = NA, prereturns = NA, 
-		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA), 
+.realgarchsim = function(fit, n.sim = 1000, n.start = 0, m.sim = 1, startMethod =
+				c("unconditional","sample"), presigma = NA, prereturns = NA,
+		preresiduals = NA, rseed = NA, custom.dist = list(name = NA, distfit = NA),
 		mexsimdata = NULL, vexsimdata = NULL, prerealized = NA, ...)
 {
 	if(fit@model$modelinc[4]>0){
@@ -852,35 +853,35 @@ epsfn = function(A, e, b, n.ahead, ed)
 	idx = model$pidx
 	ipars = fit@fit$ipars
 	# check if necessary the external regressor forecasts provided first
-	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)	
+	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
 	vexsim = xreg$vexsimlist
-	
+
 	if(N < n.start){
 		startmethod[1] = "unconditional"
 		warning("\nugarchsim-->warning: n.start greater than length of data...using unconditional start method...\n")
 	}
-	
+
 	# Random Samples from the Distribution
 	if(length(sseed) == 1){
-		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1], 
+		zmatrix = data.frame(dist = model$modeldesc$distribution, lambda = ipars[idx["ghlambda",1], 1],
 				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1], n = n * m.sim, seed = sseed[1])
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	} else{
-		zmatrix = data.frame(dist = rep(model$modeldesc$distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim), 
-				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim), 
+		zmatrix = data.frame(dist = rep(model$modeldesc$distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim),
+				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim),
 				n = rep(n, m.sim), seed = sseed)
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	}
 	set.seed(sseed[1])
 	usim = rbind(matrix(tail(u,m), nrow=m, ncol=m.sim), matrix(rnorm(m.sim*n, 0, ipars[idx["lambda",1]]), nrow=n, ncol=m.sim))
-	
+
 	if(startMethod == "unconditional"){
 		z = rbind(matrix(0, nrow = m, ncol = m.sim), z)
 	} else{
-		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z) 
+		z = rbind(matrix(tail(fit@fit$z, m), nrow = m, ncol = m.sim), z)
 	}
-	
+
 	# create the presample information
 	if(!is.na(presigma[1])){
 		presigma = as.vector(presigma)
@@ -924,13 +925,13 @@ epsfn = function(A, e, b, n.ahead, ed)
 			prereal  = tail(realized, m)
 		}
 	}
-	
+
 	# input vectors/matrices
 	h = c(presigma^2, rep(0, n))
 	x = c(prereturns, rep(0, n))
 	r = c(prereal, rep(0, n))
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2], 1], ncol = m.sim, nrow = n + m)
-	
+
 	# outpus matrices
 	sigmaSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	realizedSim =  matrix(0, ncol = m.sim, nrow = n.sim)
@@ -938,7 +939,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	residSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	z[is.na(z) | is.nan(z) | !is.finite(z)] = 0
-	
+
 	for(i in 1:m.sim){
 		if(is.na(preresiduals[1])){
 			if(startMethod[1] == "unconditional"){
@@ -948,22 +949,22 @@ epsfn = function(A, e, b, n.ahead, ed)
 			}
 		}
 		res = c(preres, rep(0, n))
-		ans1 = try(.C("realgarchsimC", model = as.integer(modelinc[1:21]), 
-						pars = as.double(ipars[,1]), 
-						idx = as.integer(idx[,1]-1), 
+		ans1 = try(.C("realgarchsimC", model = as.integer(modelinc[1:21]),
+						pars = as.double(ipars[,1]),
+						idx = as.integer(idx[,1]-1),
 						res = as.double(res),
 						vexdata = as.double(vexsim[[i]]),
 						m = as.integer(m),
 						T = as.integer(n+m),
-						h = as.double(h), 
+						h = as.double(h),
 						z = as.double(z[,i]),
 						tau = double(n+m),
 						r = as.double(r),
 						u = as.double(usim[,i]),
 						PACKAGE = "rugarch"), silent = TRUE)
-		
+
 		if(inherits(ans1, "try-error")) stop("\nugarchsim-->error: error in calling C function....\n")
-		
+
 		sigmaSim[,i] = ans1$h[(n.start + m + 1):(n+m)]^(1/2)
 		residSim[,i] = ans1$res[(n.start + m + 1):(n+m)]
 		realizedSim[,i] = ans1$r[(n.start + m + 1):(n+m)]
@@ -983,7 +984,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 			}
 		}
 		if(modelinc[5]>0) constm[,i] = constm[,i] + ipars[idx["archm",1]:idx["archm",2], 1]*(sqrt(ans1$h)^modelinc[5])
-		
+
 		if(modelinc[4]>0){
 			fres = c(ans1$res[(m+1):(n+m)], if(modelinc[3]>0) rep(0, modelinc[3]) else NULL)
 			ans2 = .arfimaxsim(modelinc[1:21], ipars, idx, constm[1:n, i], fres, T = n)
@@ -1006,8 +1007,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 # SECTION sGARCH path
 #---------------------------------------------------------------------------------
 .realgarchpath = function(spec, n.sim = 1000, n.start = 0, m.sim = 1,
-		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA, 
-		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL, 
+		presigma = NA, prereturns = NA, preresiduals = NA, rseed = NA,
+		custom.dist = list(name = NA, distfit = NA), mexsimdata = NULL,
 		vexsimdata = NULL, prerealized = NA, ...)
 {
 	if(spec@model$modelinc[4]>0){
@@ -1049,44 +1050,44 @@ epsfn = function(A, e, b, n.ahead, ed)
 		N = dim(mexdata)[1]
 	} else { mexdata = NULL }
 	if(modelinc[15]>0) {
-		vexdata = matrix(model$modeldata$vexdata, ncol = modelinc[15]) 
+		vexdata = matrix(model$modeldata$vexdata, ncol = modelinc[15])
 		N = dim(vexdata)[1]
 	} else { vexdata = NULL }
-	distribution = model$modeldesc$distribution	
+	distribution = model$modeldesc$distribution
 	# check if necessary the external regressor forecasts provided first
-	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)	
+	xreg = .simregressors(model, mexsimdata, vexsimdata, N, n, m.sim, m)
 	mexsim = xreg$mexsimlist
-	vexsim = xreg$vexsimlist	
+	vexsim = xreg$vexsimlist
 	persist = persistence(spec)
 	if(persist >= 1) warning(paste("\nugarchpath->warning: persitence :", round(persist, 5), sep=""))
-	
+
 	# Random Samples from the Distribution
 	if(length(sseed) == 1){
-		zmatrix = data.frame(dist = distribution, lambda = ipars[idx["ghlambda",1], 1], 
-				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1], 
+		zmatrix = data.frame(dist = distribution, lambda = ipars[idx["ghlambda",1], 1],
+				skew = ipars[idx["skew",1], 1], shape = ipars[idx["shape",1], 1],
 				n = n * m.sim, seed = sseed[1])
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	} else{
-		zmatrix = data.frame(dist = rep(distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim), 
-				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim), 
+		zmatrix = data.frame(dist = rep(distribution, m.sim), lambda = rep(ipars[idx["ghlambda",1], 1], m.sim),
+				skew = rep(ipars[idx["skew",1], 1], m.sim), shape = rep(ipars[idx["shape",1], 1], m.sim),
 				n = rep(n, m.sim), seed = sseed)
 		z = .custzdist(custom.dist, zmatrix, m.sim, n)
 	}
 	z = rbind(matrix(0, nrow = m, ncol = m.sim), z)
 	set.seed(sseed[1])
 	usim = rbind(matrix(rep(0,m), nrow=m, ncol=m.sim), matrix(rnorm(m.sim*n, 0, ipars[idx["lambda",1]]), nrow=n, ncol=m.sim))
-	
+
 	# create the presample information
 	if(!is.na(presigma[1])){
 		presigma = as.vector(presigma)
 		if(length(presigma)<m) stop(paste("\nugarchpath-->error: presigma must be of length ", m, sep=""))
 	}
-	
+
 	if(!is.na(prereturns[1])){
 		prereturns = as.vector(prereturns)
 		if(length(prereturns)<m) stop(paste("\nugarchpath-->error: prereturns must be of length ", m, sep=""))
 	}
-	
+
 	if(!is.na(preresiduals[1])){
 		preresiduals = as.vector(preresiduals)
 		if(length(preresiduals)<m) stop(paste("\nugarchpath-->error: preresiduals must be of length ", m, sep=""))
@@ -1113,14 +1114,14 @@ epsfn = function(A, e, b, n.ahead, ed)
 	x = c(prereturns, rep(0, n))
 	r = c(prereal, rep(0, n))
 	constm = matrix(ipars[idx["mu",1]:idx["mu",2],1], ncol = m.sim, nrow = n + m)
-	
+
 	# outpus matrices
 	sigmaSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	realizedSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	tauSim =  matrix(0, ncol = m.sim, nrow = n.sim)
 	seriesSim = matrix(0, ncol = m.sim, nrow = n.sim)
 	residSim =  matrix(0, ncol = m.sim, nrow = n.sim)
-	
+
 	for(i in 1:m.sim){
 		if(is.na(preresiduals[1])){
 			preres = as.numeric(z[1:m,i])*presigma
@@ -1128,14 +1129,14 @@ epsfn = function(A, e, b, n.ahead, ed)
 		z[1:m, 1:m.sim] = preres[1:m]/presigma[1:m]
 		z[is.na(z) | is.nan(z) | !is.finite(z)] = 0
 		res = c(preres, rep(0, n))
-		ans1 = try(.C("realgarchsimC", model = as.integer(modelinc[1:21]), 
-						pars = as.double(ipars[,1]), 
-						idx = as.integer(idx[,1]-1), 
+		ans1 = try(.C("realgarchsimC", model = as.integer(modelinc[1:21]),
+						pars = as.double(ipars[,1]),
+						idx = as.integer(idx[,1]-1),
 						res = as.double(res),
 						vexdata = as.double(vexsim[[i]]),
 						m = as.integer(m),
 						T = as.integer(n+m),
-						h = as.double(h), 
+						h = as.double(h),
 						z = as.double(z[,i]),
 						tau = double(n+m),
 						r = as.double(r),
@@ -1169,9 +1170,9 @@ epsfn = function(A, e, b, n.ahead, ed)
 			seriesSim[,i] = ans2$x[(n.start + m + 1):(n+m)]
 		}
 	}
-	
+
 	path = list(sigmaSim = sigmaSim, seriesSim = seriesSim, residSim = residSim, realizedSim = realizedSim, uSim = usim,
-			tauSim = tauSim)	
+			tauSim = tauSim)
 	sol = new("uGARCHpath",
 			path = path,
 			model = model,
@@ -1182,8 +1183,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 # special purpose rolling method for the mcsGARCH model
 ################################################################################
 
-.rollfdensity.real = function(spec, data, n.ahead = 1, forecast.length = 500, 
-		n.start = NULL, refit.every = 25, refit.window = c("recursive", "moving"), 
+.rollfdensity.real = function(spec, data, n.ahead = 1, forecast.length = 500,
+		n.start = NULL, refit.every = 25, refit.window = c("recursive", "moving"),
 		window.size = NULL, solver = "hybrid", fit.control = list(), solver.control = list(),
 		calculate.VaR = TRUE, VaR.alpha = c(0.01, 0.05), cluster = NULL,
 		keep.coef = TRUE, realizedVol = NULL, n.sim=1000,...)
@@ -1265,11 +1266,11 @@ epsfn = function(A, e, b, n.ahead, ed)
 	if(any(distribution==c("snorm","sstd","sged","jsu","nig","ghyp","ghst"))) skewed = TRUE else skewed = FALSE
 	if(any(distribution==c("std","sstd","ged","sged","jsu","nig","ghyp","ghst"))) shaped = TRUE else shaped = FALSE
 	if(any(distribution==c("ghyp"))) ghyp = TRUE else ghyp = FALSE
-	
+
 	if( !is.null(cluster) ){
 		clusterEvalQ(cl = cluster, library(rugarch))
 		clusterExport(cluster, c("data", "index", "s","refit.every", "realizedVol","n.sim",
-						"keep.coef", "shaped", "skewed", "ghyp", 
+						"keep.coef", "shaped", "skewed", "ghyp",
 						"rollind", "spec", "out.sample", "mex", "vex",
 						"solver", "solver.control", "fit.control"), envir = environment())
 		if(mex) clusterExport(cluster, c("mexdata"), envir = environment())
@@ -1277,8 +1278,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 		tmp = parLapply(cl = cluster, 1:m, fun = function(i){
 					if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 					if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-					fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-									solver = solver, solver.control = solver.control, 
+					fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+									solver = solver, solver.control = solver.control,
 									fit.control = fit.control, realizedVol = realizedVol[rollind[[i]],1]), silent=TRUE)
 					# 3 cases: General Error, Failure to Converge, Failure to invert Hessian (bad solution)
 					if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
@@ -1286,7 +1287,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 					} else{
 						if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 						if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 								external.forecasts = list(mregfor = fmex, vregfor = fvex), returnDistribution=FALSE,
 								n.sim=n.sim)
 						sig = as.numeric( sigma(f) )
@@ -1309,15 +1310,15 @@ epsfn = function(A, e, b, n.ahead, ed)
 		tmp = lapply(as.list(1:m), FUN = function(i){
 					if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 					if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-					fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-									solver = solver, solver.control = solver.control, 
+					fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+									solver = solver, solver.control = solver.control,
 									fit.control = fit.control, realizedVol = realizedVol[rollind[[i]],1]), silent=TRUE)
 					if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
 						ans = list(y = NA, cf = NA, converge = FALSE, lik = NA, plik = NA)
 					} else{
 						if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 						if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+						f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 								external.forecasts = list(mregfor = fmex, vregfor = fvex), returnDistribution=FALSE,
 								n.sim = n.sim)
 						sig = as.numeric( sigma(f) )
@@ -1350,7 +1351,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 		model$period = period
 		model$datanames = datanames
 		model$n.ahead = n.ahead
-		model$forecast.length = forecast.length 
+		model$forecast.length = forecast.length
 		model$n.start = n.start
 		model$n.refits = m
 		model$refit.every = refit.every
@@ -1384,8 +1385,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 			if(is.null(VaR.alpha)) VaR.alpha = c(0.01, 0.05)
 			VaR.matrix = matrix(NA, ncol = length(VaR.alpha)+1, nrow = NROW(forc))
 			for(i in 1:length(VaR.alpha)){
-				VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2], 
-						skew = forc[,3], shape = forc[,4], lambda = forc[,5], 
+				VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2],
+						skew = forc[,3], shape = forc[,4], lambda = forc[,5],
 						distribution = spec@model$modeldesc$distribution)
 			}
 			VaR.matrix[,length(VaR.alpha)+1] = forc[,6]
@@ -1401,7 +1402,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 		model$index = index
 		model$period = period
 		model$n.ahead = n.ahead
-		model$forecast.length = forecast.length 
+		model$forecast.length = forecast.length
 		model$n.start = n.start
 		model$refit.every = refit.every
 		model$n.refits = m
@@ -1426,7 +1427,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 	return( ans )
 }
 
-.resumeroll.real = function(object, solver = "hybrid", fit.control = list(), 
+.resumeroll.real = function(object, solver = "hybrid", fit.control = list(),
 		solver.control = list(), cluster = NULL)
 {
 	if(!is.null(object@model$noncidx)){
@@ -1512,8 +1513,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 		if( !is.null(cluster) ){
 			clusterEvalQ(cl = cluster, library(rugarch))
 			clusterExport(cluster, c("data", "index","s","refit.every","realizedVol","n.sim",
-							"keep.coef", "shaped", "skewed", "ghyp", 
-							"rollind", "spec", "out.sample", "mex", "vex", 
+							"keep.coef", "shaped", "skewed", "ghyp",
+							"rollind", "spec", "out.sample", "mex", "vex",
 							"noncidx", "solver", "solver.control", "fit.control"),
 					envir = environment())
 			if(mex) clusterExport(cluster, c("mexdata"), envir = environment())
@@ -1521,15 +1522,15 @@ epsfn = function(A, e, b, n.ahead, ed)
 			tmp = parLapply(cl = cluster, as.list(noncidx), fun = function(i){
 						if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 						if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-						fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-										solver=solver, solver.control = solver.control, 
+						fit = try(ugarchfit(spec, xts::xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+										solver=solver, solver.control = solver.control,
 										fit.control = fit.control, realizedVol = realizedVol[rollind[[i]],1]), silent=TRUE)
 						if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
 							ans = list(y = NA, cf = NA, converge = FALSE, lik = NA, plik = NA)
 						} else{
 							if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 							if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 									external.forecasts = list(mregfor = fmex, vregfor = fvex), returnDistribution=FALSE,
 									n.sim=n.sim)
 							sig = as.numeric( sigma(f) )
@@ -1552,15 +1553,15 @@ epsfn = function(A, e, b, n.ahead, ed)
 			tmp = lapply(as.list(noncidx), FUN = function(i){
 						if(mex) spec@model$modeldata$mexdata = mexdata[rollind[[i]],,drop=FALSE]
 						if(vex) spec@model$modeldata$vexdata = vexdata[rollind[[i]],,drop=FALSE]
-						fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i], 
-										solver=solver, solver.control = solver.control, 
+						fit = try(ugarchfit(spec, xts(data[rollind[[i]]], index[rollind[[i]]]), out.sample = out.sample[i],
+										solver=solver, solver.control = solver.control,
 										fit.control = fit.control, realizedVol = realizedVol[rollind[[i]],1]), silent=TRUE)
 						if(inherits(fit, 'try-error') || convergence(fit)!=0 || is.null(fit@fit$cvar)){
 							ans = list(y = NA, cf = NA, converge = FALSE, lik = NA, plik = NA)
 						} else{
 							if(mex) fmex = tail(mexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fmex = NULL
 							if(vex) fvex = tail(vexdata[rollind[[i]],,drop=FALSE], out.sample[i]) else fvex = NULL
-							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1, 
+							f = ugarchforecast(fit, n.ahead = 1, n.roll = out.sample[i]-1,
 									external.forecasts = list(mregfor = fmex, vregfor = fvex), returnDistribution=FALSE,
 									n.sim = n.sim)
 							sig = as.numeric( sigma(f) )
@@ -1596,7 +1597,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 			model$index = index
 			model$period = period
 			model$n.ahead = n.ahead
-			model$forecast.length = forecast.length 
+			model$forecast.length = forecast.length
 			model$n.start = n.start
 			model$refit.every = refit.every
 			model$n.refits = m
@@ -1614,7 +1615,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 			ans = new("uGARCHroll",
 					model = model,
 					forecast = forecast)
-			return( ans )			
+			return( ans )
 		} else{
 			noncidx = NULL
 			forc = forecast[[1]]$y
@@ -1630,8 +1631,8 @@ epsfn = function(A, e, b, n.ahead, ed)
 				if(is.null(VaR.alpha)) VaR.alpha = c(0.01, 0.05)
 				VaR.matrix = matrix(NA, ncol = length(VaR.alpha)+1, nrow = NROW(forc))
 				for(i in 1:length(VaR.alpha)){
-					VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2], 
-							skew = forc[,3], shape = forc[,4], lambda = forc[,5], 
+					VaR.matrix[,i] = qdist(VaR.alpha[i], mu = forc[,1], sigma = forc[,2],
+							skew = forc[,3], shape = forc[,4], lambda = forc[,5],
 							distribution = spec@model$modeldesc$distribution)
 				}
 				VaR.matrix[,length(VaR.alpha)+1] = forc[,6]
@@ -1649,7 +1650,7 @@ epsfn = function(A, e, b, n.ahead, ed)
 			model$index = index
 			model$period = period
 			model$n.ahead = n.ahead
-			model$forecast.length = forecast.length 
+			model$forecast.length = forecast.length
 			model$n.start = n.start
 			model$refit.every = refit.every
 			model$n.refits = m

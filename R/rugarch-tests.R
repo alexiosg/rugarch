@@ -17,7 +17,7 @@
 
 # BDS Test
 # Dechert, Scheinkman and LeBaron (1996)
-# BDS i.i.d test of 
+# BDS i.i.d test of
 # Brock and Potter (1993) and de Lima (1996) show that is
 # applying the BDS test to the log of the squared standardized residuals
 # log(z^2) the bias in the BDS test is almost corrected because the logarithmic
@@ -102,7 +102,7 @@
 	if(any(!is.finite(x))) x[!is.finite(x)] = 0
 	x = as.vector(x)
 	if(demean) x = scale(x, center = TRUE, scale = FALSE)
-	result = Weighted.LM.test(x, sigma^2, lag = lags, type = c("correlation", "partial")[1], fitdf = fitdf, weighted=TRUE) 
+	result = Weighted.LM.test(x, sigma^2, lag = lags, type = c("correlation", "partial")[1], fitdf = fitdf, weighted=TRUE)
 	return(result)
 }
 
@@ -233,15 +233,15 @@
 	}
 	# must remove fixed parameters
 	dist = object@model$modeldesc$distribution
-	cdfv = pdist(dist, q = sort(z), lambda = ipars[idx["ghlambda",1],1], skew = ipars[idx["skew",1],1], 
+	cdfv = pdist(dist, q = sort(z), lambda = ipars[idx["ghlambda",1],1], skew = ipars[idx["skew",1],1],
 			shape = ipars[idx["shape",1],1])
 	j = length(groups)
 	gofmat = matrix(NA, ncol = 3, nrow = j)
 	gofmat[,1] = groups
 	for(i in 1:j){
 		sq = seq(1/groups[i], 1, by = 1/groups[i])
-		ni = tabulate(findInterval(cdfv, c(0, sq), rightmost.closed = TRUE, 
-						all.inside = FALSE)) 
+		ni = tabulate(findInterval(cdfv, c(0, sq), rightmost.closed = TRUE,
+						all.inside = FALSE))
 		ExpValue = length(cdfv)/groups[i]
 		gofmat[i,2] = sum( ( ( ni - ExpValue ) ^2 )/ExpValue )
 		gofmat[i,3] = pchisq(q=gofmat[i,2], df = groups[i]-1, lower.tail = FALSE)
@@ -316,7 +316,7 @@ lossfn.ret = function(realized, forecast)
 #	exc = which(is.na(x))
 #	if(length(exc)>0) x = x[-exc]
 #	dm = lm(x~1)
-#	dm.test = .linear.hypothesis(dm,  c("(Intercept) = 0"), test = "Chisq", vcov  =  NeweyWest(dm, lag = lagq, 
+#	dm.test = .linear.hypothesis(dm,  c("(Intercept) = 0"), test = "Chisq", vcov  =  NeweyWest(dm, lag = lagq,
 #					order.by = NULL, prewhite = TRUE, adjust = TRUE))
 #	return(dm.test)
 #}
@@ -354,14 +354,14 @@ BerkowitzTest = function(data, lags = 1, significance = 0.05, tail.test = FALSE,
 		k2 = (m4/m2^2)
 		JB = n * k1/6 + n * (k2 - 3)^2/24
 		JBp = 1 - pchisq(JB, df = 2)
-		return(list(uLL = uLL, rLL = rLL, LR = LR, LRp = chid, H0 = H0, Decision = res, 
+		return(list(uLL = uLL, rLL = rLL, LR = LR, LRp = chid, H0 = H0, Decision = res,
 						mu = mean(data), sigma = summary(ans)$sigma, rho =  coef(ans)[1:(lags)],
 				JB = JB, JBp = JBp))
 	}
 }
 
 .BerkowitztLRtail = function(data, alpha = 0.05, significance = 0.05){
-	
+
 	.lrh = function(pars, x){
 		p1 = x[which(x<qnorm(alpha))]
 		p2 = x[which(x>=qnorm(alpha))]*0 + qnorm(alpha)
@@ -372,11 +372,11 @@ BerkowitzTest = function(data, lags = 1, significance = 0.05, tail.test = FALSE,
 	rLL = -.lrh(c(0, 1), data)
 	LR = 2 * (uLL - rLL)
 	chid = 1 - pchisq(LR, 2)
-	if (chid < significance) 
+	if (chid < significance)
 		res = paste("reject NULL")
 	else res = paste("fail to reject NULL")
 	H0 = paste("Normal(0,1)")
-	return(list(uLL = uLL, rLL = rLL, LR = LR, LRp = chid, H0 = H0, 
+	return(list(uLL = uLL, rLL = rLL, LR = LR, LRp = chid, H0 = H0,
 					Decision = res, mu = tst$par[1], sigma = tst$par[2]))
 }
 
@@ -405,7 +405,7 @@ DACTest = function(forecast, actual, test = c("PT", "AG"), conf.level = 0.95)
     A_t = mean(r_t)
     B_t = mean(sign(forecast))*mean(actual)
     p_y = 0.5 * (1 + mean(sign(forecast)))
-    
+
     V_EP = (4/(n^2))*p_y*(1-p_y)*sum((actual-mean(actual))^2)
     EP = (A_t-B_t)/sqrt(V_EP)
     ans = list(Test = "Anatolyev and Gerko", Stat = EP, p.value = 1-pnorm(EP), H0 = "No Predictability",
@@ -428,7 +428,7 @@ VaRTest = function(alpha = 0.05, actual, VaR, conf.level = 0.95){
 	ans$uc.critical = tmp$crit.val.uc
 	ans$uc.LRp = tmp$p.value.uc
 	ans$uc.Decision = ifelse(ans$uc.LRp<(1-conf.level), "Reject H0", "Fail to Reject H0")
-	
+
 	ans$cc.H0 = "Correct Exceedances & Independent"
 	ans$cc.LRstat = tmp$stat.cc
 	ans$cc.critical = tmp$crit.val.cc
@@ -485,7 +485,7 @@ VaRDurTest = function(alpha, actual, VaR, conf.level = 0.95){
 		D = c(D, TN - tail(which(VaR.ind==1), 1))
 	}
 	N = length(D)
-	sol = try(optim(par = 2, fn = .likDurationW, gr = NULL, D = D, C = C, N = N, 
+	sol = try(optim(par = 2, fn = .likDurationW, gr = NULL, D = D, C = C, N = N,
 			method = "L-BFGS-B", lower = 0.001, upper = 10, control = list(trace=0)), silent = TRUE)
 	b = sol$par
 	uLL = -sol$value
@@ -501,13 +501,13 @@ VaRDurTest = function(alpha, actual, VaR, conf.level = 0.95){
 .likDurationW = function(pars, D, C, N){
 	b = pars[1]
 	a = ( (N - C[1] - C[N])/(sum(D^b)) )^(1/b)
-	lik = C[1]*log(.pweibull(D[1],a,b,survival=TRUE)) + (1-C[1])*.dweibull(D[1], a, b, log = TRUE) + 
-					sum(.dweibull(D[2:(N-1)], a, b, log = TRUE) ) + C[N]*log(.pweibull(D[N],a,b,survival=TRUE) )  + 
+	lik = C[1]*log(.pweibull(D[1],a,b,survival=TRUE)) + (1-C[1])*.dweibull(D[1], a, b, log = TRUE) +
+					sum(.dweibull(D[2:(N-1)], a, b, log = TRUE) ) + C[N]*log(.pweibull(D[N],a,b,survival=TRUE) )  +
 									(1 - C[N]) *.dweibull(D[N], a, b, log = TRUE)
 	if(!is.finite(lik) || is.nan(lik)) lik = 1e10 else lik = -lik
 	return(lik)
 }
-	
+
 # When b=1 we get the exponential
 .dweibull = function(D, a, b, log = FALSE){
 	# density of Weibull
@@ -528,8 +528,8 @@ VaRDurTest = function(alpha, actual, VaR, conf.level = 0.95){
 }
 
 #####################################################################################
-# CHANGELOG (15-08-2012): Changed kurt argument in GMMTest to default of 3 (Normal) 
-# ...was badly set at 0. 
+# CHANGELOG (15-08-2012): Changed kurt argument in GMMTest to default of 3 (Normal)
+# ...was badly set at 0.
 
 GMMTest = function(z, lags = 1, skew=0, kurt=3, conf.level = 0.95){
 	if(length(skew)>1) sk = skew[-c(1:lags)] else sk = skew
@@ -549,25 +549,25 @@ GMMTest = function(z, lags = 1, skew=0, kurt=3, conf.level = 0.95){
 	f4 = zlag[,1]^4-ku
 	orthmat[1:3,4] = c(mean(f4), mean(f4^2)/N, mean(f4)/sqrt(mean(f4^2)/N))
 	M = rbind(t(f1), t(f2), t(f3), t(f4))
-	
+
 	tmp1 = .waldcomomtest(z[,1]^2-1, lags, N)
 	orthmat[3, 5] = tmp1$tval[lags+1]
-	
+
 	tmp2 = .waldcomomtest(z[,1]^3-skew, lags, N)
 	orthmat[3, 6] = tmp2$tval[lags+1]
-	
+
 	tmp3 = .waldcomomtest(z[,1]^4-kurt, lags, N)
 	orthmat[3, 7] = tmp3$tval[lags+1]
-	
+
 	M = rbind(M, tmp1$h, tmp2$h, tmp3$h)
 	g = c(as.numeric(orthmat[1,1:4]), tmp1$g, tmp2$g, tmp3$g)
-	
+
 	# all moments
 	S = (M %*% t(M))/N
 	jtval = N*t(g)%*%solve(S)%*%g
 	orthmat[3,8] = jtval
 	p = rep(conf.level, 2)
-	df = c(lags, lags, lags, (4+3*lags))	
+	df = c(lags, lags, lags, (4+3*lags))
 	critical.values = qchisq(p,df)
 	# i.e. if tval>critical value reject the NULL
 	Decision = NULL
@@ -575,7 +575,7 @@ GMMTest = function(z, lags = 1, skew=0, kurt=3, conf.level = 0.95){
 	Decision[2] = ifelse(orthmat[3, 6]<critical.values[2], "Fail to Reject H0", "Reject H0")
 	Decision[3] = ifelse(orthmat[3, 7]<critical.values[3], "Fail to Reject H0", "Reject H0")
 	Decision[4] = ifelse(orthmat[3, 8]<critical.values[4], "Fail to Reject H0", "Reject H0")
-	
+
 	H0 = "[Q-Moment Conditions] Model is Correctly Specified"
 	moment.mat = orthmat[1:3,1:4]
 	joint.mat = rbind(orthmat[3,5:8], critical.values)
@@ -602,7 +602,7 @@ GMMTest = function(z, lags = 1, skew=0, kurt=3, conf.level = 0.95){
 
 # currenly only quartic kernel implemented
 # Hong and Li Test
-# M(1,2) test for ARCH-in-Mean 
+# M(1,2) test for ARCH-in-Mean
 # M(2,1) tests for leverage
 HLTest = function(PIT, lags = 4, kernel = "quartic", conf.level = 0.95){
 	p = lags
@@ -615,18 +615,18 @@ HLTest = function(PIT, lags = 4, kernel = "quartic", conf.level = 0.95){
 	Acon11 = (1/hpit-2)*(5/7)
 	Acon_1 = (Acon11 + 2*Acon2)^2 - 1
 	for(i in 1:p){
-		Mhat1 = gauss_legendre2D(f = ghat, 0,1,0,1, pit = PIT, i = i, T = T, hpit = hpit) 			
+		Mhat1 = gauss_legendre2D(f = ghat, 0,1,0,1, pit = PIT, i = i, T = T, hpit = hpit)
 		Qhatvector[i,1] = ( (T-i)*hpit*Mhat1 - hpit*Acon_1 )/sqrt(Vcon)
 	}
 	res[7] = sum(Qhatvector[,1])/sqrt(p)
-	
+
 	res[1] = Momstat(1,1, p, PIT, T)
 	res[2] = Momstat(2,2, p, PIT, T)
 	res[3] = Momstat(3,3, p, PIT, T)
 	res[4] = Momstat(4,4, p, PIT, T)
 	res[5] = Momstat(1,2, p, PIT, T)
 	res[6] = Momstat(2,1, p, PIT, T)
-	
+
 	names(res) = c("M(1,1)", "M(2,2)", "M(3,3)", "M(4,4)", "M(1,2)", "M(2,1)", "W")
 	Decision = NULL
 	RejectH0 = as.logical( res>rep( qnorm(conf.level), 7 ))
@@ -733,12 +733,12 @@ gauss_legendre2D <- function(f, a1,b1, a2,b2, ...) {
 	#library(statmod)
 	#N <- 12
 	#GL <- gauss.quad(N)
-	nodes = c(-0.9815606, -0.9041173, -0.7699027, -0.5873180, -0.3678315, 
-			-0.1252334, 0.1252334, 0.3678315, 0.5873180, 0.7699027, 0.9041173, 
+	nodes = c(-0.9815606, -0.9041173, -0.7699027, -0.5873180, -0.3678315,
+			-0.1252334, 0.1252334, 0.3678315, 0.5873180, 0.7699027, 0.9041173,
 			0.9815606)
-	weights = c(0.04717534, 0.10693933, 0.16007833, 0.20316743, 
-			0.23349254, 0.24914705, 0.24914705, 0.23349254, 0.20316743, 
-			0.16007833, 0.10693933, 0.04717534)	
+	weights = c(0.04717534, 0.10693933, 0.16007833, 0.20316743,
+			0.23349254, 0.24914705, 0.24914705, 0.23349254, 0.20316743,
+			0.16007833, 0.10693933, 0.04717534)
 	C <- (b1 - a1) / 2
 	D <- (b1 + a1) / 2
 	sum <- 0.0
@@ -747,7 +747,7 @@ gauss_legendre2D <- function(f, a1,b1, a2,b2, ...) {
 		x <- nodes[i]*C + D
 		sum <- sum + weights[i] * gauss_legendre2D_helper(f, x, a2, b2, nodes, weights, ...)
 	}
-	
+
 	return(C * sum)
 }
 #####################################################################################
@@ -788,7 +788,7 @@ gauss_legendre2D <- function(f, a1,b1, a2,b2, ...) {
 
 .VaRplot = function(varname , p, actual, dates, VaR)
 {
-	
+
 	y.actual = actual
 	y.VaR = VaR
 	x.dates = dates
@@ -797,11 +797,11 @@ gauss_legendre2D <- function(f, a1,b1, a2,b2, ...) {
 	title = paste("Daily Returns and Value-at-Risk Exceedances\n","(Series: ", varname,", alpha=", p,")",sep="")
 	if(zd$status){
 		plot(x = as.Date(dates, format = zd$dformat), y = y.actual, type = "n",
-				main = title, ylab = "Daily Log Return", xlab = "time", 
+				main = title, ylab = "Daily Log Return", xlab = "time",
 				ylim = c(min(y.actual, y.VaR), max(y.actual, y.VaR)))
 	} else{
 		plot(as.numeric(dates), y.actual, type = "n",
-				main = title, ylab = "Daily Log Return", xlab = "time", 
+				main = title, ylab = "Daily Log Return", xlab = "time",
 				ylim = c(min(y.actual, y.VaR), max(y.actual, y.VaR)))
 	}
 	abline(h = 0, col = 2, lty = 2)
@@ -833,7 +833,7 @@ gauss_legendre2D <- function(f, a1,b1, a2,b2, ...) {
 	cat(paste("Model:\t\t\t\t","",garchmodel,"-",distribution,"\n",sep=""))
 	cat(paste("Backtest Length:\t",result$TN,"\n",sep=""))
 	cat(paste("Data:\t\t\t\t","",varname,"\n",sep=""))
-	cat("\n==========================================\n")		
+	cat("\n==========================================\n")
 	cat(paste("alpha:\t\t\t\t",round(100*p,1),"%\n",sep=""))
 	cat(paste("Expected Exceed:\t",round(p*result$TN,1),"\n",sep=""))
 	cat(paste("Actual VaR Exceed:\t",result$N,"\n",sep=""))
@@ -859,7 +859,7 @@ gauss_legendre2D <- function(f, a1,b1, a2,b2, ...) {
 # Functions to perform Hypothesis test
 # on VaR models based on # of exceedances
 # calc LR.uc statistic
-LR.cc.test = function (p, actual, VaR, conf.level = 0.95) 
+LR.cc.test = function (p, actual, VaR, conf.level = 0.95)
 {
 	result = .LR.cc(p = p, actual = actual, VaR = VaR)
 	crit.val.uc = qchisq(conf.level, df = 1)
@@ -867,37 +867,42 @@ LR.cc.test = function (p, actual, VaR, conf.level = 0.95)
 	p.value.cc = 1 - pchisq(result$stat.cc, df = 2)
 	p.value.uc = 1 - pchisq(result$stat.uc, df = 1)
 	reject = ifelse(p.value.cc < 1 - conf.level, TRUE, FALSE)
-	return(list(stat.cc = result$stat.cc, stat.uc = result$stat.uc, 
-					p.value.cc = p.value.cc, p.value.uc = p.value.uc, conf.level = conf.level, 
-					reject = reject, N = result$N, TN = result$TN, crit.val.uc = crit.val.uc, 
+	return(list(stat.cc = result$stat.cc, stat.uc = result$stat.uc,
+					p.value.cc = p.value.cc, p.value.uc = p.value.uc, conf.level = conf.level,
+					reject = reject, N = result$N, TN = result$TN, crit.val.uc = crit.val.uc,
 					crit.val.cc = crit.val.cc))
 }
 
-.LR.cc = function (p, actual, VaR) 
+.LR.cc = function (p, actual, VaR)
 {
-	VaR.ind = ifelse(actual < VaR, 1, 0)
+	VaR.ind = as.numeric(ifelse(actual < VaR, 1, 0))
 	N = sum(VaR.ind)
 	TN = length(VaR.ind)
-	T00 = sum(c(0, ifelse(VaR.ind[2:TN] == 0 & VaR.ind[1:(TN - 1)] == 0, 1, 0)))
-	T11 = sum(c(0, ifelse(VaR.ind[2:TN] == 1 & VaR.ind[1:(TN - 1)] == 1, 1, 0)))
-	T01 = sum(c(0, ifelse(VaR.ind[2:TN] == 1 & VaR.ind[1:(TN - 1)] == 0, 1, 0)))
-	T10 = sum(c(0, ifelse(VaR.ind[2:TN] == 0 & VaR.ind[1:(TN - 1)] == 1, 1, 0)))
-	T0 = T00 + T01
-	T1 = T10 + T11
-	pi0 = T01/T0
-	pi1 = T11/T1
-	pe = (T01 + T11)/(T0 + T1)
-	# stat.ind = -2 * log((1 - pe)^(T00 + T10) * pe^(T01 + T11)) + 2 * log((1 - pi0)^T00 * pi0^T01 * (1 - pi1)^T10 * pi1^T11)
-	stat.ind = -2 *( (T00 + T10)*log(1 - pe) + (T01 + T11)*log(pe)) + 2 * (T00*log(1 - pi0)+T01*log(pi0)+T10*log(1 - pi1)+T11*log(pi1))
+	# Thanks to Kurt Hornik for the simplications and fix
+	n <- table(head(VaR.ind, -1), tail(VaR.ind, -1))
+  N00 = n[1,1]
+	N11 = n[2,2]
+	N01 = n[1,2]
+	N10 = n[2,1]
+  # p01: Probability of having a failure at time t | no failure at t-1
+	p01 = N01/(N00+N01)
+	# p11: Probability of having a failure at time t | failure at t-1
+	p11 = N11/(N10+N11)
+	# pUc : unconditional probability of a failure
+	pUc = (N01+N11)/sum(n)
+	l1 = (1-pUc)^(N00+N10)*pUc^(N01+N11)
+	l2 = (1-p01)^(N00)*p01^(N01)*(1-p11)^(N10)*p11^(N11)
+	stat.ind = -2*log(l1/l2)
 	stat.uc = .LR.uc(p = p, TN = TN, N = N)
 	stat.cc = stat.uc + stat.ind
-	return(list(stat.cc = stat.cc, stat.uc = stat.uc, N = N, 
-					TN = TN))
+	return(list(stat.cc = stat.cc, stat.uc = stat.uc, N = N, TN = TN))
 }
 
-.LR.uc = function (p, TN, N) 
+.LR.uc = function (p, TN, N)
 {
-	stat.uc = -2 *( (TN - N)*log(1 - p)+ N*log(p) ) + 2 * ( (TN - N)*log(1 - N/TN)+N*log(N/TN) )
+  l1 = (1-p)^(TN-N)*p^N
+  l2 = (1-N/TN)^(TN-N)*(N/TN)^N
+	stat.uc = -2 * log(l1/l2)
 	return(stat.uc)
 }
 
@@ -980,7 +985,7 @@ mcsTest = function(losses, alpha, nboot = 100, nblock = 1, boot = c("stationary"
 		vardi = colMeans((t(dibstar)-matrix(dibar, nrow = nboot, ncol = mx, byrow = TRUE))^2)
 		tx = dibar/sqrt(vardi)
 		temp = max(tx)
-		modeltoremove = which(tx == max(tx))[1] 
+		modeltoremove = which(tx == max(tx))[1]
 		excludedSQ[i]=included[modeltoremove]
 	}
 	maxpval = pvalsSQ[1]
@@ -994,8 +999,8 @@ mcsTest = function(losses, alpha, nboot = 100, nblock = 1, boot = c("stationary"
 	excludedSQ[NROW(excludedSQ)] = setdiff(1:m,as.numeric(excludedSQ))
 	pl=which(pvalsSQ>=alpha)[1]
 	includedSQ = excludedSQ[pl:m]
-	if(pl==1) excludedSQ = NULL else excludedSQ = excludedSQ[1:(pl-1)]	
-	return(list(includedR = includedR, pvalsR = pvalsR, excludedR = excludedR, 
+	if(pl==1) excludedSQ = NULL else excludedSQ = excludedSQ[1:(pl-1)]
+	return(list(includedR = includedR, pvalsR = pvalsR, excludedR = excludedR,
 					includedSQ = includedSQ, pvalsSQ = pvalsSQ, excludedSQ = excludedSQ))
 }
 
@@ -1047,8 +1052,8 @@ repmat = function(a,n,m){
 
 ##########################################################################################
 # Direct Import of Weighted Tests of FISHER and GALLAGHER (WeightedPortTest package)
-Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "Monti"), 
-		fitdf = 0, sqrd.res = FALSE, log.sqrd.res = FALSE, abs.res = FALSE, 
+Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "Monti"),
+		fitdf = 0, sqrd.res = FALSE, log.sqrd.res = FALSE, abs.res = FALSE,
 		weighted = TRUE)
 {
 	if(lag<(2*fitdf+fitdf-1)) stop("\nLag must be equal to a minimum of 2*fitdf+fitdf-1")
@@ -1070,12 +1075,12 @@ Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "M
 	if (weighted) {
 		if (type == "Monti") {
 			METHOD <- "Weighted Monti test (Gamma Approximation)"
-			cor <- acf(x, lag.max = lag, type = "partial", plot = FALSE, 
+			cor <- acf(x, lag.max = lag, type = "partial", plot = FALSE,
 					na.action = na.pass)
 			obs <- cor$acf[1:lag]
 		}
 		else {
-			cor <- acf(x, lag.max = lag, type = "correlation", 
+			cor <- acf(x, lag.max = lag, type = "correlation",
 					plot = FALSE, na.action = na.pass)
 			obs <- cor$acf[2:(lag + 1)]
 		}
@@ -1107,7 +1112,7 @@ Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "M
 			names(STATISTIC) <- "Weighted X-squared on Residuals for fitted ARMA process"
 		}
 		shape <- (3/4) * (lag + 1)^2 * lag/(2 * lag^2 + 3 * lag + 1 - 6 * lag * fitdf)
-		scale <- (2/3) * (2*lag^2 + 3*lag+1 - 6 * lag * fitdf)/(lag*(lag + 1))		
+		scale <- (2/3) * (2*lag^2 + 3*lag+1 - 6 * lag * fitdf)/(lag*(lag + 1))
 		PARAMETER <- c(shape, scale)
 		names(PARAMETER) <- c("Shape", "Scale")
 		PVAL <- 1 - pgamma(STATISTIC, shape = shape, scale = scale)
@@ -1116,12 +1121,12 @@ Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "M
 	else {
 		if (type == "Monti") {
 			METHOD <- "Monti test"
-			cor <- acf(x, lag.max = lag, type = "partial", plot = FALSE, 
+			cor <- acf(x, lag.max = lag, type = "partial", plot = FALSE,
 					na.action = na.pass)
 			obs <- cor$acf[1:lag]
 		}
 		else {
-			cor <- acf(x, lag.max = lag, type = "correlation", 
+			cor <- acf(x, lag.max = lag, type = "correlation",
 					plot = FALSE, na.action = na.pass)
 			obs <- cor$acf[2:(lag + 1)]
 		}
@@ -1134,7 +1139,7 @@ Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "M
 			STATISTIC <- n * sum(obs^2)
 		}
 		else {
-			STATISTIC <- n * (n + 2) * sum((1/seq.int(n - 1, 
+			STATISTIC <- n * (n + 2) * sum((1/seq.int(n - 1,
 										n - lag) * obs^2))
 		}
 		if (sqrd.res) {
@@ -1158,16 +1163,16 @@ Weighted.Box.test = function (x, lag = 1, type = c("Box-Pierce", "Ljung-Box", "M
 		PVAL <- 1 - pchisq(STATISTIC, df = mydf)
 		names(PVAL) <- "p-value"
 	}
-	structure(list(statistic = STATISTIC, parameter = PARAMETER, 
-					p.value = PVAL, method = METHOD, data.name = DNAME), 
+	structure(list(statistic = STATISTIC, parameter = PARAMETER,
+					p.value = PVAL, method = METHOD, data.name = DNAME),
 			class = "htest")
 }
 
-Weighted.LM.test <- function (x, h.t, lag = 1, type = c("correlation", "partial"), fitdf = 1, weighted=TRUE) 
+Weighted.LM.test <- function (x, h.t, lag = 1, type = c("correlation", "partial"), fitdf = 1, weighted=TRUE)
 {
 	### Error Checking
 	###
-	if (NCOL(x) > 1) 
+	if (NCOL(x) > 1)
 		stop("x is not a vector or univariate time series");
 	if (fitdf >= lag)
 		stop("Lag must exceed fitted degrees of freedom");
@@ -1175,12 +1180,12 @@ Weighted.LM.test <- function (x, h.t, lag = 1, type = c("correlation", "partial"
 		stop("Fitted degrees of freedom must be positive");
 	if( !(length(x)==length(h.t)) )
 		stop("Length of x and h.t must match");
-	
+
 	DNAME <- deparse(substitute(x))
 	type <- match.arg(type)
-	
+
 	x <- x^2/h.t
-	
+
 	if( type == "partial") {
 		cor <- acf(x, lag.max = lag, type="partial", plot=FALSE, na.action=na.pass)
 		obs <- cor$acf[1:lag];
@@ -1189,8 +1194,8 @@ Weighted.LM.test <- function (x, h.t, lag = 1, type = c("correlation", "partial"
 		cor <- acf(x, lag.max = lag, type="correlation", plot=FALSE, na.action=na.pass)
 		obs <- cor$acf[2:(lag + 1)];
 	}
-	
-	
+
+
 	if(type == "correlation" && weighted) {
 		METHOD <- "Weighted Li-Mak test on autocorrelations (Gamma Approximation)"
 	}
@@ -1203,7 +1208,7 @@ Weighted.LM.test <- function (x, h.t, lag = 1, type = c("correlation", "partial"
 	else {
 		METHOD <- "Li-Mak test on partial autocorrelations (Chi-Squared Approximation)"
 	}
-	
+
 	n <- sum(!is.na(x))
 	if(weighted) {
 		weights <- (lag - (fitdf+1):lag + (fitdf+1) )/lag;
@@ -1225,12 +1230,12 @@ Weighted.LM.test <- function (x, h.t, lag = 1, type = c("correlation", "partial"
 		PARAMETER <- c((lag-fitdf));
 		names(PARAMETER) <- c("Degrees of Freedom");
 	}
-	
+
 	PVAL <- 1 - pgamma(STATISTIC, shape=shape, scale=scale)
 	names(PVAL) <- "Approximate p-value"
-	
-	structure(list(statistic = STATISTIC, parameter = PARAMETER, 
-					p.value = PVAL, method = METHOD, data.name = DNAME), 
+
+	structure(list(statistic = STATISTIC, parameter = PARAMETER,
+					p.value = PVAL, method = METHOD, data.name = DNAME),
 			class = "htest")
 }
 # End Import

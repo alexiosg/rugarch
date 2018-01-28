@@ -1,3 +1,8 @@
+2018-01-27  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.4-0.
+	* Bug fix to Kupiec and Christoffersen VaR test to catch some corner cases
+	(thanks to Kurt Hornik).
+
 2017-10-30  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-9.
 	* Added FIGARCH model, currently restricted to (1,d,1) because of complexity of positivity conditions (Conrad and Haag).

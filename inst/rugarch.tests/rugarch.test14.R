@@ -92,7 +92,7 @@ rugarch.test13c = function(cluster=NULL)
   spec = ugarchspec(mean.model=list(armaOrder=c(1,1), include.mean=TRUE),
                     variance.model = list(model = "fiGARCH", garchOrder = c(1,1)),
                     distribution="norm")
-  fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000), solver="solnp")
+  fit = ugarchfit(spec, x, solver.control=list(trace=1),fit.control=list(trunclag=2000), solver="gosolnp")
   sim1= ugarchsim(fit, n.sim=5000, m.sim=10, rseed=100)
   specx=spec
   setfixed(specx)<-as.list(coef(fit))
