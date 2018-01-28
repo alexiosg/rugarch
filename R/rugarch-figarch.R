@@ -674,7 +674,7 @@
 	sigmafilter = flt@filter$sigma
 	resfilter = flt@filter$residuals
 	zfilter = flt@filter$z
-	truncLag = fit@model$trunclag
+	truncLag = trunclag
 	# ebar,eps and be from the filtered is now available
 	ebar =c(flt@filter$ebar,rep(0,n.ahead))
 	eps = flt@filter$eps
