@@ -20,7 +20,7 @@
 # [mu ar ma arfima im mxreg omega alpha beta vxreg eta11 eta21 delta lambda xi skew shape]
 
 .realgarchfit = function(spec, data, out.sample = 0, solver = "solnp", solver.control = list(),
-		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all'),
+		fit.control = list(stationarity = 1, fixed.se = 0, scale = 0, rec.init = 'all', trunclag = 1000),
 		numderiv.control = list(grad.eps=1e-4, grad.d=0.0001, grad.zero.tol=sqrt(.Machine$double.eps/7e-7),
 				hess.eps=1e-4, hess.d=0.1, hess.zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2),
 		realizedVol = NULL)
@@ -30,6 +30,8 @@
 
 	if(is.null(fit.control$stationarity)) fit.control$stationarity = TRUE
 	if(is.null(fit.control$fixed.se)) fit.control$fixed.se = FALSE
+	if(is.null(fit.control$trunclag)) fit.control$trunclag = 1000
+
 	if(is.null(fit.control$scale)){
 		fit.control$scale = FALSE
 	} else{
@@ -39,7 +41,7 @@
 		}
 	}
 	if(is.null(fit.control$rec.init)) fit.control$rec.init = 'all'
-	mm = match(names(fit.control), c("stationarity", "fixed.se", "scale", "rec.init"))
+	mm = match(names(fit.control), c("stationarity", "fixed.se", "scale", "rec.init", "trunclag"))
 	if(any(is.na(mm))){
 		idx = which(is.na(mm))
 		enx = NULL

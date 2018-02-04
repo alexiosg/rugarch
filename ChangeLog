@@ -1,7 +1,7 @@
 2018-01-28  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-0.
 	* Added robust score calculation to the returned uGARCHfit object to enable recreating the robust standard errors.
-	* Fix to VaRTest (both the conditional and unconditional) to calculate directly in powers rather than logs to
+	* Fix to VaRTest (both the conditional and unconditional tests) to calculate directly in powers rather than logs to
 	avoid problems (thanks to Kurt Hornik for report/fix).
 
 2017-10-30  Alexios Ghalanos <alexios@4dscape.com>
