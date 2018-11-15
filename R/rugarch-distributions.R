@@ -1495,7 +1495,9 @@ jsuFit = function(x, control = list())
 # ------------------------------------------------------------------------------
 .makeSample = function(distribution, lambda = -0.5, skew, shape, n, seed)
 {
-	set.seed(seed)
+	if (!is.na(seed)) {
+    set.seed(as.integer(seed))
+  }
 	x = switch(distribution,
 			norm = rnorm(n),
 			snorm = rsnorm(n, skew = skew),

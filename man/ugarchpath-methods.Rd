@@ -36,7 +36,10 @@ Allows the starting residuals to be provided by the user.}
 Optional seeding value(s) for the random number generator. For m.sim>1, it is
 possible to provide either a single seed to initialize all values, or one seed
 per separate simulation (i.e. m.sim seeds). However, in the latter case this may
-result in some slight overhead depending on how large m.sim is.}
+result in some slight overhead depending on how large m.sim is.
+It is now recommended not to provide a value (i.e., keep the default of
+\code{rseed == NA}) and to call \code{set.seed} only once in the beginning of
+the session, which will ensure reproducibility.}
 \item{custom.dist}{ Optional density with fitted object from which to simulate.
 See notes below for details.}
 \item{mexsimdata}{

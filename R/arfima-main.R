@@ -583,7 +583,7 @@
 	}
 	# some checks
 	if(is.na(rseed[1])){
-		sseed = as.integer(runif(1,0,as.integer(Sys.time())))
+    sseed = NA
 	} else{
 		if(length(rseed) != m.sim) sseed = as.integer(rseed[1]) else sseed = rseed[1:m.sim]
 	}
@@ -709,7 +709,7 @@
 		}
 	}
 	if(is.na(rseed[1])){
-		sseed = as.integer(runif(1,0,as.integer(Sys.time())))
+		sseed = NA
 	} else{
 		if(length(rseed) != m.sim) sseed = as.integer(rseed[1]) else sseed = rseed[1:m.sim]
 	}
