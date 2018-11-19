@@ -516,7 +516,7 @@ TinY = 1.0e-8
 	# ToDo: clean up (make use of rdist which is now vectorized)
 	if(is.na(custom.dist$name) | is.na(custom.dist$distfit)[1]){
 		z = matrix(apply(zmatrix, 1, FUN = function(x) .makeSample(as.character(x[1]), lambda = as.numeric(x[2]),
-		skew = as.numeric(x[3]), shape = as.numeric(x[4]), n = as.numeric(x[5]), seed = as.integer(x[6]))), n, m.sim)
+		skew = as.numeric(x[3]), shape = as.numeric(x[4]), n = as.numeric(x[5]), seed = x[6])), n, m.sim)
 	}
 	if(!is.na(custom.dist$name) && !is.na(custom.dist$distfit)[1]){
 

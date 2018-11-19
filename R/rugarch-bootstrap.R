@@ -99,16 +99,18 @@
 	N = model$modeldata$T
 	ns = model$n.start
 	if(is.na(rseed[1])){
-		sseed = as.integer(runif(n.bootpred + n.bootfit, 0, 65000))
+    sseed1 = NA
+    sseed2 = NA
 	} else{
 		if(length(rseed) < n.bootpred){
 			stop("\nugarchboot-->error: seed length must equal n.bootpred + n.bootfit for full method\n")
 		} else {
 			sseed = rseed
+      sseed1 = sseed[1:n.bootfit]
+      sseed2 = sseed[(n.bootfit+1):(n.bootpred + n.bootfit)]
 		}
 	}
-	sseed1 = sseed[1:n.bootfit]
-	sseed2 = sseed[(n.bootfit+1):(n.bootpred + n.bootfit)]
+	
 	# generate paths of equal length to data based on empirical re-sampling of z
 	# p.2296 equation (5)
 	fz = fit@fit$z
