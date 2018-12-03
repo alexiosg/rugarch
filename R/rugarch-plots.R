@@ -1398,7 +1398,7 @@
 	plot(as.Date(rownames(density)), density[,6], type="l", col = "grey",
 			main = paste("Series Forecast vs Realized", sep = ""),
 			ylab = "", xlab  = "", cex.main = 0.7, cex.axis = 0.8, cex.lab=0.9)
-	lines(as.Date(rownames(density)), abs(density[,1]), col = "tomato1", lwd = 1.5)
+	lines(as.Date(rownames(density)), density[,1], col = "tomato1", lwd = 1.5)
 	grid()
 	invisible(x)
 }
