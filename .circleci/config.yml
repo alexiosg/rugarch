@@ -1,16 +1,43 @@
 version: 2
+
+steps: &steps
+  steps:
+    - checkout
+    - restore_cache:
+        keys:
+          - cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "DESCRIPTION" }}
+    - run:
+        name: Install package dependencies
+        command: R -e "devtools::install_deps(dep = TRUE)"
+    - save_cache:
+        key: cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "DESCRIPTION" }}
+        paths:
+          - "/usr/local/lib/R/site-library" 
+    - run:
+        name: Build package
+        command: R CMD build .  --no-build-vignettes
+    - run:
+        name: Check package
+        command: R CMD check *tar.gz
+      
 jobs:
-  build:
+  release:
+    docker:
+      - image: rocker/verse:3.6.0
+    <<: *steps
+  oldrel:
     docker:
       - image: rocker/verse:3.5.3
-    steps:
-      - checkout
-      - run:
-          name: Install package dependencies
-          command: R -e "devtools::install_deps(dep = TRUE)"
-      - run:
-          name: Build package
-          command: R CMD build .  --no-build-vignettes
-      - run:
-          name: Check package
-          command: R CMD check *tar.gz
+    <<: *steps
+  devel:
+    docker:
+      - image: rocker/verse:devel
+    <<: *steps
+
+workflows:
+  version: 2
+  all:
+    jobs:
+      - release
+      - devel
+      - oldrel
