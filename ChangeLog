@@ -1,7 +1,11 @@
+2020-04-18  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.4-3.
+	* Corrected documentation on FIGARCH model expansion in vignette.
+
 2018-11-18  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-1.
-	* Tobias Kley added as contributor. Provided patch to avoid unexpected behavior
-	when no seed is set.
+	* Tobias Kley added as contributor. Provided patch to avoid unexpected behavior when no seed is set.
+	
 2018-01-28  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-0.
 	* Added robust score calculation to the returned uGARCHfit object to enable recreating the robust standard errors.
