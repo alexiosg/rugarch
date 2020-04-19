@@ -1,10 +1,10 @@
 Package: rugarch
 Type: Package
 Title: Univariate GARCH Models
-Version: 1.4-1
-Date: 2018-11-18
-Authors@R: c(person("Alexios", "Ghalanos", role = c("aut", "cre"), email = "alexios@4dscape.com"),person("Tobias","Kley",role="ctb",email="tobias.kley@bristol.ac.uk"))
-Depends: R (>= 3.0.2), methods, parallel
+Version: 1.4-3
+Date: 2020-04-18
+Authors@R: c(person("Alexios", "Ghalanos", role = c("aut", "cre"), email = "alexios@4dscape.com"), person("Tobias","Kley",role="ctb",email="tobias.kley@bristol.ac.uk"))
+Depends: R (>= 3.5.0), methods, parallel
 LinkingTo: Rcpp (>= 0.10.6), RcppArmadillo (>= 0.2.34)
 Imports: Rsolnp, nloptr, ks, numDeriv, spd, xts, zoo, chron, SkewHyperbolic, expm, Rcpp,graphics, stats, grDevices, utils
 Description: ARFIMA, in-mean, external regressors and various GARCH flavors, with methods for fit, forecast, simulation, inference and plotting.
@@ -12,4 +12,3 @@ Collate: rugarch-imports.R rugarch-cwrappers.R rugarch-solvers.R rugarch-lossfn.
 LazyLoad: yes
 URL: http://www.unstarched.net, https://bitbucket.org/alexiosg
 License: GPL-3
-RoxygenNote: 6.0.1

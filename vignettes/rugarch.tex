@@ -574,15 +574,7 @@ Consider the standard GARCH equation:
 \end{equation}
 where $L$ is the lag operator, such that $a\left( L \right) = \sum\limits_{i = 1}^q {{\alpha _i}{L^i}}$ and $\beta \left( L \right) = \sum\limits_{j = 1}^p {{\beta _j}{L^j}}$. Re-arranging to give the ARMA in squares representation:
 \begin{equation}
-\left[ {1 - \alpha \left( L \right) - \beta \left( L \right)} \right]\varepsilon _t^2 = \omega  + \left[ {1 - \beta \left( L \right)} \right]{v_t}
-\end{equation}
-where ${v_t} = \varepsilon _t^2 - \sigma _t^2$, and condensing the left hand side:
-\begin{equation}
-\left( {1 - L} \right)\phi \left( L \right)\varepsilon _t^2 = \omega  + \left[ {1 - \beta \left( L \right)} \right]{v_t}
-\end{equation}
-with $\phi \left( L \right) = \sum\limits_{i = 1}^{m - 1} {{\phi _i}{L^i}}$ and $m = \max \left\{ {p,q} \right\}$. In the fractionally integrated model, $\left(1-L\right)$ is replaced by :
-\begin{equation}
-{\left( {1 - L} \right)^d} = \sum\limits_{k = 0}^\infty  {\frac{{\Gamma \left( {d + 1} \right)}}{{\Gamma \left( {k + 1} \right)\Gamma \left( {d - k + 1} \right)}}{L^k} = } 1 - \sum\limits_{k = 1}^\infty  {{\pi _k}{L^k}}
+
 \end{equation}
 where ${\pi _i} = \prod\limits_{1 \le k \le i} {\frac{{k - 1 - d}}{k}}$. The expansion\footnote{This is the hypergeometric function expansion.} is usually truncated to some large number, such as 1000. Rearranging again, we obtain the following representation of the FIGARCH model:
 
@@ -604,11 +596,15 @@ In keeping with the formulation used for GARCH models in this package, we re-wri
 \sigma _t^2 = \omega  + \left\{ {1 - \beta \left( L \right) - \left( {1 - \alpha \left( L \right)} \right){{\left( {1 - L} \right)}^d}} \right\}\varepsilon _t^2 + \beta \left( L \right)\sigma _t^2
 \end{array}
 \end{equation}
-Truncating the expansion to 1000 lags and setting $\bar \varepsilon _{t - j}^2 = {\left( {1 - L} \right)^d}\varepsilon _{t - j}^2 = \varepsilon _{t - j}^2 + \left( {\sum\limits_{k = 1}^{1000} {{\pi _k}{L^k}} } \right)\varepsilon _{t - j}^2$:
+Truncating the expansion to 1000 lags and setting ${\left( {1 - L} \right)^d}\varepsilon _t^2 = \varepsilon _t^2 + \left( {\sum\limits_{k = 1}^{1000} {{\pi _k}{L^k}} } \right)\varepsilon _t^2 = \varepsilon _t^2 + \bar \varepsilon _t^2$:
 \begin{equation}
 \begin{array}{l}
-\sigma _t^2 = \omega  - \sum\limits_{j = 1}^p {{\beta _j}\varepsilon _{t - j}^2 + } \sum\limits_{j = 1}^q {{\alpha _j}\varepsilon _{t - j}^2 - \bar \varepsilon _{t - j}^2 + \sum\limits_{j = 1}^q {{\alpha _j}\bar \varepsilon _{t - j}^2 + } } \sum\limits_{j = 1}^p {{\beta _j}\sigma _{t - j}^2} \\
- = \left( {\omega  - \bar \varepsilon _{t - j}^2} \right) + \sum\limits_{j = 1}^q {{\alpha _j}\left( {\varepsilon _{t - j}^2 + \bar \varepsilon _{t - j}^2} \right)}  + \sum\limits_{j = 1}^p {{\beta _j}\left( {\sigma _{t - j}^2 - \varepsilon _{t - j}^2} \right)}
+\sigma _t^2 = \omega  + \left\{ {\varepsilon _t^2 - \beta \left( L \right)\varepsilon _t^2 - {{\left( {1 - L} \right)}^d}\varepsilon _t^2 + \alpha \left( L \right){{\left( {1 - L} \right)}^d}\varepsilon _t^2} \right\} + \beta \left( L \right)\sigma _t^2\\
+\sigma _t^2 = \omega  + \left\{ {\varepsilon _t^2 - \beta \left( L \right)\varepsilon _t^2 - \left( {\varepsilon _t^2 + \bar \varepsilon _t^2} \right) + \alpha \left( L \right)\left( {\varepsilon _t^2 + \bar \varepsilon _t^2} \right)} \right\} + \beta \left( L \right)\sigma _t^2\\
+\sigma _t^2 = \omega  + \varepsilon _t^2 - \beta \left( L \right)\varepsilon _t^2 - \left( {\varepsilon _t^2 + \bar \varepsilon _t^2} \right) + \alpha \left( L \right)\left( {\varepsilon _t^2 + \bar \varepsilon _t^2} \right) + \beta \left( L \right)\sigma _t^2\\
+\sigma _t^2 = \omega  - \bar \varepsilon _t^2 - \beta \left( L \right)\varepsilon _t^2 + \alpha \left( L \right)\left( {\varepsilon _t^2 + \bar \varepsilon _t^2} \right) + \beta \left( L \right)\sigma _t^2\\
+\sigma _t^2 = \left( {\omega  - \bar \varepsilon _t^2} \right) - \sum\limits_{j = 1}^p {{\beta _j}\varepsilon _{t - j}^2 + \sum\limits_{j = 1}^q {{\alpha _j}\varepsilon _{t - j}^2}  + } \sum\limits_{j = 1}^q {{\alpha _j}\bar \varepsilon _{t - j}^2}  + \sum\limits_{j = 1}^p {{\beta _j}\sigma _{t - j}^2} \\
+\sigma _t^2 = \left( {\omega  - \bar \varepsilon _t^2} \right) + \sum\limits_{j = 1}^q {{\alpha _j}\left( {\varepsilon _{t - j}^2 + \bar \varepsilon _{t - j}^2} \right)}  + \sum\limits_{j = 1}^p {{\beta _j}\left( {\sigma _{t - j}^2 - \varepsilon _{t - j}^2} \right)} 
 \end{array}
 \end{equation}
 
