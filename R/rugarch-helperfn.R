@@ -767,3 +767,16 @@ backcastv = function(res, T, lambda, delta=2){
 	return(v)
 }
 
+# Matrix power
+"%^%" <- function(mat,power){
+    base <- mat
+    out <- diag(nrow(mat))
+    while (power > 1) {
+        if (power %% 2 == 1) {
+            out <- out %*% base
+        }
+        base <- base %*% base
+        power <- power %/% 2
+    }
+    out %*% base
+}

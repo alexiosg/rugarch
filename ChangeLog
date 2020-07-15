@@ -1,3 +1,7 @@
+2020-07-14  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.4-4.
+	* Removed expm dependency and implmented locally in R the matrix power function (%^%).
+	
 2020-04-18  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-3.
 	* Corrected documentation on FIGARCH model expansion in vignette.

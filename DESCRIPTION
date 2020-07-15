@@ -1,12 +1,12 @@
 Package: rugarch
 Type: Package
 Title: Univariate GARCH Models
-Version: 1.4-3
-Date: 2020-04-18
+Version: 1.4-4
+Date: 2020-07-14
 Authors@R: c(person("Alexios", "Ghalanos", role = c("aut", "cre"), email = "alexios@4dscape.com"), person("Tobias","Kley",role="ctb",email="tobias.kley@bristol.ac.uk"))
 Depends: R (>= 3.5.0), methods, parallel
 LinkingTo: Rcpp (>= 0.10.6), RcppArmadillo (>= 0.2.34)
-Imports: Rsolnp, nloptr, ks, numDeriv, spd, xts, zoo, chron, SkewHyperbolic, expm, Rcpp,graphics, stats, grDevices, utils
+Imports: Rsolnp, nloptr, ks, numDeriv, spd, xts, zoo, chron, SkewHyperbolic, Rcpp,graphics, stats, grDevices, utils
 Description: ARFIMA, in-mean, external regressors and various GARCH flavors, with methods for fit, forecast, simulation, inference and plotting.
 Collate: rugarch-imports.R rugarch-cwrappers.R rugarch-solvers.R rugarch-lossfn.R rugarch-distributions.R rugarch-kappa.R rugarch-helperfn.R rugarch-numderiv.R rugarch-series.R rugarch-startpars.R rugarch-tests.R rugarch-armafor.R rugarch-graphs.R rugarch-classes.R rugarch-sgarch.R rugarch-figarch.R rugarch-csgarch.R rugarch-fgarch.R rugarch-egarch.R rugarch-gjrgarch.R rugarch-aparch.R rugarch-igarch.R rugarch-mcsgarch.R rugarch-realgarch.R rugarch-multi.R rugarch-plots.R rugarch-rolling.R rugarch-uncertainty.R rugarch-bootstrap.R rugarch-methods.R rugarch-benchmarks.R arfima-classes.R arfima-multi.R arfima-main.R arfima-methods.R rugarch-cv.R zzz.R
 LazyLoad: yes

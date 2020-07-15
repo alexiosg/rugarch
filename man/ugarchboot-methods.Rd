@@ -77,8 +77,8 @@ package. If it is not NULL, then this will be used for parallel estimation
 of the refits (remember to stop the cluster on completion).
 }
 \item{verbose}{
-Whether to print out progress messages.}
-\item{...}{ .}
+Whether to print out progress messages.
+}
 }
 \value{
 A \code{\linkS4class{uGARCHboot}} object containing details of the GARCH 
