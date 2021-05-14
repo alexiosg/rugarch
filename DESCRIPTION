@@ -1,7 +1,7 @@
 Package: rugarch
 Type: Package
 Title: Univariate GARCH Models
-Version: 1.4-4
+Version: 1.4-5
 Date: 2020-07-14
 Authors@R: c(person("Alexios", "Ghalanos", role = c("aut", "cre"), email = "alexios@4dscape.com"), person("Tobias","Kley",role="ctb",email="tobias.kley@bristol.ac.uk"))
 Depends: R (>= 3.5.0), methods, parallel
