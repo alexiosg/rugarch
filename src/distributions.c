@@ -243,11 +243,13 @@ double rghyp(const double rho, const double zeta, const double lambda)
 
 void c_rghyp(int *n, double *mu, double *sigma, double *skew, double *shape, double *lambda, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rghyp(skew[i], shape[i], lambda[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 /*
@@ -309,11 +311,13 @@ double rnig(const double alpha, const double beta, const double delta, const dou
 
 void c_rsnig(int *n, double *mu, double *sigma, double *skew, double *shape, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rghyp(skew[i], shape[i], -0.5)*sigma[i];
 	}
+	PutRNGstate();
 }
 
 /*
@@ -335,11 +339,13 @@ double rstd(const double nu)
 
 void c_rstd(int *n, double *mu, double *sigma, double *shape, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rstd(shape[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 double xdt(const double x, const double nu)
@@ -428,11 +434,13 @@ double rsstd(const double xi, const double nu)
 
 void c_rsstd(int *n, double *mu, double *sigma, double *skew, double *shape, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rsstd(skew[i], shape[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 double dsstdstd(const double x, const double xi, const double nu)
@@ -579,11 +587,13 @@ double rjsu(const double nu, const double tau)
 
 void c_rjsu(int *n, double *mu, double *sigma, double *skew, double *shape, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rjsu(skew[i], shape[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 double pjsu(const double q, const double mu, const double sigma, const double nu, const double tau)
@@ -628,11 +638,13 @@ double rsnorm(const double xi)
 
 void c_rsnorm(int *n, double *mu, double *sigma, double *skew, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rsnorm(skew[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 double dsnormstd(const double x, const double xi)
@@ -722,11 +734,13 @@ double rged(const double nu)
 
 void c_rged(int *n, double *mu, double *sigma, double *shape, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rged(shape[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 double dgedstd(const double x, const double nu)
@@ -809,11 +823,13 @@ double rsged(const double xi, const double nu)
 
 void c_rsged(int *n, double *mu, double *sigma, double *skew, double *shape, double *ans)
 {
+	GetRNGstate();
 	int i;
 	for(i=0;i<*n;i++)
 	{
 		ans[i] = mu[i] + rsged(skew[i], shape[i])*sigma[i];
 	}
+	PutRNGstate();
 }
 
 double dsgedstd(const double x, const double xi, const double nu)
