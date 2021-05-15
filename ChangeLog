@@ -1,3 +1,8 @@
+2021-05-14  Alexios Ghalanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.4-5.
+	* Patch provided by Christian Haug to properly handle the state of the random number generator
+	(GetRNGstate/PutRNGstate calls inside of the C functions).
+	
 2020-07-14  Alexios Ghalanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-4.
 	* Removed expm dependency and implmented locally in R the matrix power function (%^%).
