@@ -3,8 +3,7 @@ Type: Package
 Title: Univariate GARCH Models
 Version: 1.4-5
 Date: 2021-05-14
-Authors@R: c(person("Alexios", "Ghalanos", role = c("aut", "cre"), email = "alexios@4dscape.com"), 
-person("Tobias","Kley",role="ctb",email="tobias.kley@bristol.ac.uk"))
+Authors@R: c(person("Alexios", "Ghalanos", role = c("aut", "cre"), email = "alexios@4dscape.com"),person("Tobias","Kley",role="ctb",email="tobias.kley@bristol.ac.uk"))
 Depends: R (>= 3.5.0), methods, parallel
 LinkingTo: Rcpp (>= 0.10.6), RcppArmadillo (>= 0.2.34)
 Imports: Rsolnp, nloptr, ks, numDeriv, spd, xts, zoo, chron, SkewHyperbolic, Rcpp,graphics, stats, grDevices, utils
