@@ -1,6 +1,6 @@
 #################################################################################
 ##
-##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2015.
+##   R package rugarch by Alexios Galanos Copyright (C) 2008-2022.
 ##   This file is part of the R package rugarch.
 ##
 ##   The R package rugarch is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ fgarchKappa<-function(lambda, delta, eta1, eta2, fk, ghlambda, shape, skew, cond
 }
 
 .ffunE<-function(x, lambda, delta, eta1, eta2, fk, ghlambda, shape, skew, cond.density,...)
-{   # A function implemented by Alexios Ghalanos
+{   # A function implemented by Alexios Galanos
 	# Compute Expectation Value
 	kdelta=delta+fk*lambda
 	cond.density = cond.density[1]
@@ -81,7 +81,7 @@ gjrgarchKappa<-function(gm, ghlambda, shape, skew, cond.density,...)
 }
 
 .gjrfunE<-function(x, gm, ghlambda, shape, skew, cond.density,...)
-{   # A function implemented by Alexios Ghalanos
+{   # A function implemented by Alexios Galanos
 	# Compute Expectation Value
 	cond.density = cond.density[1]
 	if (cond.density == "norm"){
@@ -137,7 +137,7 @@ pneg<-function(ghlambda, shape, skew, cond.density,...)
 }
 
 .pnegfunE<-function(x, ghlambda, shape, skew, cond.density,...)
-{   # A function implemented by Alexios Ghalanos
+{   # A function implemented by Alexios Galanos
 	# Compute Expectation Value
 	cond.density = cond.density[1]
 	if (cond.density == "norm"){
@@ -191,7 +191,7 @@ egarchKappa<-function(ghlambda, shape, skew, cond.density,...)
 }
 
 .efunE<-function(x, ghlambda, shape, skew, cond.density,...)
-{   # A function implemented by Alexios Ghalanos
+{   # A function implemented by Alexios Galanos
 	# Compute Expectation Value
 	cond.density = cond.density[1]
 	if(cond.density == "norm"){
@@ -245,7 +245,7 @@ aparchKappa<-function(gm, delta, ghlambda, shape, skew, cond.density,...)
 }
 
 .afunE<-function(x, gm, delta, ghlambda, shape, skew, cond.density,...)
-{   # A function implemented by Alexios Ghalanos
+{   # A function implemented by Alexios Galanos
 	# Compute Expectation Value
 	cond.density = cond.density[1]
 	if (cond.density == "norm"){

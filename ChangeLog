@@ -1,31 +1,35 @@
-2021-05-14  Alexios Ghalanos <alexios@4dscape.com>
+2022-01-18  Alexios Galanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.4-6.
+	* Removed nloptr dependency
+	
+2021-05-14  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-5.
 	* Patch provided by Christian Haug to properly handle the state of the random number generator
 	(GetRNGstate/PutRNGstate calls inside of the C functions).
 	
-2020-07-14  Alexios Ghalanos <alexios@4dscape.com>
+2020-07-14  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-4.
 	* Removed expm dependency and implmented locally in R the matrix power function (%^%).
 	
-2020-04-18  Alexios Ghalanos <alexios@4dscape.com>
+2020-04-18  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-3.
 	* Corrected documentation on FIGARCH model expansion in vignette.
 
-2018-11-18  Alexios Ghalanos <alexios@4dscape.com>
+2018-11-18  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-1.
 	* Tobias Kley added as contributor. Provided patch to avoid unexpected behavior when no seed is set.
 	
-2018-01-28  Alexios Ghalanos <alexios@4dscape.com>
+2018-01-28  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-0.
 	* Added robust score calculation to the returned uGARCHfit object to enable recreating the robust standard errors.
 	* Fix to VaRTest (both the conditional and unconditional tests) to calculate directly in powers rather than logs to
 	avoid problems (thanks to Kurt Hornik for report/fix).
 
-2017-10-30  Alexios Ghalanos <alexios@4dscape.com>
+2017-10-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-9.
 	* Added FIGARCH model, currently restricted to (1,d,1) because of complexity of positivity conditions (Conrad and Haag).
 
-2017-10-01  Alexios Ghalanos <alexios@4dscape.com>
+2017-10-01  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-8.
 	* Native routine registration fix
 	* Removal of error on using less than 100 data points for estimation (now
@@ -33,7 +37,7 @@
 	* Will not be migrating to new xts plotting. Investigating alternative
 	avenues.
 
-2015-07-02  Alexios Ghalanos <alexios@4dscape.com>
+2015-07-02  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-6.
 	* Fix to plots (thanks to Eric Zivot for bug). No longer
 	using xts for internal plots, but instead (date, series) format.
@@ -41,7 +45,7 @@
 	the plots to use functionality of the new xts plotting functions.
 	* Fixes to pass new CRAN change of only attaching the base package.
 
-2015-03-04  Alexios Ghalanos <alexios@4dscape.com>
+2015-03-04  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-5.
 	* Exported and documented the mcsTest.
 	* Added confint S4 method (same as stats S3 confint) at user's
@@ -52,7 +56,7 @@
     * Added the arfimacv function for ARFIMAX time series cross-validation.
     * Fixes to some examples (were based on deprecated extractor methods).
 
-2014-11-08  Alexios Ghalanos <alexios@4dscape.com>
+2014-11-08  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-4.
 	* Added a numderiv.control argument to the ugarchfit and arfimafit
 	functions to provide finer control on the estimation of the standard
@@ -61,13 +65,13 @@
 	* Tweaked the standard error calculation for the robust method.
 	* Added parallel in Depends to avoid warning on CRAN.
 
-2014-05-22  Alexios Ghalanos <alexios@4dscape.com>
+2014-05-22  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-3.
 	* Fix to Vlaar and Palm GoF test in case of shaped distribution (shape parameter
 	did not get passed to cdf function during the transformation).
 	* Fixes to vignettes.
 
-2014-04-26  Alexios Ghalanos <alexios@4dscape.com>
+2014-04-26  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-2.
 	* Fixed setting of bounds on ARFIMAspec object.
 	* When setting starting or fixed parameters on a uGARCHspec or ARFIMAspec
@@ -76,13 +80,13 @@
 	or fixed parameters are within those bounds).
 	* Adjustment to VaRTest to avoid problems with large N.
 
-2014-02-21  Alexios Ghalanos <alexios@4dscape.com>
+2014-02-21  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-1.
 	* Patched to work with recent changes to Rcpp.
 	* Changed the Q-statistics and ARCH-LM test (in the show/summary)
 	to the weighted statistics of Fisher and Gallagher (2012).
 
-2014-01-01  Alexios Ghalanos <alexios@4dscape.com>
+2014-01-01  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.3-0.
 	* Reversed log(0) fix in VaRTest function (produced wrong answer).
 	* Added realized GARCH (realGARCH) model of Hansen, Huang and Shek (2011),
@@ -92,7 +96,7 @@
 	* Expanded multi-methods to deal with realGARCH and mcsGARCH model.
 
 
-2013-11-28  Alexios Ghalanos <alexios@4dscape.com>
+2013-11-28  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-9.
 	* Fixed the stationarity condition of the E-GARCH model for the case when p>1,
 	and changed default lower bound on beta to be -1.
@@ -100,7 +104,7 @@
 	standardized residual (was previously set to zero except for the fGARCH model).
 
 
-2013-08-30  Alexios Ghalanos <alexios@4dscape.com>
+2013-08-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-8.
 	* small correction to quantile function for ugarchsim/ugarchpath (resulted
 	in error when called as there was a stray comma in the matrix size
@@ -110,19 +114,19 @@
 	* Added SkewHyperbolic import for the use of the quantile and distribution
 	functions in R.
 
-2013-07-07  Alexios Ghalanos <alexios@4dscape.com>
+2013-07-07  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-7.
 	* removed Rcpp hessian calculation code (caused memory leak), and reverted
 	to pure R code. Timings indicate little to no increase in timing.
 
-2013-06-22  Alexios Ghalanos <alexios@4dscape.com>
+2013-06-22  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-6.
 	* Change defaults for switching between C and Cpp code for simulation, for
 	faster execution (with implications for rmgarch simulation methods).
 	* Small correction in censoring calculation of the VaR Duration Test
 	[thanks to David Ardia].
 
-2013-05-26  Alexios Ghalanos <alexios@4dscape.com>
+2013-05-26  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-5.
 	* Major cleanup of distribution code (C source and R). Most R distribution
 	functions linked to underlying C code for speedup (affects distfit and
@@ -134,7 +138,7 @@
 	consistent with other methods (previously used 'z' value from likelihood
 	which has zeros in the initial startup values).
 
-2013-04-24  Alexios Ghalanos <alexios@4dscape.com>
+2013-04-24  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-4.
 	* Small fix to ugarchsim for csGARCH model. The option for using startMethod
 	'unconditional' did not apply to the permanent component of variance and used
@@ -150,7 +154,7 @@
 	cases where the mean is zero.
 
 
-2013-04-12  Alexios Ghalanos <alexios@4dscape.com>
+2013-04-12  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-3.
 	* Changed calculation of diurnal component of mcsGARCH to use the median
 	instead of the mean for robustness purposes given the type and size of data
@@ -159,7 +163,7 @@
 	* makevars and makevars.win written using portable (backticks) representation
 	and therefore removed GNU make requirement from DESCRIPTION.
 
-2013-04-06  Alexios Ghalanos <alexios@4dscape.com>
+2013-04-06  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.2-2.
 	* Version number bump for upload to CRAN for R-3.0.0.
 	* Small fix to fpm (failed for some timezones-related to as.POSIXct use and
@@ -172,7 +176,7 @@
 	* Moved 'Requires' packages to 'Imports' in DESCRIPTION file and
 	more extensive use of importFrom in NAMESPACE [suggestion of B.R.].
 
-2013-03-22  Alexios Ghalanos <alexios@4dscape.com>
+2013-03-22  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-6.
 	* Added the multiplicative component GARCH (mcsGARCH) model of Engle and
 	Sokalska (2012) for intraday GARCH modelling (takes into account the
@@ -180,7 +184,7 @@
 	sampled intraday data (e.g. 1min, 5min etc). Vignette updated with model
 	details.
 
-2013-02-22  Alexios Ghalanos <alexios@4dscape.com>
+2013-02-22  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-5.
 	* Added a "quantile" and "pit" method for certain objects to return the
 	conditional quantiles and probability integral transform (cdf transformation).
@@ -189,7 +193,7 @@
 	* Added a "reduce" method to automatically zero (and exclude) non-significant
 	parameters and re-estimate a model.
 
-2013-02-04  Alexios Ghalanos <alexios@4dscape.com>
+2013-02-04  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-4.
 	* Added/Exported a couple of Date/Time utility functions (move and generatefwd)
 	for working with the returned forecast objects. Examples are in the help file.
@@ -201,7 +205,7 @@
 	* HYP likelihood now handled separately from GHYP for speed in C code (i.e.
 	when choosing GHYP with fixed par for ghlambda of 1).
 
-2013-01-30  Alexios Ghalanos <alexios@4dscape.com>
+2013-01-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-3.
 	* Methods 'sigma' and 'fitted' are now uniformly implemented for most uGARCH
 	classes for extracting the conditional sigma and mean from all objects. The
@@ -237,7 +241,7 @@
 	the Hessian cannot be inverted (indicating a local solution).
 
 
-2013-01-24  Alexios Ghalanos <alexios@4dscape.com>
+2013-01-24  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-2.
 	* Distribution functions re-written to take advantage of vectorization (some
 	of them were not vectorized), and where deemed appropriate, parallel evaluation
@@ -251,7 +255,7 @@
 	distribution.
 	* Small fix to ugarchroll resume method.
 
-2013-01-18  Alexios Ghalanos <alexios@4dscape.com>
+2013-01-18  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.01-1.
 	* Version numbering bump.
 	* Analytic skewness and kurtosis expressions for Johnson's SU
@@ -260,7 +264,7 @@
 	skew-shape combinations of different distributions.
 	* Corrected some typos in documentation/vignette [thanks to D.E].
 
-2013-01-15  Alexios Ghalanos <alexios@4dscape.com>
+2013-01-15  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-16.
 	* Fix to bug in autoarfima for method partial (convergence check
 	failed)
@@ -273,7 +277,7 @@
 	equation and unconditional choice for starting the recursion.
 
 
-2012-11-30  Alexios Ghalanos <alexios@4dscape.com>
+2012-11-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-14.
 	* Removed use of custom function environments in the estimation. Passing
 	instead an argument list between functions (resolves various problems for
@@ -307,7 +311,7 @@
 	* Minor code fixes
 	* vignette updated
 
-2012-10-30  Alexios Ghalanos <alexios@4dscape.com>
+2012-10-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-13.
 	* Fix to hybrid solver default trace argument
 	* 2 sided Hessian now moved to C++
@@ -323,7 +327,7 @@
 	changes to Box Test summary and Information Criteria.
 	* Fix to arfimadistribution function.
 
-2012-09-30  Alexios Ghalanos <alexios@4dscape.com>
+2012-09-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-12.
 	* Added a hybrid strategy optimization method to sequentially try a list of
 	alternative solvers in case of non-convergence.
@@ -331,7 +335,7 @@
 	to residuals method to return the standardized residuals for both the
 	arfima and garch classes.
 
-2012-07-09  Alexios Ghalanos <alexios@4dscape.com>
+2012-07-09  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-11.
 	* Added the Component GARCH model of Lee and Engle (1999)
 	with a complete set of methods.
@@ -339,7 +343,7 @@
 	* Change to ugarchboot to allow simulated external regressors input
 	separately from the forecast of the external regressors.
 
-2012-06-30  Alexios Ghalanos <alexios@4dscape.com>
+2012-06-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-10.
 	* Fix in ugarchboot (full method) for higher GARCH and ARMA orders.
 	* Numerous fixes to methods involving variance targeting.
@@ -347,7 +351,7 @@
 	wrong place!)
 	* Fix to ugarchroll using multicore, and correct f01density slot.
 
-2012-05-23  Alexios Ghalanos <alexios@4dscape.com>
+2012-05-23  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-9.
 	* Added autoarfima function to select best arfima model based on information
 	criterion using optionally complete enumeration of the combination space for
@@ -360,7 +364,7 @@
 	than 1.
 	* Fix in ugarchroll to include external.regressors in forecast
 
-2012-02-03  Alexios Ghalanos <alexios@4dscape.com>
+2012-02-03  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-8.
 	* Turned off stationarity check during calculation of numerical derivatives
 	to avoid boundary case problems.
@@ -373,7 +377,7 @@
 	* Fixed a bug when spec had include.mean = FALSE but fitting routine
 	was still subtracting the mean.
 
-2011-12-16  Alexios Ghalanos <alexios@4dscape.com>
+2011-12-16  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-7.
 	* Fix to eGARCH model in the presence of variance.targeting.
 	* Fix to ugarchspec when external.regressors in variance equation > 1.
@@ -381,17 +385,17 @@
 	* Added (experimental) archex argument in mean.model [user request].
 	* Added vcov and convergence extractor methods to uGARCHfit object.
 
-2011-10-17  Alexios Ghalanos <alexios@4dscape.com>
+2011-10-17  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-6.
 	* '&' replaced by 'and' in some plots and summary methods for
 	better compatibility with tikz (requested by a user).
 
-2011-10-15  Alexios Ghalanos <alexios@4dscape.com>
+2011-10-15  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-5.
 	* Fix to makevars (for solaris build).
 	* Fix to avoid multicore note on windows checks.
 
-2011-10-12  Alexios Ghalanos <alexios@4dscape.com>
+2011-10-12  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-4.
 	* Added tail.test option to BerkowitzLR test. This is a likelihood ratio
 	test based on censored normal for testing fit of the tail using the
@@ -401,7 +405,7 @@
 	length lambda (changes to qdensity and scaledist to handle vector inputs of
 	lambda).
 
-2011-09-28  Alexios Ghalanos <alexios@4dscape.com>
+2011-09-28  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-3.
 	* Fix to starting and fixed parameters for AR coefficient.
 	* Added a show method for uGARCHroll.
@@ -409,13 +413,13 @@
 	indices as rownames (affected most ugarchroll extractor methods).
 
 
-2011-09-20  Alexios Ghalanos <alexios@4dscape.com>
+2011-09-20  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-2.
 	* More minor changes to some show methods and ugarchbench.
 	* Changes to optimization limits for external regressors.
 	* Bug fix in rolling forecast with arfima [thanks to John Kerpel].
 
-2011-09-05  Alexios Ghalanos <alexios@4dscape.com>
+2011-09-05  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0-1.
 	* Some minor changes to reduce warnings on CRAN check.
 	* packageStartupMessage used for .onLoad
@@ -425,7 +429,7 @@
 	available for Windows).
 	* Vignette pdf is pre-built (Rnw simply links to the pdf).
 
-2011-08-30  Alexios Ghalanos <alexios@4dscape.com>
+2011-08-30  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.0.
 	* rugarch represents an almost complete re-write of the univariate GARCH
 	models of the rgarch package which is now being split into seperate

@@ -1,6 +1,6 @@
 #################################################################################
 ##
-##   R package rugarch by Alexios Ghalanos Copyright (C) 2008-2015.
+##   R package rugarch by Alexios Galanos Copyright (C) 2008-2022.
 ##   This file is part of the R package rugarch.
 ##
 ##   The R package rugarch is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@
 # ------------------------------------------------------------------------------
 # Location-Scale Invariant Parametrization
 .paramGHST = function(betabar, nu){
-	# Alexios Ghalanos 2012
+	# Alexios Galanos 2012
 	# betabar is the skew parameter = beta*delta (parametrization 4 in Prause)
 	# nu is the shape parameter
 	# details can be found in the vignette
@@ -828,7 +828,7 @@ dgh = function(x, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1, log = FALS
 dgh_R = function(x, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1, log = FALSE)
 {
 	# A function implemented by Diethelm Wuertz
-	# modified by Alexios Ghalanos
+	# modified by Alexios Galanos
 	n = c(length(x), length(alpha), length(beta), length(delta), length(mu), length(lambda))
 	maxn = max(n)
 	if(n[1]!=maxn) x = rep(x[1], maxn)
@@ -857,7 +857,7 @@ dgh_R = function(x, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1, log = FA
 pgh = function(q, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1)
 {
 	# A function implemented by Diethelm Wuertz
-	# modified by Alexios Ghalanos
+	# modified by Alexios Galanos
 	n = c(length(q), length(alpha), length(beta), length(delta), length(mu), length(lambda))
 	maxn = max(n)
 	if(n[1]!=maxn) q = rep(q[1], maxn)
@@ -882,7 +882,7 @@ pgh = function(q, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1)
 qgh = function(p, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1)
 {
 	# A function implemented by Diethelm Wuertz
-	# modified by Alexios Ghalanos
+	# modified by Alexios Galanos
 	n = c(length(p), length(alpha), length(beta), length(delta), length(mu), length(lambda))
 	maxn = max(n)
 	if(n[1]!=maxn) p = rep(p[1], maxn)
@@ -948,7 +948,7 @@ ghFit = function(x, control = list())
 rgh = function(n, alpha = 1, beta = 0, delta = 1, mu = 0, lambda = 1)
 {	# A function implemented by Diethelm Wuertz
 	#	Original Version by David Scott
-	# modified: Alexios Ghalanos
+	# modified: Alexios Galanos
 	nn = c(length(alpha), length(beta), length(delta), length(mu), length(lambda))
 	maxn = n
 	if(nn[1]!=maxn) alpha = rep(alpha[1], maxn)
@@ -1293,7 +1293,7 @@ snigFit = function (x, control=list())
 }
 # ------------------------------------------------------------------------------
 # Johnson's SU Distribution (Rigby & Stasinopoulos parameterization)
-# coded into C by Alexios Ghalanos
+# coded into C by Alexios Galanos
 # ------------------------------------------------------------------------------
 djsu = function(x, mu = 0, sigma = 1, skew = 1, shape = 0.5, log = FALSE)
 {
@@ -1378,7 +1378,7 @@ rjsu = function(n, mu = 0, sigma = 1, skew = 1, shape = 0.5)
 
 jsuFit = function(x, control = list())
 {
-	# a function implemented by Alexios Ghalanos
+	# a function implemented by Alexios Galanos
 	ctrl = .solnpctrl(control)
 	start = c(mean(x), sd(x), skew = 1, shape = 0.5)
 	loglik = function(pars, x){
