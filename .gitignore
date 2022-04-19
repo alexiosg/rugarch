@@ -13,3 +13,5 @@ rugarch.Rproj
 .Rhistory
 .Rbuildignore
 .Rproj.user
+*.so
+*.o

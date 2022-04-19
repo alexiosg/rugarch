@@ -869,7 +869,7 @@
 	if(modelinc[7]>0){
 		if(is.na(pars[idx["omega", 1]:idx["omega", 2], 5])) pars[idx["omega", 1]:idx["omega", 2], 5] = var(data)/100000
 		if(is.na(pars[idx["omega", 1]:idx["omega", 2], 6])) pars[idx["omega", 1]:idx["omega", 2], 6] = var(data)*100000
-		if(is.null(start.pars$omega)) pars[idx["omega", 1]:idx["omega", 2], 1] = (var(data, na.rm = TRUE))/1000 else
+		if(is.null(start.pars$omega)) pars[idx["omega", 1]:idx["omega", 2], 1] = (var(data, na.rm = TRUE)) else
 			pars[idx["omega", 1]:idx["omega", 2], 1] = start.pars$omega[1]/dscale
 		if(any(substr(fixed.names, 1, 5) == "omega")){
 			pars[idx["omega", 1]:idx["omega", 2], 1] = as.numeric(fixed.pars$omega)

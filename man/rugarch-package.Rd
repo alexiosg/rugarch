@@ -91,7 +91,6 @@ simulated object (and their multi- function equivalents).
  title        = {{rugarch}: Univariate GARCH models.},
  year         = {2014},
  note         = {R package version 1.4-0.},}}
-\emph{}
 }
 \section{License}{
   The releases of this package is licensed under GPL version 3.

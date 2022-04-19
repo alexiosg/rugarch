@@ -1,3 +1,7 @@
+2022-04-18  Alexios Galanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.4-8.
+	* Macros fixed in C code based on changes to headers and warning from CRAN.
+	
 2022-02-04  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-7.
 	* Export of additional functions for use in rmgarch

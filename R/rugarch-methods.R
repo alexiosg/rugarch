@@ -1960,7 +1960,7 @@ setMethod("as.data.frame", signature(x = "uGARCHroll"), .ugarchrolldf)
 # residuals method
 .ugarchresids = function(object, standardize = FALSE)
 {
-	if(class(object)[1] == "uGARCHfit" | class(object)[1] == "uGARCHfilter"){
+	if(inherits(object,"uGARCHfit") | inherits(object,"uGARCHfilter")){
 		D = object@model$modeldata$index[1:object@model$modeldata$T]
 	}
 	if(standardize){
@@ -1994,7 +1994,7 @@ sigma = function(object, ...)
 # returns anything but a matrix for the simulated and forecast.
 .ugarchsigma = function(object)
 {
-	if(class(object)[1] == "uGARCHfit" | class(object)[1] == "uGARCHfilter"){
+	if (inherits(object,"uGARCHfit") | inherits(object,"uGARCHfilter")) {
 		D = object@model$modeldata$index[1:object@model$modeldata$T]
 	}
 	switch(class(object)[1],
@@ -2118,7 +2118,7 @@ setMethod("likelihood", signature(object = "uGARCHmultifit"), .ugarchLikelihood)
 # Fitted method
 .ugarchfitted = function(object)
 {
-	if(class(object)[1] == "uGARCHfit" | class(object)[1] == "uGARCHfilter"){
+	if(inherits(object,"uGARCHfit") | inherits(object,"uGARCHfilter")){
 		D = object@model$modeldata$index[1:object@model$modeldata$T]
 	}
 	switch(class(object)[1],
@@ -2181,7 +2181,7 @@ reduce = function(object, pvalue = 0.1, ...)
 		setstart(spec)<-as.list(cf[-idx,1])
 		dat = xts(object@model$modeldata$data, object@model$modeldata$index)
 		ns = object@model$n.start
-		if(class(object)=="uGARCHfit"){
+		if(inherits(object,"uGARCHfit")){
 			fit = ugarchfit(spec, dat, out.sample = ns, ...)
 		} else{
 			fit = arfimafit(spec, dat, out.sample = ns, ...)
@@ -2197,7 +2197,7 @@ setMethod("reduce", signature(object = "uGARCHfit"), .reduce)
 # quantile S4 method
 .ugarchquantile = function(x, probs=c(0.01, 0.05))
 {
-	if(class(x)=="uGARCHroll"){
+	if (inherits(x,"uGARCHroll")) {
 		d = x@model$spec@model$modeldesc$distribution
 	} else{
 		d = x@model$modeldesc$distribution
@@ -2209,21 +2209,21 @@ setMethod("reduce", signature(object = "uGARCHfit"), .reduce)
 	if(di$include.shape) shape = x@model$pars["shape",1] else shape = 0
 	if(di$include.ghlambda) ghlambda = x@model$pars["ghlambda",1] else ghlambda = 0
 
-	if(class(x)=="uGARCHforecast"){
+	if(inherits(x,"uGARCHforecast")){
 		ans = matrix(NA, dim(s)[1], dim(s)[2])
 		if(length(probs)>1) stop("\nprobs must be a scalar for a uGARCHforecast object")
 		for(i in 1:NCOL(ans)) ans[,i] = qdist(d, probs[1], mu = m[,i], sigma = s[,i],
 					skew = skew, shape = shape, lambda = ghlambda)
 		colnames(ans) = colnames(s)
 		rownames(ans) = rownames(s)
-	} else if(class(x)=="uGARCHsim" | class(x)=="uGARCHpath"){
+	} else if(inherits(x,"uGARCHsim") | inherits(x,"uGARCHpath")){
 		if(length(probs)>1) stop("\nprobs must be a scalar for a uGARCHsim and uGARCHpath objects")
 		ans = matrix(NA, dim(s)[1], dim(s)[2])
 		for(i in 1:NCOL(ans)) ans[,i] = qdist(d, probs[1], mu = m[,i], sigma = s[,i],
 					skew = skew, shape = shape, lambda = ghlambda)
 		colnames(ans) = colnames(s)
 		rownames(ans) = rownames(s)
-	} else if(class(x)=="uGARCHroll"){
+	} else if(inherits(x,"uGARCHroll")){
 		skew = x@forecast$density[,"Skew"]
 		shape = x@forecast$density[,"Shape"]
 		lambda = x@forecast$density[,"Shape(GIG)"]
@@ -2258,7 +2258,7 @@ pit = function(object, ...)
 
 .ugarchpit = function(object)
 {
-	if(class(object)=="uGARCHroll"){
+	if(inherits(object,"uGARCHroll")){
 		d = object@model$spec@model$modeldesc$distribution
 		skew = object@forecast$density[,"Skew"]
 		shape = object@forecast$density[,"Shape"]

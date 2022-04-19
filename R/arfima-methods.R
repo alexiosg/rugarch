@@ -724,7 +724,7 @@ setMethod("coef", signature(object = "ARFIMAroll"), .arfimacoef)
 # Fitted method
 .arfimafitted = function(object)
 {
-	if(class(object)[1] == "ARFIMAfit" | class(object)[1] == "ARFIMAfilter"){
+	if(inherits(object,"ARFIMAfit") | inherits(object,"ARFIMAfilter")){
 		D = object@model$modeldata$index[1:object@model$modeldata$T]
 	}
 	switch(class(object)[1],
@@ -853,7 +853,7 @@ setMethod("as.data.frame", signature(x = "ARFIMAroll"), .arfimarolldf)
 # residuals method
 .arfimaresids = function(object, standardize = FALSE)
 {
-	if(class(object)[1] == "ARFIMAfit" | class(object)[1] == "ARFIMAfilter"){
+	if(inherits(object,"ARFIMAfit") | inherits(object,"ARFIMAfilter")){
 		D = object@model$modeldata$index[1:object@model$modeldata$T]
 		s = object@model$pars["sigma",1]
 	}
