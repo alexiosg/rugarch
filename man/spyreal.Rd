@@ -3,7 +3,7 @@
 \alias{spyreal}
 \title{data: SPDR Standard and Poors 500 Open-Close Daily Return and Realized Kernel Volatility}
 \description{
-The SPDR S\&P500 index open-close return and the realized kernel volatility for the period 
+The SPDR SP500 index open-close return and the realized kernel volatility for the period 
 2002-01-02 to 2008-08-29 from the paper of Hansen, Huang and Shek (2011). Used for illustrating
 the implementation of the Realized GARCH model in rugarch.
 }
