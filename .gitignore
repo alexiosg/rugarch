@@ -15,3 +15,4 @@ rugarch.Rproj
 .Rproj.user
 *.so
 *.o
+inst/doc
