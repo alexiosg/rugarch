@@ -875,7 +875,7 @@ LR.cc.test = function (p, actual, VaR, conf.level = 0.95)
 
 .LR.cc = function (p, actual, VaR)
 {
-	VaR.ind = as.numeric(ifelse(actual < VaR, 1, 0))
+  VaR.ind = as.numeric(ifelse(actual < VaR, 1, 0))
   N = sum(VaR.ind)
   TN = length(VaR.ind)
   # Thanks to Kurt Hornik for the simplications and fix
