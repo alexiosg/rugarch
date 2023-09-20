@@ -499,15 +499,15 @@ void c_psstd(double *q, double *mu, double *sigma, double *skew, double *shape, 
 
 double qsstd(const double p, const double xi, const double nu)
 {
-	double m1 = 2.0 * sqrt(nu-2.0) / (nu-1.0) / beta(0.5, nu/2.0);
-	double mu = m1*(xi-1.0/xi);
-	double sigma =  sqrt((1-m1*m1)*(xi*xi+1/(xi*xi)) + 2*m1*m1 - 1);
-	double g = 2.0 / (xi + 1.0/xi);
-	double z = p-0.5;
-	double Xi = (z<0)?1.0/xi:xi;
-	double tmp = (heaviside(z, 0) - signum(z)*p)/(g*Xi);
-	double q = (-signum(z)*qstd(tmp, 0, 1, nu)*Xi - mu)/sigma;
-	return( q );
+    double m1 = 2.0 * sqrt(nu-2.0) / (nu-1.0) / beta(0.5, nu/2.0);
+    double mu = m1*(xi-1.0/xi);
+    double sigma =  sqrt((1-m1*m1)*(xi*xi+1/(xi*xi)) + 2*m1*m1 - 1);
+    double g = 2.0 / (xi + 1.0/xi);
+    double z = p - (1/(1 + xi * xi));
+    double Xi = pow(xi, signum(z));
+    double tmp = (heaviside(z, 0) - signum(z) * p)/(g*Xi);
+    double q = (-signum(z) * qstd(tmp, 0, 1, nu) * Xi - mu)/sigma;
+    return( q );
 }
 
 void c_qsstd(double *p, double *mu, double *sigma, double *skew, double *shape, double *ans, int *n)
@@ -697,15 +697,15 @@ void c_psnorm(double *q, double *mu, double *sigma, double *skew, double *ans, i
 
 double qsnorm(const double p, const double xi)
 {
-	double m1 = 2.0/sqrt(2*PI);
-	double mu = m1 * (xi - 1.0/xi);
-	double sigma = sqrt((1.0-m1*m1)*(xi*xi+1.0/(xi*xi)) + 2.0*m1*m1 - 1.0);
-	double g = 2.0/(xi + 1.0/xi);
-	double z = p-0.5;
-	double Xi = (z<0)?1.0/xi:xi;
-	double tmp = (heaviside(z, 0) - signum(z) * p)/ (g* Xi);
-	double q = (-1.0*signum(z)*qnorm(tmp, 0, Xi, 1, 0) - mu)/sigma;
-	return( q );
+    double m1 = 2.0/sqrt(2*PI);
+    double mu = m1 * (xi - 1.0/xi);
+    double sigma = sqrt((1.0-m1*m1)*(xi*xi+1.0/(xi*xi)) + 2.0*m1*m1 - 1.0);
+    double g = 2.0/(xi + 1.0/xi);
+    double z = p - (1/(1 + xi * xi));
+    double Xi = pow(xi, signum(z));
+    double tmp = (heaviside(z, 0) - signum(z) * p)/ (g* Xi);
+    double q = (-1.0 * signum(z)*qnorm(tmp, 0, Xi, 1, 0) - mu)/sigma;
+    return( q );
 }
 
 void c_qsnorm(double *p, double *mu, double *sigma, double *skew, double *ans, int *n)
@@ -889,16 +889,16 @@ void c_psged(double *q, double *mu, double *sigma, double *skew, double *shape, 
 
 double qsged(const double p, const double xi, const double nu)
 {
-	double lambda = sqrt ( 1.0/pow(2.0, 2.0/nu) * gammafn(1.0/nu) / gammafn(3.0/nu) );
-	double m1 = pow(2.0, 1.0/nu) * lambda * gammafn(2.0/nu) / gammafn(1.0/nu);
-	double mu = m1*(xi-1.0/xi);
-	double sigma =  sqrt((1.0-m1*m1)*(xi*xi+1/(xi*xi)) + 2.0*m1*m1 - 1);
-	double g = 2.0/(xi + 1.0/xi);
-	double z = p - 0.5;
-	double Xi = (z<0)?1.0/xi:xi;
-	double q = (heaviside(z, 0) - signum(z) * p)/ (g* Xi);
-	q = (-signum(z)*qged(q, nu)*Xi - mu)/sigma;
-	return( q );
+    double lambda = sqrt ( 1.0/pow(2.0, 2.0/nu) * gammafn(1.0/nu) / gammafn(3.0/nu) );
+    double m1 = pow(2.0, 1.0/nu) * lambda * gammafn(2.0/nu) / gammafn(1.0/nu);
+    double mu = m1*(xi-1.0/xi);
+    double sigma =  sqrt((1.0-m1*m1)*(xi*xi+1/(xi*xi)) + 2.0*m1*m1 - 1);
+    double g = 2.0/(xi + 1.0/xi);
+    double z = p - (1/(1 + xi * xi));
+    double Xi = pow(xi, signum(z));
+    double q = (heaviside(z, 0) - signum(z) * p)/ (g* Xi);
+    q = (-signum(z) * qged(q, nu)*Xi - mu)/sigma;
+    return( q );
 }
 
 void c_qsged(double *p, double *mu, double *sigma, double *skew, double *shape, double *ans, int *n)

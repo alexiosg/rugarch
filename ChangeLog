@@ -1,3 +1,9 @@
+2023-09-18  Alexios Galanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.5-1.
+	* Fix to quantile function for the skewed distributions
+	of Fernandez and Steel (qsstd, qsged, qsnorm).
+	* Change to CITATION to now use bibentry.
+	
 2022-10-24  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.4-9.
 	* Fix to gig.c warning about prototype declaration.
