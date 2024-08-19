@@ -119,7 +119,7 @@ double dghsktstd(const double x, const double betabar, const double nu)
 	double mu = param[3];
 	double pdf = ((1 - nu)/2) * log(2) + nu * log(delta) + ((nu + 1)/2) * log(fabs(beta))
 	+ log(bessel_k(sqrt(beta*beta * (delta*delta + (x - mu)*(x - mu))), (nu + 1)/2, 2)) - sqrt(beta*beta * (delta*delta
-	+ (x - mu)*(x - mu))) + beta * (x - mu) - lgammafn(nu/2) - log(PI)/2 - ((nu + 1)/2) * log(delta*delta + (x - mu)*(x - mu))/2;
+	+ (x - mu)*(x - mu))) + beta * (x - mu) - lgammafn(nu/2) - log(M_PI)/2 - ((nu + 1)/2) * log(delta*delta + (x - mu)*(x - mu))/2;
 	free(param);
 	pdf = exp(pdf);
 	return pdf;
@@ -181,7 +181,7 @@ double dgh(const double x, const double alpha, const double beta, const double d
 		return pdf=0;
 	}
 	double arg = delta*sqrt(pow(alpha,2)-pow(beta,2));
-	double a = (lambda/2.0)*log(pow(alpha,2)-pow(beta,2)) - (log(sqrt(2*PI)) + (lambda-0.5)*log(alpha)
+	double a = (lambda/2.0)*log(pow(alpha,2)-pow(beta,2)) - (log(sqrt(2*M_PI)) + (lambda-0.5)*log(alpha)
 			+ lambda*log(delta) + log(bessel_k(arg, lambda, 2)) - arg );
 	double f = ((lambda-0.5)/2.0)*log(pow(delta,2)+pow((x - mu),2));
 	arg = alpha * sqrt(pow(delta,2)+pow((x-mu),2));
@@ -277,7 +277,7 @@ double dnigstd(const double x, const double rho, const double zeta)
 	double mu=param[3];
 	double d = delta*delta;
 	double xm = x-mu;
-	pdf =  -log(PI)+log(alpha)+log(delta)+log(bessel_k(alpha*sqrt(d+xm*xm), 1, 1))+
+	pdf =  -log(M_PI)+log(alpha)+log(delta)+log(bessel_k(alpha*sqrt(d+xm*xm), 1, 1))+
 				delta*sqrt(alpha*alpha-beta*beta)+beta*xm-0.5*log(d+xm*xm);
 	pdf = exp(pdf);
 	free(param);
@@ -351,7 +351,7 @@ void c_rstd(int *n, double *mu, double *sigma, double *shape, double *ans)
 double xdt(const double x, const double nu)
 {
 	double a, b, pdf;
-	a = gammafn((nu+1.0)/2.0)/sqrt(PI*nu);
+	a = gammafn((nu+1.0)/2.0)/sqrt(M_PI*nu);
     b = gammafn(nu/2.0)*pow((1.0+(x*x)/nu),((nu+1.0)/2.0));
     pdf = a/b;
 	return pdf;
@@ -538,7 +538,7 @@ double djsustd(const double x, const double nu, const double tau)
 	c=sqrt(1/(0.5*(w-1)*(w*cosh(2*omega)+1)));
 	z=(x-(c*sqrt(w)*sinh(omega)))/c;
 	r=-nu + asinh(z)/rtau;
-	pdf= -log(c)-log(rtau)-0.5*log(z*z+1)-0.5*log(2*PI)-0.5*r*r;
+	pdf= -log(c)-log(rtau)-0.5*log(z*z+1)-0.5*log(2*M_PI)-0.5*r*r;
 	pdf=exp(pdf);
 	return pdf;
 }
@@ -629,7 +629,7 @@ double rsnorm(const double xi)
 	z = runif(-weight, 1.0 - weight);
 	xx = (z < 0)? 1.0/xi : xi;
 	rr = -1.0 * fabs(rnorm(0, 1))/xx * sign(z);
-	m1 = 2.0/sqrt(2.0 * PI);
+	m1 = 2.0/sqrt(2.0 * M_PI);
 	mu = m1 * (xi - 1.0/xi);
 	sigma = sqrt((1 - (m1 * m1)) * ( (xi * xi) + 1.0/(xi* xi) ) + 2 * (m1 * m1) - 1.0);
 	ans = (rr - mu ) / sigma;
@@ -651,7 +651,7 @@ double dsnormstd(const double x, const double xi)
 {
 	double pdf;
 	double mu, sigma,z, xxi, g;
-	double m1 = 2.0/sqrt(2.0*PI);
+	double m1 = 2.0/sqrt(2.0*M_PI);
 	double m12 = m1*m1;
 	double xi2 = xi*xi;
 	mu = m1*(xi-1.0/xi);
@@ -676,7 +676,7 @@ void c_dsnorm(double *x, double *mu, double *sigma, double *skew, double *ans, i
 double psnorm(const double q, const double mu, const double sigma, const double xi)
 {
 	double qx = (q-mu)/sigma;
-	double m1 = 2.0/sqrt(2*PI);
+	double m1 = 2.0/sqrt(2*M_PI);
 	double mux = m1 * (xi - 1.0/xi);
 	double sig = sqrt((1.0-m1*m1)*(xi*xi+1.0/(xi*xi)) + 2.0*m1*m1 - 1.0);
 	double z = qx*sig + mux;
@@ -697,7 +697,7 @@ void c_psnorm(double *q, double *mu, double *sigma, double *skew, double *ans, i
 
 double qsnorm(const double p, const double xi)
 {
-    double m1 = 2.0/sqrt(2*PI);
+    double m1 = 2.0/sqrt(2*M_PI);
     double mu = m1 * (xi - 1.0/xi);
     double sigma = sqrt((1.0-m1*m1)*(xi*xi+1.0/(xi*xi)) + 2.0*m1*m1 - 1.0);
     double g = 2.0/(xi + 1.0/xi);
