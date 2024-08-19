@@ -16,3 +16,4 @@ rugarch.Rproj
 *.so
 *.o
 inst/doc
+.DS_Store
