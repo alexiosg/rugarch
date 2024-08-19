@@ -717,7 +717,7 @@ Rcc1 = function(j, m, ll, pit, T){
 # http://tolstoy.newcastle.edu.au/R/e5/help/08/09/2919.html
 # posted by Earl F. Glynn
 
-gauss_legendre2D_helper <- function(f, x, a2,b2, nodes, weights, ...) {
+gauss_legendre2D_helper <- function(f, x, a2, b2, nodes, weights, ...) {
 	C <- (b2 - a2) / 2
 	D <- (b2 + a2) / 2
 	sum <- 0.0
