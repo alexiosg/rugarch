@@ -1,3 +1,9 @@
+2024-09-21  Alexios Galanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.5-3.
+	* Removed Fortran code for fractional differencing simulation and replaced
+	with import from fracdiff package (fdsim), following mail from B.R. about
+	legacy code problems in the existing Fortran code.
+	
 2024-08-19  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.5-2.
 	* Replaced PI with M_PI in c code to accomodate STRICT_HEADERS check.
