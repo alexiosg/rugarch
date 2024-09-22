@@ -150,37 +150,24 @@
 	res = as.double(res)
 	T = as.integer(T)
 	constm = as.double(constm)
-	flmin = as.double(.Machine$double.xmin)
-	flmax = as.double(.Machine$double.xmax)
-	epmin = as.double(.Machine$double.neg.eps)
-	epmax = as.double(.Machine$double.eps)
-	s = double(T+model[3])
-	d = as.double( ipars[idx["arfima",1], 1] )
+	d = as.double(ipars[idx["arfima",1], 1])
 	d = max(1e-9, d)
-	d = min(0.5-1e-9, d)
-	ans = list()
-	ans = try(.Fortran("fdsim", n = T, ip = as.integer( model[2] ), iq = as.integer( model[3] ),
-					ar = as.double( ipars[idx["ar",1]:idx["ar",2], 1] ),
-					ma = as.double( ipars[idx["ma",1]:idx["ma",2], 1] ),
-					d = as.double(d),
-					rmu = constm, y = res, s = s, flmin = flmin, flmax = flmax,
-					epmin = epmin, epmax = epmax,
-			PACKAGE = "rugarch"), silent = TRUE)
-	if(inherits(ans, "try-error")){
-		return(0)
-	} else{
-		ans$series = ans$s
-		ans$s = NULL
-		return(ans)
-	}
+	d = min(0.5 - 1e-9, d)
+	ans <- fracdiff.sim(n = T, ar = as.double(ipars[idx["ar",1]:idx["ar",2], 1]), 
+	                    ma = -1.0 * as.double(ipars[idx["ma",1]:idx["ma",2], 1]), 
+	                    d = d, innov = res, mu = 0, 
+	                    n.start = 0, allow.0.nstart = TRUE)
+	ans$series <- ans$series + constm
+	return(ans)
 }
+
 binexpansion = function(d, n=10000)
 {
   ans = as.double(rep(0.0, n))
   out = try(.C("c_binexpansion", n = as.integer(n), d = as.double(d), ans = ans, PACKAGE = "rugarch"), silent = TRUE)
-  if(inherits(out, "try-error")){
+  if (inherits(out, "try-error")) {
     return(NA)
-  } else{
+  } else {
     return(out)
   }
 }

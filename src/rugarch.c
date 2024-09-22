@@ -68,8 +68,6 @@ extern SEXP megarchsim(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP mfgarchsim(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP mgjrgarchsim(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP msgarchsim(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-/* .Fortran calls */
-extern void F77_NAME(fdsim)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 static const R_CMethodDef CEntries[] = {
   {"aparchfilterC",    (DL_FUNC) &aparchfilterC,    18},
   {"aparchsimC",       (DL_FUNC) &aparchsimC,        9},
@@ -140,12 +138,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"msgarchsim",   (DL_FUNC) &msgarchsim,    9},
   {NULL, NULL, 0}
 };
-static const R_FortranMethodDef FortranEntries[] = {
-  {"fdsim", (DL_FUNC) &F77_NAME(fdsim), 13},
-  {NULL, NULL, 0}
-};
 void R_init_rugarch(DllInfo *dll)
 {
-  R_registerRoutines(dll, CEntries, CallEntries, FortranEntries, NULL);
+  R_registerRoutines(dll, CEntries, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
 }
