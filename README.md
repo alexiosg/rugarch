@@ -9,4 +9,5 @@ The rugarch package is the premier open source software for univariate GARCH mod
 The stable version is on [CRAN](https://CRAN.R-project.org/package=rugarch).
 The development version is now on [github](https://github.com/alexiosg/rugarch).
 
-A new package based on a moden rewrite of rugarch is available [here](https://github.com/tsmodels/tsgarch)
+**Update 2025: The rugarch package will no longer be updated. Maintenance for bug fixes will continue until about 2027. 
+Users should switch to the new [tsgarch](https://github.com/tsmodels/tsgarch) package instead.**
