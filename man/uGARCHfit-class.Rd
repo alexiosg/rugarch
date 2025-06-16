@@ -201,6 +201,7 @@ Classes \code{\linkS4class{uGARCHforecast}}, \code{\linkS4class{uGARCHsim}} and
 \examples{
 \dontrun{
 # Basic GARCH(1,1) Spec
+Sys.setenv(TZ = "UTC")
 data(dmbp)
 spec = ugarchspec()
 fit = ugarchfit(data = dmbp[,1], spec = spec)

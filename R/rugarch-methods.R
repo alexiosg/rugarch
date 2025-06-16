@@ -1983,12 +1983,6 @@ setMethod("residuals", signature(object = "uGARCHfit"), .ugarchresids)
 setMethod("residuals", signature(object = "uGARCHfilter"), .ugarchresids)
 setMethod("residuals", signature(object = "uGARCHmultifit"), .ugarchresids)
 setMethod("residuals", signature(object = "uGARCHmultifilter"), .ugarchresids)
-#----------------------------------------------------------------------------------
-# sigma method
-sigma = function(object, ...)
-{
-	UseMethod("sigma")
-}
 
 # xts is returned for fitted and filtered object. Does not make sense to
 # returns anything but a matrix for the simulated and forecast.
