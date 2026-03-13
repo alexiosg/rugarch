@@ -53,7 +53,7 @@ SEXP marmaxsim(SEXP model, SEXP pars, SEXP idx, SEXP mu, SEXP x, SEXP res, SEXP 
 		} catch( std::exception &ex ) {
 			forward_exception_to_r( ex );
 	    } catch(...) {
-			::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+			(::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
 	    }
 	    return R_NilValue;
 }
@@ -100,7 +100,7 @@ SEXP msgarchsim(SEXP model, SEXP pars, SEXP idx, SEXP h, SEXP z, SEXP res,
 	} catch( std::exception &ex ) {
 		forward_exception_to_r( ex );
     } catch(...) {
-		::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+        (::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
     }
     return R_NilValue;
 }
@@ -153,7 +153,7 @@ SEXP mgjrgarchsim(SEXP model, SEXP pars, SEXP idx, SEXP h, SEXP z, SEXP res, SEX
 	} catch( std::exception &ex ) {
 		forward_exception_to_r( ex );
     } catch(...) {
-		::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+        (::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
     }
     return R_NilValue;
 }
@@ -197,7 +197,7 @@ SEXP maparchsim(SEXP model, SEXP pars, SEXP idx, SEXP h, SEXP z, SEXP res, SEXP 
 	} catch( std::exception &ex ) {
 		forward_exception_to_r( ex );
     } catch(...) {
-		::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+        (::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
     }
     return R_NilValue;
 }
@@ -245,7 +245,7 @@ SEXP mfgarchsim(SEXP model, SEXP pars, SEXP idx, SEXP kdelta, SEXP h, SEXP z,
 	} catch( std::exception &ex ) {
 		forward_exception_to_r( ex );
     } catch(...) {
-		::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+        (::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
     }
     return R_NilValue;
 }
@@ -291,7 +291,7 @@ SEXP megarchsim(SEXP model, SEXP pars, SEXP idx, SEXP meanz, SEXP h, SEXP z,
 	} catch( std::exception &ex ) {
 		forward_exception_to_r( ex );
     } catch(...) {
-		::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+        (::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
     }
     return R_NilValue;
 }
@@ -340,7 +340,7 @@ SEXP mcsgarchsim(SEXP model, SEXP pars, SEXP idx, SEXP h, SEXP q, SEXP z, SEXP r
 	} catch( std::exception &ex ) {
 		forward_exception_to_r( ex );
     } catch(...) {
-		::Rf_error( "rugarch-->ugarchsim c++ exception (unknown reason)" );
+        (::Rf_error)( "rugarch-->ugarchsim c++ exception (unknown reason)" );
     }
     return R_NilValue;
 }

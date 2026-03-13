@@ -1,4 +1,8 @@
-2025-06-01  Alexios Galanos <alexios@4dscape.com>
+2025-03-13  Alexios Galanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.5-5.
+	* Rf_error changes prompted by Rcpp team.
+	
+2025-06-20  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.5-4.
 	* Removed generic S4 sigma method since stats now implements this since 3.3.0
 	(created conflict with stats::sigma. Thanks to Peter Daalgard for pointing this out).
