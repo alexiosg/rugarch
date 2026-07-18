@@ -1,3 +1,7 @@
+2025-07-18  Alexios Galanos <alexios@4dscape.com>
+	* DESCRIPTION (Version): New version is 1.5-6.
+	* Fixed missing citation in vignette.
+	
 2025-03-13  Alexios Galanos <alexios@4dscape.com>
 	* DESCRIPTION (Version): New version is 1.5-5.
 	* Rf_error changes prompted by Rcpp team.

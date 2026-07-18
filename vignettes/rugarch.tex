@@ -11,8 +11,7 @@ such as threshold models to capture the asymmetry in the news impact, as well
 as distributions other than the normal to account for the skewness and excess
 kurtosis observed in practice. In a further extension, \cite{Hansen1994}
 generalized the \verb@GARCH@ models to capture time variation in the full density
-parameters, with the Autoregressive Conditional Density Model\footnote{The \textbf{racd} package
-is now available from my bitbucket repository.}, relaxing the assumption that the
+parameters, with the Autoregressive Conditional Density Model, relaxing the assumption that the
 conditional distribution of the standardized innovations is independent of the
 conditioning information.
 
@@ -25,11 +24,6 @@ environment for the modelling of these processes. This document discusses the
 finer details of the included models and conditional distributions and
 how they are implemented in the package with numerous examples.
 
-The \verb@rugarch@ package is available on CRAN
-(\url{http://cran.r-project.org/web/packages/rugarch/index.html}) and the
-development version on bitbucket (\url{https://bitbucket.org/alexiosg}).
-Some online examples and demos are available on my website
-(\url{http://www.unstarched.net}).
 
 The package is provided AS IS, without any implied warranty as to its accuracy
 or suitability. A lot of time and effort has gone into the development of this
@@ -446,7 +440,7 @@ As $n \to \infty$ the unconditional variance is:
 In the \verb@rugarch@ package, the parameters $\rho$ and $\phi$ are
 represented by $\eta_{11}$('eta11') and $\eta_{21}$('eta21') respectively.
 \subsubsection{The Multiplicative Component sGARCH model ('mcsGARCH')}\label{section:mcsgarch}
-A key problem with using GARCH models for intraday data is the seasonality in the absolute returns observed at the beginning and end of the trading session. For regularly sampled time intervals (1-min, 5-min etc.), a number of models have tried to either 'de-seasonalize' the residuals and then fit the GARCH model by using for instance a Flexible Fourier method as in \cite{Andersen1997} or incorporate seasonality directly into the model as in the Periodic GARCH model of \cite{Bollerslev1996}. A rather simple and parsimonious approach to the de-seasonalization was recently presented in \cite{Engle2012} (henceforth ES2012). Consider the continuously compounded return $r_{t,i}$, where $t$ denotes the day and $i$ the regularly spaced time interval at which the return was calculated. Under this model, the conditional variance is a multiplicative product of daily, diurnal and stochastic (intraday) components, so that the return process may be represented as:
+A key problem with using GARCH models for intraday data is the seasonality in the absolute returns observed at the beginning and end of the trading session. For regularly sampled time intervals (1-min, 5-min etc.), a number of models have tried to either 'de-seasonalize' the residuals and then fit the GARCH model by using for instance a Flexible Fourier method as in \cite{Andersen1997} or incorporate seasonality directly into the model as in the Periodic GARCH model of \cite{Bollerslev1996a}. A rather simple and parsimonious approach to the de-seasonalization was recently presented in \cite{Engle2012} (henceforth ES2012). Consider the continuously compounded return $r_{t,i}$, where $t$ denotes the day and $i$ the regularly spaced time interval at which the return was calculated. Under this model, the conditional variance is a multiplicative product of daily, diurnal and stochastic (intraday) components, so that the return process may be represented as:
 \begin{equation}\label{mcs1}
 \begin{gathered}
   {r_{t,i}} = {\mu _{t,i}} + {\varepsilon _{t,i}} \hfill \\
@@ -467,7 +461,7 @@ q_{t,i}^2 = \left( {\omega  + \sum\limits_{j = 1}^m {{\zeta _j}{v_{jt}}} } \righ
 \end{equation}
 see Section \ref{section:sgarch} for details.
 In the \verb@rugarch@ package, unlike the paper of ES2012, the conditional mean and variance equations (and hence the diurnal component on the residuals from the conditional mean filtration) are estimated jointly. Furthermore, and unlike ES2012, it is possible to include ARMAX dynamics in the conditional mean, though because of the complexity of the model and its use of time indices, ARCH-m is not currently allowed, but may be included once the xts package is fully translated to Rcpp. Finally, as an additional point of departure from ES2012, the diurnal component calculation uses the median instead of the mean which was found to provide for a more robust alternative, particularly given the type and size of datasets typically used [changed in version 1.2-3].
-As currently stands, the model has methods for estimation (ugarchfit), filtering (ugarchfilter), forecast from fit (ugarchforecast) but not from spec (secondary dispatch method), simulation from fit (ugarchsim) but not from spec (ugarchpath), rolling estimation (ugarchroll) but not the bootstrap (ugarchboot). Some of the plots, which depend on the xts package will not render nicely since plot.xts does not play well with intraday data. Some plots however such as VaRplot have been amended to properly display intraday data coming from an xts object, and more may be added as time allows. An extensive example of the model may be found on \url{http://www.unstarched.net}.
+As currently stands, the model has methods for estimation (ugarchfit), filtering (ugarchfilter), forecast from fit (ugarchforecast) but not from spec (secondary dispatch method), simulation from fit (ugarchsim) but not from spec (ugarchpath), rolling estimation (ugarchroll) but not the bootstrap (ugarchboot). Some of the plots, which depend on the xts package will not render nicely since plot.xts does not play well with intraday data. Some plots however such as VaRplot have been amended to properly display intraday data coming from an xts object, and more may be added as time allows.
 The paper by ES2012 is currently freely available here: \url{http://jfec.oxfordjournals.org/content/10/1/54.full}.
 
 \subsubsection{The realized GARCH model ('realGARCH')}\label{section:realgarch}
@@ -1914,9 +1908,6 @@ the package function.} and defined as:
 The asymptotic distribution of $T_R$, and hence the p-values reported, is obtained via the bootstrap procedure, the validity
 of which is established in HLN.
 
-\section{Future Development}\label{section:fut}
-Any future extensions will likely be 'add-on' packages released in the bitbucket
-code repository of the package.
 
 \section{FAQs and Guidelines}\label{section:faqs}
 This section provides for answers to some Frequently Asked Questions (Q) as well

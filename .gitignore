@@ -19,3 +19,5 @@ inst/doc
 .DS_Store
 .DS_Store
 .DS_Store
+vignettes/Introduction_to_the_rugarch_package-concordance.tex
+vignettes/Sweave.sty
