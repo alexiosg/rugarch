@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 .circleci
 ^\.github$
+sweave.sty
